@@ -1,18 +1,24 @@
-# macOS
-.DS_Store
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
 
-# VS Code
-.vscode/
+# Node dependencies
+node_modules
 
 # Logs
+logs
 *.log
 
-# Node
-node_modules/
-dist/
-.env
-.nuxt/
-output/
+# Misc
+.DS_Store
+.fleet
+.idea
 
-# System files
-Thumbs.db
+# Local env files
+.env
+.env.*
+!.env.example
