@@ -1,7 +1,10 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <NavBar />
-    <BreadCrumbs :breadcrumbs="[{ text: 'Home', url: '/' }, { text: 'Activities', url: '/activities' }]" />
+    <BreadCrumbs :breadcrumbs="[
+      { text: 'Home', url: '/' }, 
+      { text: 'Activities' }
+    ]" />
     <main class="flex-grow">
       <!-- Activities Section -->
       <section class="bg-white py-14 px-20">

@@ -1,7 +1,10 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <NavBar />
-    <BreadCrumbs :breadcrumbs="[{ text: 'Home', url: '/' }, { text: 'The Center', url: '/center' }]" />
+    <BreadCrumbs :breadcrumbs="[
+      { text: 'Home', url: '/' }, 
+      { text: 'The Center' }
+    ]" />
     <main class="flex-grow">
       <!-- Hero Section -->
       <section class="relative bg-cover bg-center h-96" style="background-image: url('/images/hero-background.jpg')">

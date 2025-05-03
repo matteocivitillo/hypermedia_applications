@@ -6,11 +6,6 @@
         <img src="/images/hero-background.jpg" alt="Yoga Background" class="w-full h-full object-cover" />
       </div>
       
-      <!-- Breadcrumbs at the top -->
-      <div class="absolute top-0 left-0 w-full z-10">
-        <BreadCrumbs />
-      </div>
-      
       <div class="container mx-auto h-full flex flex-col justify-center relative z-10">
         <!-- Center Logo -->
         <div class="flex flex-col items-center mb-12">
@@ -30,6 +25,3 @@
   </section>
 </template>
 
-<script setup>
-import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
-</script> 
