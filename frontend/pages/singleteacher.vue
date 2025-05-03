@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col min-h-screen bg-gray-100">
       <NavBar />
       <BreadCrumbs v-if="teacher" :breadcrumbs="[
         { text: 'Home', url: '/' }, 
@@ -8,13 +8,13 @@
       ]" />
       <main class="flex-grow">
         <!-- Teacher Details Section -->
-        <section class="bg-gray-50 py-14 border-b border-gray-200">
+        <section class="bg-white py-14 border-b border-gray-200 shadow-md">
           <div class="container mx-auto px-6 md:px-20">
             <!-- Loading State -->
             <div v-if="isLoading" class="flex justify-center items-center h-96">
-              <div class="loading-spinner">
+              <div class="loading-spinner animate-fade-in">
                 <div class="spinner"></div>
-                <p class="mt-4 text-xl text-gray-600">Loading teacher data...</p>
+                <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading teacher data...</p>
               </div>
             </div>
             
@@ -29,28 +29,35 @@
               <div class="w-full md:w-1/3">
                 <div class="rounded-xl shadow-lg overflow-hidden">
                   <div class="h-96 relative">
-                    <img :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
-                         :alt="`${teacher.name} ${teacher.surname}`" 
-                         class="w-full h-full object-cover animate-fade-in">
+                    <img 
+                      :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
+                      :alt="`${teacher.name} ${teacher.surname}`" 
+                      class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                      :class="{ 'opacity-0': !imageLoaded }" 
+                      @load="imageLoaded = true" 
+                      @error="imageError = true"
+                    />
+                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                      <p class="text-gray-600">Loading image...</p>
+                    </div>
                     <div class="absolute inset-0 bg-black bg-opacity-30"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6">
                       <div class="flex flex-wrap gap-2 items-center mb-2">
-                        <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                          Lead Instructor
+                        <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
+                          {{ teacher.role }}
                         </span>
                       </div>
                       <h3 class="text-2xl font-bold text-white animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h3>
                       <div class="flex flex-wrap gap-2 mt-2">
                         <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
                           {{ teacher.main_expertise.split('&')[0].trim() }}
                         </span>
-                        <span v-else-if="teacher.main_expertise"
-                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                        <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
                           {{ teacher.main_expertise }}
                         </span>
                         <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
                           {{ teacher.main_expertise.split('&')[1].trim() }}
                         </span>
                       </div>
@@ -64,7 +71,7 @@
                 <!-- Teacher Name and Title -->
                 <div class="space-y-1">
                   <h1 class="text-4xl font-bold text-primary animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h1>
-                  <p class="text-2xl text-gray-600 animate-fade-in">Lead Instructor</p>
+                  <p class="text-2xl text-gray-600 animate-fade-in">{{ teacher.role }}</p>
                 </div>
                 
                 <!-- Expertise -->
@@ -120,6 +127,8 @@
   const teacher = ref(null)
   const isLoading = ref(true)
   const error = ref(null)
+  const imageLoaded = ref(false)
+  const imageError = ref(false)
   
   // Fetch teacher data from the API
   const fetchTeacher = async () => {
@@ -166,20 +175,43 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    opacity: 0; /* Start hidden */
+    animation: fadeIn 0.8s ease forwards; /* Adjust duration */
   }
 
   .spinner {
-    width: 30px;
-    height: 30px;
-    border: 4px solid rgba(0, 106, 113, 0.2);
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 106, 113, 0.2);
     border-radius: 50%;
     border-top-color: #006A71;
-    animation: spin 1s ease-in-out infinite;
+    animation: spin 1s ease-in-out infinite, scale 0.5s ease-in-out forwards; /* Add scale effect */
   }
 
   @keyframes spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1); /* Slightly scale up */
+    }
+    100% {
+      transform: scale(1);
     }
   }
 

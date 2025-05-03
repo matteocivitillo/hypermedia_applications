@@ -43,21 +43,21 @@
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
               <div class="absolute bottom-0 left-0 right-0 p-6">
                 <div class="flex flex-wrap gap-2 items-center mb-2">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300">
-                    Lead Instructor
+                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
+                    {{ teacher.role }}
                   </span>
                 </div>
                 <h3 class="text-2xl font-bold text-white group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">{{ teacher.name }} {{ teacher.surname }}</h3>
                 <div class="flex flex-wrap gap-2 mt-2">
                   <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300">
+                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise.split('&')[0].trim() }}
                   </span>
-                  <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300">
+                  <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise }}
                   </span>
                   <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300">
+                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise.split('&')[1].trim() }}
                   </span>
                 </div>
