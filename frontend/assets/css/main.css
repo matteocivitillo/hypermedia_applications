@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Raleway', sans-serif;
+  color: #4B5563;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+.primary-color {
+  color: #006A71;
+}
+
+.bg-primary {
+  background-color: #006A71;
+}
+
+.bg-light {
+  background-color: #F9FAFB;
+}
+
+.bg-beige {
+  background-color: #F2EFE7;
+} 
