@@ -10,7 +10,7 @@
             <!-- Map -->
             <div class="w-full md:w-1/2 h-96 lg:h-auto rounded-xl overflow-hidden shadow-lg relative">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.7570908309906!2d9.21756221584603!3d45.48603197910134!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c6ce44ac16bb%3A0xee001206635a5c3e!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI%2C%20Italy!5e0!3m2!1sen!2sus!4v1651234567890!5m2!1sen!2sus" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.756!2d9.217562!3d45.4860319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c6ce44ac16bb%3A0xee001206635a5c3e!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI!5e0!3m2!1sen!2sit!4v1715511467732!5m2!1sen!2sit" 
                 width="100%" 
                 height="100%" 
                 style="border:0;" 

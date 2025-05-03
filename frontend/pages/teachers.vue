@@ -17,49 +17,49 @@
           <!-- Teachers Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             <!-- Teacher Card 1 - Sarah Mitchell -->
-            <div class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden">
+            <NuxtLink to="/teacher/sarah-mitchell" class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div class="h-80 relative">
                 <img src="/images/teachers/sarah-mitchell.jpg" alt="Sarah Mitchell" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-              </div>
-              <div class="p-6 space-y-4">
-                <div class="flex flex-wrap gap-2 items-center">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                    Lead Yoga Instructor
-                  </span>
+                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6">
+                  <div class="flex flex-wrap gap-2 items-center mb-2">
+                    <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
+                      Lead Yoga Instructor
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white">Sarah Mitchell</h3>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Vinyasa Flow
+                    </span>
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Meditation
+                    </span>
+                  </div>
                 </div>
-                <h3 class="text-2xl font-bold">Sarah Mitchell</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Vinyasa Flow
-                  </span>
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Meditation
-                  </span>
-                </div>
               </div>
-            </div>
+            </NuxtLink>
 
             <!-- Teacher Card 2 - Michael Chen -->
             <div class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden">
               <div class="h-80 relative">
                 <img src="/images/teachers/michael-chen.jpg" alt="Michael Chen" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-              </div>
-              <div class="p-6 space-y-4">
-                <div class="flex flex-wrap gap-2 items-center">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                    Wellness Director
-                  </span>
-                </div>
-                <h3 class="text-2xl font-bold">Michael Chen</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Traditional Yoga
-                  </span>
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Water Yoga
-                  </span>
+                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6">
+                  <div class="flex flex-wrap gap-2 items-center mb-2">
+                    <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
+                      Wellness Director
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white">Michael Chen</h3>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Traditional Yoga
+                    </span>
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Water Yoga
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -68,22 +68,22 @@
             <div class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden">
               <div class="h-80 relative">
                 <img src="/images/teachers/emma-rodriguez.jpg" alt="Emma Rodriguez" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-              </div>
-              <div class="p-6 space-y-4">
-                <div class="flex flex-wrap gap-2 items-center">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                    Dance & Movement Specialist
-                  </span>
-                </div>
-                <h3 class="text-2xl font-bold">Emma Rodriguez</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Zumba
-                  </span>
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Dynamic Flow
-                  </span>
+                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6">
+                  <div class="flex flex-wrap gap-2 items-center mb-2">
+                    <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
+                      Dance & Movement Specialist
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white">Emma Rodriguez</h3>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Zumba
+                    </span>
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Dynamic Flow
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -92,22 +92,22 @@
             <div class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden">
               <div class="h-80 relative">
                 <img src="/images/teachers/david-kumar.jpg" alt="David Kumar" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-              </div>
-              <div class="p-6 space-y-4">
-                <div class="flex flex-wrap gap-2 items-center">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                    Meditation Guide
-                  </span>
-                </div>
-                <h3 class="text-2xl font-bold">David Kumar</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Mindfulness
-                  </span>
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Spiritual Wellness
-                  </span>
+                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6">
+                  <div class="flex flex-wrap gap-2 items-center mb-2">
+                    <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
+                      Meditation Guide
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white">David Kumar</h3>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Mindfulness
+                    </span>
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Spiritual Wellness
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,22 +116,22 @@
             <div class="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden">
               <div class="h-80 relative">
                 <img src="/images/teachers/sofia-bianchi.jpg" alt="Sofia Bianchi" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-              </div>
-              <div class="p-6 space-y-4">
-                <div class="flex flex-wrap gap-2 items-center">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
-                    Creative Arts Instructor
-                  </span>
-                </div>
-                <h3 class="text-2xl font-bold">Sofia Bianchi</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Ceramics
-                  </span>
-                  <span class="bg-white bg-opacity-80 text-gray-600 border border-white px-3 py-1 rounded-full text-sm">
-                    Mindful Creation
-                  </span>
+                <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                <div class="absolute inset-x-0 bottom-0 p-6">
+                  <div class="flex flex-wrap gap-2 items-center mb-2">
+                    <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm">
+                      Creative Arts Instructor
+                    </span>
+                  </div>
+                  <h3 class="text-2xl font-bold text-white">Sofia Bianchi</h3>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Ceramics
+                    </span>
+                    <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
+                      Mindful Creation
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
