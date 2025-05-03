@@ -12,7 +12,10 @@
           <div class="container mx-auto px-6 md:px-20">
             <!-- Loading State -->
             <div v-if="isLoading" class="flex justify-center items-center h-96">
-              <p class="text-xl text-gray-600">Loading teacher data...</p>
+              <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p class="mt-4 text-xl text-gray-600">Loading teacher data...</p>
+              </div>
             </div>
             
             <!-- Error State -->
@@ -28,7 +31,7 @@
                   <div class="h-96 relative">
                     <img :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
                          :alt="`${teacher.name} ${teacher.surname}`" 
-                         class="w-full h-full object-cover">
+                         class="w-full h-full object-cover animate-fade-in">
                     <div class="absolute inset-0 bg-black bg-opacity-30"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6">
                       <div class="flex flex-wrap gap-2 items-center mb-2">
@@ -36,7 +39,7 @@
                           Lead Instructor
                         </span>
                       </div>
-                      <h3 class="text-2xl font-bold text-white">{{ teacher.name }} {{ teacher.surname }}</h3>
+                      <h3 class="text-2xl font-bold text-white animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h3>
                       <div class="flex flex-wrap gap-2 mt-2">
                         <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
                               class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm">
@@ -60,38 +63,36 @@
               <div class="w-full md:w-2/3 flex flex-col gap-8">
                 <!-- Teacher Name and Title -->
                 <div class="space-y-1">
-                  <h1 class="text-4xl font-bold text-primary">{{ teacher.name }} {{ teacher.surname }}</h1>
-                  <p class="text-2xl text-gray-600">Lead Instructor</p>
+                  <h1 class="text-4xl font-bold text-primary animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h1>
+                  <p class="text-2xl text-gray-600 animate-fade-in">Lead Instructor</p>
                 </div>
                 
                 <!-- Expertise -->
                 <div class="space-y-2">
-                  <h2 class="text-3xl font-bold text-black">Expertise</h2>
-                  <p class="text-xl text-gray-600">{{ teacher.main_expertise }}</p>
+                  <h2 class="text-3xl font-bold text-black animate-fade-in">Expertise</h2>
+                  <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.main_expertise }}</p>
                 </div>
                 
                 <!-- About -->
                 <div class="space-y-2">
-                  <h2 class="text-3xl font-bold text-black">About</h2>
-                  <p class="text-xl text-gray-600">
-                    {{ teacher.about }}
-                  </p>
+                  <h2 class="text-3xl font-bold text-black animate-fade-in">About</h2>
+                  <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.about }}</p>
                 </div>
                 
                 <!-- Activities -->
                 <div class="space-y-6">
-                  <h2 class="text-3xl font-bold text-black">Activities</h2>
+                  <h2 class="text-3xl font-bold text-black animate-fade-in">Activities</h2>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition">
+                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
                       Morning Class
                     </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition">
+                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
                       Afternoon Workshop
                     </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition">
+                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
                       Advanced Session
                     </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition">
+                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
                       Beginners Class
                     </NuxtLink>
                   </div>
@@ -157,5 +158,44 @@
   <style scoped>
   .text-primary {
     color: #006A71;
+  }
+
+  /* Loading spinner */
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 4px solid rgba(0, 106, 113, 0.2);
+    border-radius: 50%;
+    border-top-color: #006A71;
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
   }
   </style> 
