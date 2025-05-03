@@ -30,3 +30,25 @@ async def get_messaggi():
                    .order("id", desc=False)\
     .execute()
     return {"messaggi": resp.data}
+
+# ------------------- TEACHERS ------------------- #
+
+# Get all teachers information
+@app.get("/teachers")
+async def get_teachers():
+    resp = supabase.table("teacher")\
+                   .select("*")\
+                   .execute()
+    return {"teachers": resp.data}
+
+# Get a specific teacher by ID
+@app.get("/teacher/{teacher_id}")
+async def get_teacher(teacher_id: str):
+    resp = supabase.table("teacher")\
+                   .select("*")\
+                   .eq("id", teacher_id)\
+                   .execute()
+    
+    if len(resp.data) > 0:
+        return {"teacher": resp.data[0]}
+    return {"teacher": None}
