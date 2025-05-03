@@ -6,20 +6,93 @@
       { text: 'Contact' }
     ]" />
     <main class="flex-grow">
-      <!-- Hero Section -->
-      <section class="relative bg-cover bg-center h-80" style="background-image: url('/images/contact-header.jpg')">
-        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 h-full flex items-center relative z-10">
-          <div>
-            <h1 class="text-5xl font-bold text-white mb-4">Contact Us</h1>
-            <p class="text-xl text-white max-w-2xl">We're here to answer any questions you might have about our classes, teachers, or membership options.</p>
+
+      <!-- Contact Form Section Moved to Beginning -->
+      <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 text-center">
+          <h1 class="text-4xl font-bold text-primary mb-6">Contact Us</h1>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">We'll get back to you as soon as possible.</p>
+          
+          <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-8 sm:p-12">
+              <form @submit.prevent="submitForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Name Field -->
+                  <div>
+                    <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      v-model="formData.name"
+                      placeholder="Jane" 
+                      class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      required
+                    >
+                  </div>
+                  
+                  <!-- Surname Field -->
+                  <div>
+                    <label for="surname" class="block text-gray-700 font-medium mb-2">Surname</label>
+                    <input 
+                      type="text" 
+                      id="surname" 
+                      v-model="formData.surname"
+                      placeholder="Doe" 
+                      class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      required
+                    >
+                  </div>
+                </div>
+                
+                <!-- Email Field -->
+                <div>
+                  <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    v-model="formData.email"
+                    placeholder="example@mail.com" 
+                    class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  >
+                </div>
+                
+                <!-- Message Field -->
+                <div>
+                  <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                  <textarea 
+                    id="message" 
+                    v-model="formData.message"
+                    rows="5" 
+                    placeholder="Write here your request..." 
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    required
+                  ></textarea>
+                </div>
+                
+                <!-- Submit Button -->
+                <div>
+                  <button 
+                    type="submit" 
+                    class="w-full py-3 px-6 rounded-full bg-primary text-white font-medium hover:bg-primary-dark transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                  >
+                    Send
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Map and Contact Info Section -->
-      <section class="bg-white py-16 border-b border-gray-200">
+      <section class="py-16 bg-white border-b border-gray-200">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+          <h2 class="text-3xl font-bold text-primary text-center mb-10 relative">
+            <span class="inline-block relative">
+              Our Location
+            </span>
+          </h2>
           <div class="flex flex-wrap md:flex-nowrap justify-center gap-16 lg:gap-24">
             <!-- Map -->
             <div class="w-full md:w-1/2 h-96 lg:h-auto rounded-xl overflow-hidden shadow-lg relative">
@@ -200,9 +273,34 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+
+const formData = ref({
+  name: '',
+  surname: '',
+  email: '',
+  message: ''
+})
+
+const submitForm = () => {
+  // Here you would typically send the form data to a server
+  // For now, we'll just log it to the console
+  console.log('Form submitted:', formData.value)
+  
+  // Reset form after submission
+  formData.value = {
+    name: '',
+    surname: '',
+    email: '',
+    message: ''
+  }
+  
+  // You could also show a success message to the user
+  alert('Message sent successfully!')
+}
 </script>
 
 <script>
