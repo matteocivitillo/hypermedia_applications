@@ -6,18 +6,13 @@
       { text: 'Prices' }
     ]" />
     <main class="flex-grow">
-      <!-- Header -->
-      <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 text-center">
-          <h1 class="text-4xl font-bold text-primary mb-6">Pricing Options</h1>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Choose the plan that works best for your practice and schedule</p>
-        </div>
-      </section>
       
       <!-- Introduction Section -->
-      <section class="py-10 px-8 md:px-20 bg-gradient-to-b from-white to-white">
+      <section class="py-10 px-8 md:px-20 bg-gradient-to-b from-white to-white animate-fade-in">
         <div class="container mx-auto text-center">
-          <h1 class="text-3xl font-bold text-primary mb-4">Our Membership Plans</h1>
+          <h1 class="text-3xl font-bold text-primary mb-4">
+            Our Membership Plans
+          </h1>
           <p class="text-xl text-gray-600 mb-2">
             To activate any of our subscription plans, please visit our reception desk at our center.
           </p>
@@ -28,7 +23,7 @@
       </section>
       
       <!-- Subscription Plans by Type -->
-      <section class="py-14 px-4 border-b border-gray-200 bg-white">
+      <section class="py-14 px-4 border-b border-gray-200 bg-white animate-fade-in">
         <div class="container mx-auto">
           <h2 class="text-3xl font-bold text-gray-900 text-center mb-10 relative">
             <span class="inline-block relative">
@@ -39,7 +34,7 @@
           <!-- Combined Features and Pricing -->
           <div class="flex flex-col lg:flex-row justify-between items-center max-w-6xl mx-auto">
             <!-- Features Box -->
-            <div class="w-full lg:w-1/3 max-w-md">
+            <div class="w-full lg:w-1/3 max-w-md animate-fade-in">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <div class="bg-gradient-to-br from-primary/5 to-transparent p-5 rounded-t-xl">
                   <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
@@ -67,7 +62,7 @@
             </div>
             
             <!-- Pricing Comparison -->
-            <div class="w-full lg:w-3/5 max-w-xl">
+            <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <table class="w-full text-left">
                   <thead>
@@ -113,7 +108,7 @@
       </section>
       
       <!-- Standard Plans Section -->
-      <section class="py-14 px-4 border-b border-gray-200 bg-white">
+      <section class="py-14 px-4 border-b border-gray-200 bg-white animate-fade-in">
         <div class="container mx-auto">
           <h2 class="text-3xl font-bold text-gray-900 text-center mb-10 relative">
             <span class="inline-block relative">
@@ -124,7 +119,7 @@
           <!-- Combined Features and Pricing -->
           <div class="flex flex-col lg:flex-row justify-between items-center max-w-6xl mx-auto">
             <!-- Features Box -->
-            <div class="w-full lg:w-1/3 max-w-md">
+            <div class="w-full lg:w-1/3 max-w-md animate-fade-in">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <div class="bg-gradient-to-br from-primary/5 to-transparent p-5 rounded-t-xl">
                   <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
@@ -164,7 +159,7 @@
             </div>
             
             <!-- Pricing Comparison -->
-            <div class="w-full lg:w-3/5 max-w-xl">
+            <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <table class="w-full text-left">
                   <thead>
@@ -210,7 +205,7 @@
       </section>
       
       <!-- Plus Plans Section -->
-      <section class="py-14 px-4 bg-white">
+      <section class="py-14 px-4 bg-white animate-fade-in">
         <div class="container mx-auto">
           <h2 class="text-3xl font-bold text-gray-900 text-center mb-10 relative">
             <span class="inline-block relative">
@@ -221,7 +216,7 @@
           <!-- Combined Features and Pricing -->
           <div class="flex flex-col lg:flex-row justify-between items-center max-w-6xl mx-auto">
             <!-- Features Box -->
-            <div class="w-full lg:w-1/3 max-w-md">
+            <div class="w-full lg:w-1/3 max-w-md animate-fade-in">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <div class="bg-gradient-to-br from-primary/5 to-transparent p-5 rounded-t-xl">
                   <h3 class="text-xl font-bold text-primary mb-3 flex items-center">
@@ -265,7 +260,7 @@
             </div>
             
             <!-- Pricing Comparison -->
-            <div class="w-full lg:w-3/5 max-w-xl">
+            <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <table class="w-full text-left">
                   <thead>
@@ -311,11 +306,14 @@
       </section>
       
       <!-- Comparison Table Section -->
-      <section class="py-14 px-4 bg-white border-t border-gray-200">
+      <section class="py-14 px-4 bg-white border-t border-gray-200 animate-fade-in">
         <div class="container mx-auto">
-          <h2 class="text-3xl font-bold text-gray-900 text-center mb-10">
+          <h1 class="text-3xl font-bold text-primary text-center mb-4">
             Compare Plans
-          </h2>
+          </h1>
+          <p class="text-lg text-gray-600 text-center mb-6">
+            Below is a table that highlights the main feature differences for each type of membership.
+          </p>
           
           <div class="max-w-5xl mx-auto overflow-hidden border border-gray-200 rounded-xl shadow-md">
             <table class="w-full text-left">
@@ -504,4 +502,28 @@
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
-</script> 
+</script>
+
+<style scoped>
+.text-primary {
+  color: #006A71;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Loading spinner styles can be added here if needed */
+</style> 
