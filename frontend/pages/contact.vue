@@ -6,9 +6,20 @@
       { text: 'Contact' }
     ]" />
     <main class="flex-grow">
+      <!-- Hero Section -->
+      <section class="relative bg-cover bg-center h-80" style="background-image: url('/images/contact-header.jpg')">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 h-full flex items-center relative z-10">
+          <div>
+            <h1 class="text-5xl font-bold text-white mb-4">Contact Us</h1>
+            <p class="text-xl text-white max-w-2xl">We're here to answer any questions you might have about our classes, teachers, or membership options.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- Map and Contact Info Section -->
       <section class="bg-white py-16 border-b border-gray-200">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <div class="flex flex-wrap md:flex-nowrap justify-center gap-16 lg:gap-24">
             <!-- Map -->
             <div class="w-full md:w-1/2 h-96 lg:h-auto rounded-xl overflow-hidden shadow-lg relative">
@@ -117,7 +128,7 @@
       
       <!-- FAQ Section -->
       <section class="bg-white py-16 border-t border-gray-200">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <h2 class="text-3xl font-bold text-primary text-center mb-10">FAQ</h2>
           
           <div class="max-w-4xl mx-auto space-y-6">

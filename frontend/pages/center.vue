@@ -9,7 +9,7 @@
       <!-- Hero Section -->
       <section class="relative bg-cover bg-center h-96" style="background-image: url('/images/hero-background.jpg')">
         <div class="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div class="container mx-auto px-4 h-full flex items-center relative z-10">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 h-full flex items-center relative z-10">
           <div class="max-w-3xl">
             <h1 class="text-5xl font-bold text-white mb-6">Transforming lives through the practice of yoga and meditation.</h1>
             <p class="text-xl text-gray-200">Join our community and transform your life with expert guidance in yoga, meditation, and mindful living.</p>
@@ -19,7 +19,7 @@
 
       <!-- Features Section -->
       <section class="bg-secondary py-20">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <div class="flex flex-wrap justify-center gap-12">
             <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm">
               <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
@@ -56,7 +56,7 @@
 
       <!-- About the Center -->
       <section class="py-16">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <h2 class="text-4xl font-bold text-primary text-center mb-8">Serendipity Yoga Center</h2>
           <div class="flex flex-wrap md:flex-nowrap gap-16 items-center">
             <div class="w-full md:w-1/2">
@@ -77,7 +77,7 @@
 
       <!-- Our Rooms -->
       <section class="bg-secondary py-16" id="rooms">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <h2 class="text-4xl font-bold text-primary text-center mb-12">Our Yoga Rooms</h2>
           
           <div class="relative">
@@ -125,7 +125,7 @@
 
       <!-- Our Areas & Services -->
       <section class="py-16" id="areas">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-primary mb-4">Serendipity Yoga Center - Areas</h2>
             <p class="text-xl text-gray-700">Our yoga center offers a cozy and complete environment with several areas dedicated to the well-being and relaxation of our guests</p>

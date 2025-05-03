@@ -6,6 +6,14 @@
       { text: 'Prices' }
     ]" />
     <main class="flex-grow">
+      <!-- Header -->
+      <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 text-center">
+          <h1 class="text-4xl font-bold text-primary mb-6">Pricing Options</h1>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">Choose the plan that works best for your practice and schedule</p>
+        </div>
+      </section>
+      
       <!-- Introduction Section -->
       <section class="py-10 px-8 md:px-20 bg-gradient-to-b from-white to-white">
         <div class="container mx-auto text-center">

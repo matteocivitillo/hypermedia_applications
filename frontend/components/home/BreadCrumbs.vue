@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-gray-100 shadow-sm">
-    <div class="container mx-auto py-3 px-4">
+  <div class="bg-gray-100 border-b border-gray-200">
+    <div class="container mx-auto py-3 px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <p class="text-sm font-bold text-gray-600">
         <template v-for="(crumb, index) in breadcrumbs" :key="index">
           <template v-if="index > 0"> 

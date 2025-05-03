@@ -6,7 +6,7 @@
         <img src="/images/hero-background.jpg" alt="Yoga Background" class="w-full h-full object-cover" />
       </div>
       
-      <div class="container mx-auto h-full flex flex-col justify-center relative z-10">
+      <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 h-full flex flex-col justify-center relative z-10">
         <!-- Center Logo -->
         <div class="flex flex-col items-center mb-12">
           <img src="/images/logo-large.svg" alt="Yoga Logo" class="h-32 mb-4" />

@@ -1,6 +1,6 @@
 <template>
-  <section class="bg-white py-14">
-    <div class="container mx-auto">
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <h2 class="text-3xl font-bold text-primary text-center mb-10">Our Yoga Classes</h2>
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

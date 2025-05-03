@@ -1,6 +1,6 @@
 <template>
   <section class="py-12 bg-white">
-    <div class="container mx-auto">
+    <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <h2 class="text-3xl font-bold text-primary text-center mb-10">Highlighted Activities</h2>
       
       <div class="relative">

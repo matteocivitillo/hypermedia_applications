@@ -138,6 +138,13 @@
           </div>
         </div>
       </section>
+
+      <!-- Teachers List -->
+      <section class="py-16">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+          <!-- Existing content -->
+        </div>
+      </section>
     </main>
     <SiteFooter />
   </div>

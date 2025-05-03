@@ -1,6 +1,6 @@
 <template>
-  <section class="py-14 bg-white border-t border-gray-200">
-    <div class="container mx-auto">
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Yoga Stories</h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">

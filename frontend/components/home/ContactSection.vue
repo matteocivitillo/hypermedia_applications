@@ -1,6 +1,6 @@
 <template>
   <section class="py-16 bg-gray-100 border-t border-gray-200">
-    <div class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+    <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 grid grid-cols-1 lg:grid-cols-2 gap-20">
       <!-- Map -->
       <div class="w-full h-[400px] rounded-xl overflow-hidden">
         <img src="/images/map.jpg" alt="Map Location" class="w-full h-full object-cover" />
