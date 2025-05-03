@@ -73,7 +73,7 @@
       </section>
 
       <!-- Our Rooms -->
-      <section class="bg-secondary py-16">
+      <section class="bg-secondary py-16" id="rooms">
         <div class="container mx-auto px-4">
           <h2 class="text-4xl font-bold text-primary text-center mb-12">Our Yoga Rooms</h2>
           
@@ -121,7 +121,7 @@
       </section>
 
       <!-- Our Areas & Services -->
-      <section class="py-16">
+      <section class="py-16" id="areas">
         <div class="container mx-auto px-4">
           <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-primary mb-4">Serendipity Yoga Center - Areas</h2>
