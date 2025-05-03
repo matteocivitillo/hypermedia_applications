@@ -7,7 +7,7 @@
     ]" />
     <main class="flex-grow">
       <!-- Map and Contact Info Section -->
-      <section class="bg-gray-50 py-16 border-b border-gray-200">
+      <section class="bg-white py-16 border-b border-gray-200">
         <div class="container mx-auto px-4">
           <div class="flex flex-wrap md:flex-nowrap justify-center gap-16 lg:gap-24">
             <!-- Map -->
@@ -21,9 +21,7 @@
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade">
               </iframe>
-              <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl">
-                📍
-              </div>
+
             </div>
             
             <!-- Contact Information -->
@@ -36,7 +34,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
-                  <span class="text-xl">+1 234 567 890</span>
+                  <a href="tel:+1234567890" class="text-xl text-primary hover:underline">+1 234 567 890</a>
                 </div>
                 <div class="flex items-center gap-5">
                   <div class="w-5 h-5 flex justify-center">
@@ -44,7 +42,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <span class="text-xl">info@serendipity.com</span>
+                  <a href="mailto:info@serendipity.com" class="text-xl text-primary hover:underline">info@serendipity.com</a>
                 </div>
               </div>
               
@@ -62,52 +60,54 @@
               <div>
                 <h2 class="text-3xl font-bold text-primary mb-4">Working Hours</h2>
                 <div class="w-full overflow-x-auto">
-                  <table class="w-full border-collapse">
-                    <thead class="bg-primary text-white">
-                      <tr>
-                        <th class="py-3 px-4 text-center">DAY</th>
-                        <th class="py-3 px-4 text-center">OPEN</th>
-                        <th class="py-3 px-4 text-center">CLOSE</th>
-                      </tr>
-                    </thead>
-                    <tbody class="text-gray-600">
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Monday</td>
-                        <td class="py-3 px-4 text-center">09:00</td>
-                        <td class="py-3 px-4 text-center">21:00</td>
-                      </tr>
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Tuesday</td>
-                        <td class="py-3 px-4 text-center">09:00</td>
-                        <td class="py-3 px-4 text-center">21:00</td>
-                      </tr>
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Wednesday</td>
-                        <td class="py-3 px-4 text-center">09:00</td>
-                        <td class="py-3 px-4 text-center">21:00</td>
-                      </tr>
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Thursday</td>
-                        <td class="py-3 px-4 text-center">09:00</td>
-                        <td class="py-3 px-4 text-center">21:00</td>
-                      </tr>
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Friday</td>
-                        <td class="py-3 px-4 text-center">09:00</td>
-                        <td class="py-3 px-4 text-center">21:00</td>
-                      </tr>
-                      <tr class="border-b border-gray-200">
-                        <td class="py-3 px-4 text-center">Saturday</td>
-                        <td class="py-3 px-4 text-center">10:00</td>
-                        <td class="py-3 px-4 text-center">19:00</td>
-                      </tr>
-                      <tr>
-                        <td class="py-3 px-4 text-center">Sunday</td>
-                        <td class="py-3 px-4 text-center">10:00</td>
-                        <td class="py-3 px-4 text-center">15:00</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="border border-gray-200 rounded-xl overflow-hidden shadow-lg relative">
+                    <table class="w-full border-collapse">
+                      <thead>
+                        <tr class="bg-primary text-white">
+                          <th class="py-3 px-4 text-center font-semibold">DAY</th>
+                          <th class="py-3 px-4 text-center font-semibold">OPEN</th>
+                          <th class="py-3 px-4 text-center font-semibold">CLOSE</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-200">
+                        <tr class="bg-white">
+                          <td class="py-3 px-4 text-center">Monday</td>
+                          <td class="py-3 px-4 text-center">09:00</td>
+                          <td class="py-3 px-4 text-center">21:00</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="py-3 px-4 text-center">Tuesday</td>
+                          <td class="py-3 px-4 text-center">09:00</td>
+                          <td class="py-3 px-4 text-center">21:00</td>
+                        </tr>
+                        <tr class="bg-white">
+                          <td class="py-3 px-4 text-center">Wednesday</td>
+                          <td class="py-3 px-4 text-center">09:00</td>
+                          <td class="py-3 px-4 text-center">21:00</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="py-3 px-4 text-center">Thursday</td>
+                          <td class="py-3 px-4 text-center">09:00</td>
+                          <td class="py-3 px-4 text-center">21:00</td>
+                        </tr>
+                        <tr class="bg-white">
+                          <td class="py-3 px-4 text-center">Friday</td>
+                          <td class="py-3 px-4 text-center">09:00</td>
+                          <td class="py-3 px-4 text-center">21:00</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                          <td class="py-3 px-4 text-center">Saturday</td>
+                          <td class="py-3 px-4 text-center">10:00</td>
+                          <td class="py-3 px-4 text-center">19:00</td>
+                        </tr>
+                        <tr class="bg-white">
+                          <td class="py-3 px-4 text-center">Sunday</td>
+                          <td class="py-3 px-4 text-center">10:00</td>
+                          <td class="py-3 px-4 text-center">15:00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@
       </section>
       
       <!-- FAQ Section -->
-      <section class="bg-secondary py-16">
+      <section class="bg-white py-16 border-t border-gray-200">
         <div class="container mx-auto px-4">
           <h2 class="text-3xl font-bold text-primary text-center mb-10">FAQ</h2>
           

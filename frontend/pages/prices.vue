@@ -309,7 +309,7 @@
             Compare Plans
           </h2>
           
-          <div class="max-w-5xl mx-auto overflow-hidden border border-gray-200 rounded-xl">
+          <div class="max-w-5xl mx-auto overflow-hidden border border-gray-200 rounded-xl shadow-md">
             <table class="w-full text-left">
               <thead>
                 <tr class="bg-primary text-white">
