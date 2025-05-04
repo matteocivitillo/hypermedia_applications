@@ -52,3 +52,25 @@ async def get_teacher(teacher_id: str):
     if len(resp.data) > 0:
         return {"teacher": resp.data[0]}
     return {"teacher": None}
+
+# ------------------- ACTIVITIES ------------------- #
+
+# Get all activities information
+@app.get("/activities")
+async def get_activities():
+    resp = supabase.table("activity")\
+                   .select("*")\
+                   .execute()
+    return {"activities": resp.data}
+
+# Get a specific activity by ID
+@app.get("/activity/{activity_id}")
+async def get_activity(activity_id: str):
+    resp = supabase.table("activity")\
+                   .select("*")\
+                   .eq("id", activity_id)\
+                   .execute()
+    
+    if len(resp.data) > 0:
+        return {"activity": resp.data[0]}
+    return {"activity": None}
