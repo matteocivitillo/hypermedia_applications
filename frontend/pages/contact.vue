@@ -6,111 +6,17 @@
       { text: 'Contact' }
     ]" />
     <main class="flex-grow">
-
-      <!-- Contact Form Section Moved to Beginning -->
+      <!-- Contact Form and Info Section -->
       <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 text-center">
-          <h1 class="text-4xl font-bold text-primary mb-6">Contact Us</h1>
-          <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">We'll get back to you as soon as possible.</p>
-          
-          <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="p-8 sm:p-12">
-              <form @submit.prevent="submitForm" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <!-- Name Field -->
-                  <div>
-                    <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      v-model="formData.name"
-                      placeholder="Jane" 
-                      class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                  </div>
-                  
-                  <!-- Surname Field -->
-                  <div>
-                    <label for="surname" class="block text-gray-700 font-medium mb-2">Surname</label>
-                    <input 
-                      type="text" 
-                      id="surname" 
-                      v-model="formData.surname"
-                      placeholder="Doe" 
-                      class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
-                    >
-                  </div>
-                </div>
-                
-                <!-- Email Field -->
-                <div>
-                  <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    v-model="formData.email"
-                    placeholder="example@mail.com" 
-                    class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                  >
-                </div>
-                
-                <!-- Message Field -->
-                <div>
-                  <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                  <textarea 
-                    id="message" 
-                    v-model="formData.message"
-                    rows="5" 
-                    placeholder="Write here your request..." 
-                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                  ></textarea>
-                </div>
-                
-                <!-- Submit Button -->
-                <div>
-                  <button 
-                    type="submit" 
-                    class="w-full py-3 px-6 rounded-full bg-primary text-white font-medium hover:bg-primary-dark transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                  >
-                    Send
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Map and Contact Info Section -->
-      <section class="py-16 bg-white border-b border-gray-200">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-          <h2 class="text-3xl font-bold text-primary text-center mb-10 relative">
-            <span class="inline-block relative">
-              Our Location
-            </span>
-          </h2>
-          <div class="flex flex-wrap md:flex-nowrap justify-center gap-16 lg:gap-24">
-            <!-- Map -->
-            <div class="w-full md:w-1/2 h-96 lg:h-auto rounded-xl overflow-hidden shadow-lg relative">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.756!2d9.217562!3d45.4860319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c6ce44ac16bb%3A0xee001206635a5c3e!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI!5e0!3m2!1sen!2sit!4v1715511467732!5m2!1sen!2sit" 
-                width="100%" 
-                height="100%" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade">
-              </iframe>
-
-            </div>
-            
-            <!-- Contact Information -->
-            <div class="w-full md:w-1/2 flex flex-col">
-              <div class="mb-12">
+          <h1 class="text-4xl font-bold text-primary mb-6 text-center">Contact Us</h1>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 text-center">We'll get back to you as soon as possible.</p>
+          
+          <div class="flex flex-col lg:flex-row gap-12">
+            <!-- Left Column: Contact Info -->
+            <div class="w-full lg:w-1/2 space-y-12">
+              <!-- Contact Information -->
+              <div>
                 <h2 class="text-3xl font-bold text-primary mb-4">Contact Us</h2>
                 <div class="flex items-center gap-5 mb-4">
                   <div class="w-5 h-5 flex justify-center">
@@ -130,7 +36,8 @@
                 </div>
               </div>
               
-              <div class="mb-12">
+              <!-- Location -->
+              <div>
                 <h2 class="text-3xl font-bold text-primary mb-4">Location</h2>
                 <div class="flex items-start gap-8">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,6 +48,7 @@
                 </div>
               </div>
               
+              <!-- Working Hours -->
               <div>
                 <h2 class="text-3xl font-bold text-primary mb-4">Working Hours</h2>
                 <div class="w-full overflow-x-auto">
@@ -195,8 +103,94 @@
                 </div>
               </div>
             </div>
+
+            <!-- Right Column: Contact Form -->
+            <div class="w-full lg:w-1/2 flex items-center">
+              <div class="w-full bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-8 sm:p-12">
+                  <form @submit.prevent="submitForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Name Field -->
+                      <div>
+                        <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+                        <input 
+                          type="text" 
+                          id="name" 
+                          v-model="formData.name"
+                          placeholder="Jane" 
+                          class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          required
+                        >
+                      </div>
+                      
+                      <!-- Surname Field -->
+                      <div>
+                        <label for="surname" class="block text-gray-700 font-medium mb-2">Surname</label>
+                        <input 
+                          type="text" 
+                          id="surname" 
+                          v-model="formData.surname"
+                          placeholder="Doe" 
+                          class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          required
+                        >
+                      </div>
+                    </div>
+                    
+                    <!-- Email Field -->
+                    <div>
+                      <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        v-model="formData.email"
+                        placeholder="example@mail.com" 
+                        class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                    </div>
+                    
+                    <!-- Message Field -->
+                    <div>
+                      <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                      <textarea 
+                        id="message" 
+                        v-model="formData.message"
+                        rows="5" 
+                        placeholder="Write here your request..." 
+                        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      ></textarea>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div>
+                      <button 
+                        type="submit" 
+                        class="w-full py-3 px-6 rounded-full bg-primary text-white font-medium hover:bg-primary-dark transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
+
+      <!-- Full Width Map Section -->
+      <section class="w-full h-96 lg:h-[500px]">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.756!2d9.217562!3d45.4860319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c6ce44ac16bb%3A0xee001206635a5c3e!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI!5e0!3m2!1sen!2sit!4v1715511467732!5m2!1sen!2sit" 
+          width="100%" 
+          height="100%" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
       </section>
       
       <!-- FAQ Section -->
