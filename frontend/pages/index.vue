@@ -3,9 +3,9 @@
     <NavBar />
     <main class="flex-grow">
       <HeroSection />
-      <ContactSection />
       <HighlightedActivities />
       <YogaClasses />
+      <ContactSection />
       <SocialWall />
     </main>
     <SiteFooter />
