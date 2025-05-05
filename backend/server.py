@@ -53,16 +53,7 @@ async def get_teacher(teacher_id: str):
         return {"teacher": resp.data[0]}
     return {"teacher": None}
 
-# # Get a specific teacher by activity id
-# @app.get("/teacher/activity/{activity_id}")
-# async def get_teacher_by_activity(activity_id: str):
-#     resp = supabase.table("teacher")\
-#                    .select("*")\
-#                    .eq("activity_id", activity_id)\
-#                    .execute()
-#     return {"teacher": resp.data[0]}
-
-# Get teacher name and surname by activity ID. It calls a function in the database.
+# Get teacher name and surname by activity ID. It runs a function in the database. Multiple values can be returned!
 @app.get("/teacher/activity/{activity_id}")
 async def get_teacher_by_activityid(activity_id: str):
     resp = supabase.rpc("get_teacher_by_activityid", params={"activity_id": activity_id}).execute()
