@@ -4,6 +4,7 @@
     <BreadCrumbs v-if="activity" :breadcrumbs="[
       { text: 'Home', url: '/' }, 
       { text: 'Activities', url: '/activities' }, 
+      { text: activity.title || activity.name, url: '/singleactivity' }
     ]" />
     <main class="flex-grow">
       <!-- Activity Title Section -->
@@ -11,6 +12,7 @@
         <div class="container mx-auto">
           <h1 v-if="isLoading" class="loading-title text-center animate-fade-in">Loading...</h1>
           <h1 v-else-if="activity" class="text-4xl font-bold text-primary text-center">
+            {{ activity.title || activity.name }}
           </h1>
         </div>
       </section>
@@ -39,11 +41,13 @@
                 <!-- Level Badge -->
                 <div class="flex items-center">
                   <span class="bg-primary bg-opacity-50 text-white px-4 py-2 rounded-full text-sm">
+                    {{ activity.level || activity.difficulty || 'All Levels' }}
                   </span>
                 </div>
                 
                 <!-- Activity Details -->
                 <div class="space-y-4">
+                  <h2 class="text-3xl font-bold text-primary">{{ activity.title || activity.name }}</h2>
                   <p class="text-xl text-gray-600">{{ activity.short_description || activity.description }}</p>
                 </div>
                 
