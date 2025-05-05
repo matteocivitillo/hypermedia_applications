@@ -52,7 +52,6 @@
                 </div>
                 
                 <!-- Teacher Info (if available) -->
-<<<<<<< Updated upstream
                 <div v-if="teacher && teacher.length > 0" class="mt-2">
                   <h3 class="text-xl font-bold text-black">Teachers:</h3>
                   <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
@@ -64,8 +63,10 @@
                     />
                     <div v-else class="w-10 h-10 bg-gray-300 rounded-full"></div> <!-- Placeholder if no image -->
                     <span class="text-gray-600">{{ t.name }} {{ t.surname }}</span> <!-- Display teacher's name and surname -->
-=======
-                <div v-if="teacher" class="flex items-center gap-3 mt-2">
+                  </div>
+                </div>
+                
+                <div v-else-if="teacher" class="flex items-center gap-3 mt-2">
                   <div class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden border-2 border-primary">
                     <img 
                       :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
@@ -77,18 +78,14 @@
                   <div>
                     <p class="text-gray-800 font-medium">{{ teacher.name }}</p>
                     <p class="text-gray-500 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
->>>>>>> Stashed changes
                   </div>
                 </div>
                 
                 <!-- About -->
                 <div v-if="activity.about || activity.description" class="space-y-3 mt-6">
                   <h3 class="text-2xl font-bold text-black">About</h3>
-<<<<<<< Updated upstream
-                  <p class="text-lg text-gray-600" v-html="activity.about"></p>
-=======
-                  <p class="text-lg text-gray-600">{{ activity.about || activity.description }}</p>
->>>>>>> Stashed changes
+                  <p v-if="activity.about" class="text-lg text-gray-600" v-html="activity.about"></p>
+                  <p v-else class="text-lg text-gray-600">{{ activity.description }}</p>
                 </div>
                 
                 <!-- Additional Sections -->
@@ -241,7 +238,6 @@ const fetchActivity = async () => {
   }
 }
 
-<<<<<<< Updated upstream
 // Fetch teacher data when the activity is loaded
 const fetchTeacherByActivity = async () => {
   if (!activityId.value) {
@@ -278,11 +274,9 @@ onMounted(() => {
   fetchActivity();
   fetchTeacherByActivity();
 });
-=======
 // Fetch data when component mounts or when activityId changes
 onMounted(fetchActivity)
 watch(activityId, fetchActivity)
->>>>>>> Stashed changes
 </script>
 
 <style scoped>
