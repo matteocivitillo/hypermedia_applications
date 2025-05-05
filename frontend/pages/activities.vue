@@ -44,10 +44,10 @@
               <div class="absolute inset-0 bg-cover bg-center" :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"></div>
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
               <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 class="text-2xl font-bold mb-2 bg-white bg-opacity-90 text-primary p-2 rounded-md group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
+                <h3 class="text-xl font-bold mb-2 bg-white bg-opacity-70 text-primary p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
                   {{ activity.title }}
                 </h3>
-                <p class="text-base bg-white bg-opacity-90 text-gray-600 p-2 rounded-md group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
+                <p class="text-base bg-white bg-opacity-70 text-gray-600 p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
                   {{ activity.short_description }}
                 </p>
               </div>

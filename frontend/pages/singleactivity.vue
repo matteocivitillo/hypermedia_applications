@@ -52,15 +52,24 @@
                 </div>
                 
                 <!-- Teacher Info (if available) -->
-                <div class="flex items-center gap-3 mt-2">
-                  <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
-                  <span class="text-gray-600">Main Teacher</span>
+                <div v-if="teacher && teacher.length > 0" class="mt-2">
+                  <h3 class="text-xl font-bold text-black">Teachers:</h3>
+                  <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
+                    <img 
+                      :src="t.image" 
+                      alt="Teacher Image" 
+                      class="w-10 h-10 rounded-full" 
+                      v-if="t.image" 
+                    />
+                    <div v-else class="w-10 h-10 bg-gray-300 rounded-full"></div> <!-- Placeholder if no image -->
+                    <span class="text-gray-600">{{ t.name }} {{ t.surname }}</span> <!-- Display teacher's name and surname -->
+                  </div>
                 </div>
                 
                 <!-- About -->
                 <div class="space-y-3 mt-6">
                   <h3 class="text-2xl font-bold text-black">About</h3>
-                  <p class="text-lg text-gray-600">{{ activity.about }}</p>
+                  <p class="text-lg text-gray-600" v-html="activity.about"></p>
                 </div>
                 
                 <!-- Additional Sections -->
@@ -68,26 +77,26 @@
                   <!-- Ideal For -->
                   <div v-if="activity.ideal_for" class="space-y-2">
                     <h3 class="text-xl font-bold text-black">Ideal For</h3>
-                    <p class="text-base text-gray-600">{{ activity.ideal_for }}</p>
+                    <p class="text-base text-gray-600" v-html="activity.ideal_for"></p>
                   </div>
                   
                   <!-- Main Benefit -->
                   <div v-if="activity.main_benefit" class="space-y-2">
                     <h3 class="text-xl font-bold text-black">Main Benefit</h3>
-                    <p class="text-base text-gray-600">{{ activity.main_benefit }}</p>
+                    <p class="text-base text-gray-600" v-html="activity.main_benefit"></p>
                   </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div v-if="activity.additional_info" class="space-y-2 mt-2">
+                  <h3 class="text-xl font-bold text-black">Additional Information</h3>
+                  <p class="text-base text-gray-600" v-html="activity.additional_info"></p>
                 </div>
                 
                 <!-- Schedule -->
                 <div v-if="activity.schedule" class="space-y-2 mt-2">
                   <h3 class="text-xl font-bold text-black">Schedule</h3>
                   <p class="text-base text-gray-600">{{ activity.schedule }}</p>
-                </div>
-                
-                <!-- Additional Info -->
-                <div v-if="activity.additional_info" class="space-y-2 mt-2">
-                  <h3 class="text-xl font-bold text-black">Additional Information</h3>
-                  <p class="text-base text-gray-600">{{ activity.additional_info }}</p>
                 </div>
                 
                 <!-- Room -->
@@ -144,6 +153,7 @@ const activityId = ref(route.query.id)
 
 // Data refs
 const activity = ref(null)
+const teacher = ref(null)
 const isLoading = ref(true)
 const error = ref(null)
 const imageLoaded = ref(false)
@@ -179,8 +189,42 @@ const fetchActivity = async () => {
   }
 }
 
-// Fetch data when component mounts
-onMounted(fetchActivity)
+// Fetch teacher data when the activity is loaded
+const fetchTeacherByActivity = async () => {
+  if (!activityId.value) {
+    error.value = 'No activity ID specified'
+    isLoading.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8000/teacher/activity/${activityId.value}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+
+    const data = await response.json();
+
+    if (data.teacher) {
+      // Store the teacher data in a ref or reactive variable
+      teacher.value = data.teacher;
+    } else {
+      error.value = 'Teacher not found'
+    }
+  } catch (err) {
+    console.error('Error fetching teacher:', err)
+    error.value = 'Failed to load teacher data'
+  } finally {
+    isLoading.value = false
+  }
+};
+
+// Call this function after fetching the activity
+onMounted(() => {
+  fetchActivity();
+  fetchTeacherByActivity();
+});
 </script>
 
 <style scoped>
