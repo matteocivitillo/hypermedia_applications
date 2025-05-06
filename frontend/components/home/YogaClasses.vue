@@ -1,82 +1,245 @@
 <template>
-  <section class="py-16 bg-white">
+  <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-3xl font-bold text-primary text-center mb-10">Our Yoga Classes</h2>
+      <h2 class="text-4xl font-bold text-primary text-center mb-16">Our Yoga Classes</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Class Card 1 -->
-        <div class="bg-secondary bg-opacity-50 rounded-xl shadow-custom p-6">
+      <div v-if="yogaClasses.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Class Card -->
+        <div 
+          v-for="yogaClass in yogaClasses" 
+          :key="yogaClass.id"
+          class="bg-white rounded-xl shadow-custom p-8 transform hover:-translate-y-2 transition-all duration-300"
+        >
           <div class="mb-5">
-            <span class="bg-primary bg-opacity-50 text-white text-sm font-normal py-1 px-3 rounded-full">
-              Beginner
+            <span class="bg-primary bg-opacity-70 text-white text-sm font-medium py-1.5 px-4 rounded-full">
+              {{ yogaClass.difficulty }}
             </span>
           </div>
           
-          <div class="mb-6">
-            <h3 class="text-2xl font-bold text-primary mb-3">Hatha Yoga</h3>
-            <p class="text-gray-600">
-              A slow style, working on postures (asana), breathing (pranayama) and relaxation.
+          <div class="mb-8">
+            <h3 class="text-2xl font-bold text-primary mb-4">{{ yogaClass.name }}</h3>
+            <p class="text-gray-600 leading-relaxed">
+              {{ yogaClass.description }}
             </p>
           </div>
           
           <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 overflow-hidden">
-              <img src="/images/teacher-1.jpg" alt="Hatha Yoga Teacher" class="w-full h-full object-cover" />
+            <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden border-2 border-primary">
+              <img 
+                :src="yogaClass.teacher_image" 
+                :alt="`${yogaClass.teacher_name} Teacher`" 
+                class="w-full h-full object-cover object-center"
+                onerror="this.src='/images/teacher-placeholder.jpg'"
+              />
             </div>
-            <span class="text-gray-600">Teacher</span>
+            <div>
+              <p class="text-gray-800 font-medium">{{ yogaClass.teacher_name || 'Yoga Teacher' }}</p>
+              <p class="text-gray-500 text-sm">{{ yogaClass.experience || 'Expert Teacher' }}</p>
+            </div>
           </div>
+          
+          <NuxtLink 
+            :to="`/singleactivity?id=${yogaClass.id}`" 
+            class="mt-6 block w-full bg-secondary hover:bg-secondary-dark text-primary font-medium py-3 px-6 rounded-lg text-center transition-colors duration-300"
+          >
+            View Details
+          </NuxtLink>
         </div>
-        
-        <!-- Class Card 2 -->
-        <div class="bg-secondary bg-opacity-50 rounded-xl shadow-custom p-6">
-          <div class="mb-5">
-            <span class="bg-primary bg-opacity-50 text-white text-sm font-normal py-1 px-3 rounded-full">
-              Intermediate
-            </span>
-          </div>
-          
-          <div class="mb-6">
-            <h3 class="text-2xl font-bold text-primary mb-3">Kundalini Yoga</h3>
-            <p class="text-gray-600">
-              Intense energy work with breathing, mantra, meditation and repetitive movements.
-            </p>
-          </div>
-          
-          <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 overflow-hidden">
-              <img src="/images/teacher-2.jpg" alt="Kundalini Yoga Teacher" class="w-full h-full object-cover" />
+      </div>
+      
+      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div v-for="i in 3" :key="i" class="animate-pulse bg-white rounded-xl p-8 shadow-custom">
+          <div class="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+          <div class="h-20 bg-gray-200 rounded mb-8"></div>
+          <div class="flex items-center mb-6">
+            <div class="rounded-full bg-gray-300 h-12 w-12 mr-4"></div>
+            <div>
+              <div class="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+              <div class="h-3 bg-gray-200 rounded w-16"></div>
             </div>
-            <span class="text-gray-600">Teacher</span>
           </div>
-        </div>
-        
-        <!-- Class Card 3 -->
-        <div class="bg-secondary bg-opacity-50 rounded-xl shadow-custom p-6">
-          <div class="mb-5">
-            <span class="bg-primary bg-opacity-50 text-white text-sm font-normal py-1 px-3 rounded-full">
-              Advanced
-            </span>
-          </div>
-          
-          <div class="mb-6">
-            <h3 class="text-2xl font-bold text-primary mb-3">Ashtanga Yoga</h3>
-            <p class="text-gray-600">
-              Fixed, intense sequences executed smoothly and quickly.
-            </p>
-          </div>
-          
-          <div class="flex items-center">
-            <div class="w-10 h-10 rounded-full bg-gray-300 mr-3 overflow-hidden">
-              <img src="/images/teacher-3.jpg" alt="Ashtanga Yoga Teacher" class="w-full h-full object-cover" />
-            </div>
-            <span class="text-gray-600">Teacher</span>
-          </div>
+          <div class="h-10 bg-gray-200 rounded w-full"></div>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<script>
-export default {}
-</script> 
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const yogaClasses = ref([]);
+const isLoading = ref(true);
+
+// Sample data in case the API fails
+const defaultYogaClasses = [
+  {
+    id: 1,
+    name: 'Hatha Yoga',
+    difficulty: 'Beginner',
+    description: 'A slow-paced style of yoga focusing on postures (asana), breathing (pranayama) and deep relaxation.',
+    teacher_name: 'Sarah Mitchell',
+    experience: '10+ years',
+    teacher_image: '/images/teacher-1.jpg'
+  },
+  {
+    id: 2,
+    name: 'Kundalini Yoga',
+    difficulty: 'Intermediate',
+    description: 'Intense energy work incorporating breathing, mantra, meditation and repetitive movements.',
+    teacher_name: 'John Davis',
+    experience: '8+ years',
+    teacher_image: '/images/teacher-2.jpg'
+  },
+  {
+    id: 3,
+    name: 'Ashtanga Yoga',
+    difficulty: 'Advanced',
+    description: 'A dynamic, physically demanding practice that synchronizes breath with a progressive series of postures.',
+    teacher_name: 'Mia Rodriguez',
+    experience: '12+ years',
+    teacher_image: '/images/teacher-3.jpg'
+  }
+];
+
+onMounted(async () => {
+  try {
+    const response = await fetch('http://localhost:8000/activities');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.activities && data.activities.length > 0) {
+      // Cerchiamo specificamente Hatha, Kundalini e Ashtanga Yoga
+      const specificYogaTypes = ['hatha', 'kundalini', 'ashtanga'];
+      
+      // Filter per trovare queste specifiche classi di yoga
+      let selectedYogaClasses = [];
+      
+      // Prima proviamo a trovare attività che hanno specificamente questi nomi
+      specificYogaTypes.forEach(yogaType => {
+        const matchingActivity = data.activities.find(activity => 
+          (activity.name?.toLowerCase().includes(yogaType) || 
+           activity.title?.toLowerCase().includes(yogaType))
+        );
+        
+        if (matchingActivity) {
+          selectedYogaClasses.push(matchingActivity);
+        }
+      });
+      
+      // Se non abbiamo trovato tutte e 3 le classi, usiamo i dati di default
+      if (selectedYogaClasses.length < 3) {
+        console.log("Non tutte le classi di yoga specificate sono state trovate, uso i dati di default");
+        yogaClasses.value = defaultYogaClasses;
+        isLoading.value = false;
+        return;
+      }
+      
+      // Fetch teachers
+      try {
+        const teacherResponse = await fetch('http://localhost:8000/teachers');
+        
+        if (!teacherResponse.ok) {
+          throw new Error(`HTTP error! Status: ${teacherResponse.status}`);
+        }
+        
+        const teacherData = await teacherResponse.json();
+        const teachers = teacherData.teachers || [];
+        
+        console.log("Found specific yoga classes:", selectedYogaClasses);
+        
+        // Process yoga classes with teacher data
+        yogaClasses.value = selectedYogaClasses.map(yoga => {
+          // Get teacher ID from yoga class if it exists
+          const teacherId = yoga.teacher_id;
+          let teacher = null;
+          
+          // If we have a teacher ID, find the specific teacher
+          if (teacherId && teachers.length > 0) {
+            teacher = teachers.find(t => t.id === teacherId);
+          } 
+          // Otherwise, assign a random teacher
+          else if (teachers.length > 0) {
+            teacher = teachers[Math.floor(Math.random() * teachers.length)];
+          }
+          
+          // Ottieni nome della classe in modo che corrisponda alle specifiche richieste
+          let yogaName = yoga.name || yoga.title || "Yoga Class";
+          for (const type of specificYogaTypes) {
+            if (yogaName.toLowerCase().includes(type)) {
+              // Capitalize first letter of each word
+              yogaName = type.charAt(0).toUpperCase() + type.slice(1) + " Yoga";
+              break;
+            }
+          }
+          
+          return {
+            id: yoga.id,
+            name: yogaName,
+            difficulty: getDifficultyFromType(yogaName) || yoga.level || yoga.difficulty,
+            description: yoga.short_description || yoga.description || getDefaultDescription(yogaName),
+            teacher_name: teacher ? teacher.name : 'Yoga Teacher',
+            experience: teacher ? (teacher.experience || '5+ years') : '5+ years',
+            teacher_image: teacher ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg',
+            teacher_id: teacher ? teacher.id : null
+          };
+        });
+        
+        console.log("Processed yoga classes:", yogaClasses.value);
+      } catch (error) {
+        console.error('Failed to fetch teachers:', error);
+        // Fallback without teacher info
+        yogaClasses.value = defaultYogaClasses;
+      }
+    } else {
+      yogaClasses.value = defaultYogaClasses;
+    }
+  } catch (error) {
+    console.error('Failed to fetch yoga classes:', error);
+    yogaClasses.value = defaultYogaClasses;
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+// Helper function to assign a difficulty level based on yoga type
+function getDifficultyFromType(yogaName) {
+  const lowerName = yogaName.toLowerCase();
+  if (lowerName.includes('hatha')) return 'Beginner';
+  if (lowerName.includes('kundalini')) return 'Intermediate';
+  if (lowerName.includes('ashtanga')) return 'Advanced';
+  return null;
+}
+
+// Helper function to provide default descriptions
+function getDefaultDescription(yogaName) {
+  const lowerName = yogaName.toLowerCase();
+  if (lowerName.includes('hatha')) {
+    return 'A slow-paced style of yoga focusing on postures (asana), breathing (pranayama) and deep relaxation.';
+  }
+  if (lowerName.includes('kundalini')) {
+    return 'Intense energy work incorporating breathing, mantra, meditation and repetitive movements.';
+  }
+  if (lowerName.includes('ashtanga')) {
+    return 'A dynamic, physically demanding practice that synchronizes breath with a progressive series of postures.';
+  }
+  return 'A transformative yoga practice for mind, body and spirit.';
+}
+
+// Helper function to assign a random difficulty level
+function getDifficultyLevel(yoga) {
+  const levels = ['Beginner', 'Intermediate', 'Advanced'];
+  return levels[Math.floor(Math.random() * levels.length)];
+}
+</script>
+
+<style scoped>
+.shadow-custom {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+</style> 

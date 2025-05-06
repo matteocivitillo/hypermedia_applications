@@ -4,7 +4,7 @@
     <BreadCrumbs v-if="activity" :breadcrumbs="[
       { text: 'Home', url: '/' }, 
       { text: 'Activities', url: '/activities' }, 
-      { text: activity.title, url: '/singleactivity' }
+      { text: activity.title || activity.name, url: '/singleactivity' }
     ]" />
     <main class="flex-grow">
       <!-- Activity Title Section -->
@@ -12,7 +12,7 @@
         <div class="container mx-auto">
           <h1 v-if="isLoading" class="loading-title text-center animate-fade-in">Loading...</h1>
           <h1 v-else-if="activity" class="text-4xl font-bold text-primary text-center">
-            {{ activity.title }}
+            {{ activity.title || activity.name }}
           </h1>
         </div>
       </section>
@@ -41,14 +41,14 @@
                 <!-- Level Badge -->
                 <div class="flex items-center">
                   <span class="bg-primary bg-opacity-50 text-white px-4 py-2 rounded-full text-sm">
-                    {{ activity.level }}
+                    {{ activity.level || activity.difficulty || 'All Levels' }}
                   </span>
                 </div>
                 
                 <!-- Activity Details -->
                 <div class="space-y-4">
-                  <h2 class="text-3xl font-bold text-primary">{{ activity.title }}</h2>
-                  <p class="text-xl text-gray-600">{{ activity.short_description }}</p>
+                  <h2 class="text-3xl font-bold text-primary">{{ activity.title || activity.name }}</h2>
+                  <p class="text-xl text-gray-600">{{ activity.short_description || activity.description }}</p>
                 </div>
                 
                 <!-- Teacher Info (if available) -->
@@ -66,10 +66,26 @@
                   </div>
                 </div>
                 
+                <div v-else-if="teacher" class="flex items-center gap-3 mt-2">
+                  <div class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden border-2 border-primary">
+                    <img 
+                      :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
+                      :alt="teacher.name" 
+                      class="w-full h-full object-cover object-center" 
+                      onerror="this.src='/images/teacher-placeholder.jpg'"
+                    />
+                  </div>
+                  <div>
+                    <p class="text-gray-800 font-medium">{{ teacher.name }}</p>
+                    <p class="text-gray-500 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
+                  </div>
+                </div>
+                
                 <!-- About -->
-                <div class="space-y-3 mt-6">
+                <div v-if="activity.about || activity.description" class="space-y-3 mt-6">
                   <h3 class="text-2xl font-bold text-black">About</h3>
-                  <p class="text-lg text-gray-600" v-html="activity.about"></p>
+                  <p v-if="activity.about" class="text-lg text-gray-600" v-html="activity.about"></p>
+                  <p v-else class="text-lg text-gray-600">{{ activity.description }}</p>
                 </div>
                 
                 <!-- Additional Sections -->
@@ -111,13 +127,13 @@
                 <div class="rounded-xl overflow-hidden shadow-lg h-80 md:h-96">
                   <img 
                     :src="activity.image ? activity.image : `/images/activities/default-activity.jpg`" 
-                    :alt="activity.title" 
+                    :alt="activity.title || activity.name" 
                     class="w-full h-full object-cover" 
                     :class="{ 'opacity-0': !imageLoaded }" 
                     @load="imageLoaded = true" 
-                    @error="imageError = true"
+                    @error="handleImageError"
                   />
-                  <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                  <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                     <p class="text-gray-600">Loading image...</p>
                   </div>
                 </div>
@@ -142,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
@@ -159,6 +175,32 @@ const error = ref(null)
 const imageLoaded = ref(false)
 const imageError = ref(false)
 
+// Handle image loading error
+const handleImageError = () => {
+  imageError.value = true
+  imageLoaded.value = true // Consider the image "loaded" even if it's an error
+}
+
+// Fetch teacher data
+const fetchTeacher = async (teacherId) => {
+  if (!teacherId) return null
+  
+  try {
+    const response = await fetch(`http://localhost:8000/teacher/${teacherId}`)
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    console.log("Loaded teacher:", data.teacher);
+    return data.teacher
+  } catch (err) {
+    console.error('Error fetching teacher:', err)
+    return null
+  }
+}
+
 // Fetch activity data from the API
 const fetchActivity = async () => {
   if (!activityId.value) {
@@ -168,6 +210,7 @@ const fetchActivity = async () => {
   }
   
   try {
+    console.log("Fetching activity with ID:", activityId.value)
     const response = await fetch(`http://localhost:8000/activity/${activityId.value}`)
     
     if (!response.ok) {
@@ -178,6 +221,12 @@ const fetchActivity = async () => {
     
     if (data.activity) {
       activity.value = data.activity
+      console.log("Loaded activity:", activity.value)
+      
+      // If the activity has a teacher_id, fetch the teacher
+      if (activity.value.teacher_id) {
+        teacher.value = await fetchTeacher(activity.value.teacher_id)
+      }
     } else {
       error.value = 'Activity not found'
     }
@@ -225,6 +274,9 @@ onMounted(() => {
   fetchActivity();
   fetchTeacherByActivity();
 });
+// Fetch data when component mounts or when activityId changes
+onMounted(fetchActivity)
+watch(activityId, fetchActivity)
 </script>
 
 <style scoped>
