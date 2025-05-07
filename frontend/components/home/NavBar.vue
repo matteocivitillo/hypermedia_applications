@@ -47,7 +47,7 @@
                   <a href="#" 
                      @click.prevent="goToCenter"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2">
-                    The Center
+                    Our philosophy
                   </a>
                   <a href="#" 
                      @click.prevent="goToRooms"
@@ -122,7 +122,7 @@
             <a href="#" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:text-gray-300">
-              The Center
+              Our philosophy
             </a>
             <a href="#" 
               @click.prevent="goToRooms(); mobileMenuOpen = false"

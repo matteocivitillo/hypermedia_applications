@@ -33,8 +33,14 @@
               />
             </div>
             <div>
-              <p class="text-gray-800 font-medium">{{ yogaClass.teacher_name || 'Yoga Teacher' }}</p>
-              <p class="text-gray-500 text-sm">{{ yogaClass.experience || 'Expert Teacher' }}</p>
+              <NuxtLink 
+                v-if="yogaClass.teacher_id" 
+                :to="`/singleteacher?id=${yogaClass.teacher_id}`" 
+                class="text-gray-800 font-medium hover:text-primary transition-colors"
+              >
+                {{ yogaClass.teacher_name || 'Yoga Teacher' }}
+              </NuxtLink>
+              <p v-else class="text-gray-800 font-medium">{{ yogaClass.teacher_name || 'Yoga Teacher' }}</p>
             </div>
           </div>
           
@@ -56,7 +62,6 @@
             <div class="rounded-full bg-gray-300 h-12 w-12 mr-4"></div>
             <div>
               <div class="h-4 bg-gray-300 rounded w-24 mb-2"></div>
-              <div class="h-3 bg-gray-200 rounded w-16"></div>
             </div>
           </div>
           <div class="h-10 bg-gray-200 rounded w-full"></div>
@@ -79,27 +84,27 @@ const defaultYogaClasses = [
     name: 'Hatha Yoga',
     difficulty: 'Beginner',
     description: 'A slow-paced style of yoga focusing on postures (asana), breathing (pranayama) and deep relaxation.',
-    teacher_name: 'Sarah Mitchell',
-    experience: '10+ years',
-    teacher_image: '/images/teacher-1.jpg'
+    teacher_name: 'Michael Chen',
+    teacher_image: '/images/teacher-1.jpg',
+    teacher_id: 1
   },
   {
     id: 2,
     name: 'Kundalini Yoga',
     difficulty: 'Intermediate',
     description: 'Intense energy work incorporating breathing, mantra, meditation and repetitive movements.',
-    teacher_name: 'John Davis',
-    experience: '8+ years',
-    teacher_image: '/images/teacher-2.jpg'
+    teacher_name: 'Sara Johnson',
+    teacher_image: '/images/teacher-2.jpg',
+    teacher_id: 2
   },
   {
     id: 3,
     name: 'Ashtanga Yoga',
     difficulty: 'Advanced',
     description: 'A dynamic, physically demanding practice that synchronizes breath with a progressive series of postures.',
-    teacher_name: 'Mia Rodriguez',
-    experience: '12+ years',
-    teacher_image: '/images/teacher-3.jpg'
+    teacher_name: 'Diego Martinez',
+    teacher_image: '/images/teacher-3.jpg',
+    teacher_id: 3
   }
 ];
 
@@ -151,31 +156,35 @@ onMounted(async () => {
         const teacherData = await teacherResponse.json();
         const teachers = teacherData.teachers || [];
         
-        console.log("Found specific yoga classes:", selectedYogaClasses);
+        // Assegna insegnanti fissi per ogni tipo di yoga
+        const teacherAssignments = {
+          'hatha': 'Michael Chen',
+          'kundalini': 'Sara Johnson',
+          'ashtanga': 'Diego Martinez'
+        };
         
         // Process yoga classes with teacher data
         yogaClasses.value = selectedYogaClasses.map(yoga => {
-          // Get teacher ID from yoga class if it exists
-          const teacherId = yoga.teacher_id;
-          let teacher = null;
-          
-          // If we have a teacher ID, find the specific teacher
-          if (teacherId && teachers.length > 0) {
-            teacher = teachers.find(t => t.id === teacherId);
-          } 
-          // Otherwise, assign a random teacher
-          else if (teachers.length > 0) {
-            teacher = teachers[Math.floor(Math.random() * teachers.length)];
-          }
-          
           // Ottieni nome della classe in modo che corrisponda alle specifiche richieste
           let yogaName = yoga.name || yoga.title || "Yoga Class";
+          let yogaType = '';
+          
           for (const type of specificYogaTypes) {
             if (yogaName.toLowerCase().includes(type)) {
               // Capitalize first letter of each word
               yogaName = type.charAt(0).toUpperCase() + type.slice(1) + " Yoga";
+              yogaType = type;
               break;
             }
+          }
+          
+          // Trova l'insegnante giusto in base al tipo di yoga
+          let teacherName = teacherAssignments[yogaType] || 'Yoga Teacher';
+          let teacher = teachers.find(t => t.name === teacherName);
+          
+          // Se non troviamo l'insegnante specifico, usiamo il primo disponibile
+          if (!teacher && teachers.length > 0) {
+            teacher = teachers[0];
           }
           
           return {
@@ -183,14 +192,12 @@ onMounted(async () => {
             name: yogaName,
             difficulty: getDifficultyFromType(yogaName) || yoga.level || yoga.difficulty,
             description: yoga.short_description || yoga.description || getDefaultDescription(yogaName),
-            teacher_name: teacher ? teacher.name : 'Yoga Teacher',
-            experience: teacher ? (teacher.experience || '5+ years') : '5+ years',
-            teacher_image: teacher ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg',
-            teacher_id: teacher ? teacher.id : null
+            teacher_name: teacherName,
+            teacher_image: teacher ? (teacher.image?.startsWith('http') ? teacher.image : `/images/teacher-${yogaType === 'hatha' ? '1' : yogaType === 'kundalini' ? '2' : '3'}.jpg`) : '/images/teacher-placeholder.jpg',
+            teacher_id: teacher ? teacher.id : yoga.teacher_id || null
           };
         });
         
-        console.log("Processed yoga classes:", yogaClasses.value);
       } catch (error) {
         console.error('Failed to fetch teachers:', error);
         // Fallback without teacher info
@@ -229,12 +236,6 @@ function getDefaultDescription(yogaName) {
     return 'A dynamic, physically demanding practice that synchronizes breath with a progressive series of postures.';
   }
   return 'A transformative yoga practice for mind, body and spirit.';
-}
-
-// Helper function to assign a random difficulty level
-function getDifficultyLevel(yoga) {
-  const levels = ['Beginner', 'Intermediate', 'Advanced'];
-  return levels[Math.floor(Math.random() * levels.length)];
 }
 </script>
 

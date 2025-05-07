@@ -95,7 +95,7 @@
           
           <div v-else class="relative">
             <!-- Room Carousel -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-wrap md:flex-nowrap gap-16">
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-wrap md:flex-nowrap gap-16 room-card-fixed" :style="maxRoomCardHeight ? `height: ${maxRoomCardHeight}px` : ''">
               <div class="w-full md:w-1/2 flex items-center justify-center">
                 <div class="h-96 w-full rounded-lg overflow-hidden">
                   <img 
@@ -215,7 +215,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
@@ -224,6 +224,7 @@ import SiteFooter from '~/components/home/SiteFooter.vue'
 const rooms = ref([]);
 const isLoading = ref(true);
 const currentRoomIndex = ref(0);
+const maxRoomCardHeight = ref(0);
 
 // Areas data
 const areas = ref([]);
@@ -283,49 +284,52 @@ const defaultRooms = [
   }
 ];
 
-// Fetch rooms data from API
+// Dopo aver caricato le stanze, calcola l'altezza massima delle card
+async function updateMaxRoomCardHeight() {
+  await nextTick();
+  const cards = document.querySelectorAll('.room-card-fixed');
+  let maxHeight = 0;
+  cards.forEach(card => {
+    maxHeight = Math.max(maxHeight, card.offsetHeight);
+  });
+  maxRoomCardHeight.value = maxHeight;
+}
+
+// Modifica fetchRooms per aggiornare l'altezza dopo il caricamento
 async function fetchRooms() {
   try {
     isLoading.value = true;
-    console.log('Fetching rooms from API...');
     const response = await fetch('http://localhost:8000/rooms');
-    
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
     const data = await response.json();
-    console.log('Rooms data received:', data);
-    
     if (data.rooms && data.rooms.length > 0) {
-      // Map the rooms data to our expected format
-      let roomsData = data.rooms.map(room => {
-        return {
-          id: room.id,
-          name: room.title || 'Yoga Room',
-          image: room.image || `/images/default-room.jpg`,
-          description: room.description || 'Experience the tranquility of our specially designed yoga spaces.',
-          features: room.features || [],
-          activities: room.activities || [],
-          quote: room.quote || 'Experience the transformative power of our specially designed spaces.'
-        };
-      });
-      
-      // Reverse the order of the rooms array
+      let roomsData = data.rooms.map(room => ({
+        id: room.id,
+        name: room.title || 'Yoga Room',
+        image: room.image || `/images/default-room.jpg`,
+        description: room.description || 'Experience the tranquility of our specially designed yoga spaces.',
+        features: room.features || [],
+        activities: room.activities || [],
+        quote: room.quote || 'Experience the transformative power of our specially designed spaces.'
+      }));
       rooms.value = roomsData.reverse();
-      
-      console.log('Successfully loaded rooms from server:', rooms.value);
     } else {
-      console.log('No rooms found in the API response, using default data');
-      rooms.value = defaultRooms.slice().reverse(); // Reverse default rooms too
+      rooms.value = defaultRooms.slice().reverse();
     }
   } catch (error) {
-    console.error('Error fetching rooms:', error);
-    rooms.value = defaultRooms.slice().reverse(); // Reverse default rooms too
+    rooms.value = defaultRooms.slice().reverse();
   } finally {
     isLoading.value = false;
+    updateMaxRoomCardHeight();
   }
 }
+
+// Aggiorna l'altezza anche quando cambi stanza
+watch(currentRoomIndex, () => {
+  updateMaxRoomCardHeight();
+});
 
 function nextRoom() {
   if (rooms.value.length === 0) return;
@@ -339,7 +343,7 @@ function prevRoom() {
 
 // Fetch rooms and activities when component is mounted
 onMounted(async () => {
-  fetchRooms();
+  await fetchRooms();
   fetchAreas();
   
   // Fetch all activities to build the name-to-id mapping
