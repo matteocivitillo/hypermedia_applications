@@ -57,10 +57,10 @@
                   <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
                     <img 
                       :src="t.image" 
-                      alt="Teacher Image" 
+                      alt="" 
                       class="w-10 h-10 rounded-full" 
                       v-if="t.image" 
-                    />
+                    />  <!-- Alt text is empty because it's decorative only -->
                     <div v-else class="w-10 h-10 bg-gray-300 rounded-full"></div> <!-- Placeholder if no image -->
                     <span class="text-gray-600">{{ t.name }} {{ t.surname }}</span> <!-- Display teacher's name and surname -->
                   </div>
@@ -70,10 +70,10 @@
                   <div class="w-12 h-12 bg-gray-300 rounded-full overflow-hidden border-2 border-primary">
                     <img 
                       :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
-                      :alt="teacher.name" 
+                      alt="" 
                       class="w-full h-full object-cover object-center" 
                       onerror="this.src='/images/teacher-placeholder.jpg'"
-                    />
+                    />  <!-- Alt text is empty because it's decorative only -->
                   </div>
                   <div>
                     <p class="text-gray-800 font-medium">{{ teacher.name }}</p>
@@ -127,12 +127,12 @@
                 <div class="rounded-xl overflow-hidden shadow-lg h-80 md:h-96">
                   <img 
                     :src="activity.image ? activity.image : `/images/activities/default-activity.jpg`" 
-                    :alt="activity.title || activity.name" 
+                    alt="" 
                     class="w-full h-full object-cover" 
                     :class="{ 'opacity-0': !imageLoaded }" 
                     @load="imageLoaded = true" 
                     @error="handleImageError"
-                  />
+                  />  <!-- Alt text is empty because it's decorative only -->
                   <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                     <p class="text-gray-600">Loading image...</p>
                   </div>

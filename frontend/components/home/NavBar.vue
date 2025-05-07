@@ -5,7 +5,7 @@
         <!-- Logo Left, always same size -->
         <div class="flex items-center -ml-12">
           <a href="/" class="flex items-center">
-            <img src="/images/logo-small.svg" alt="Yoga Center Logo" style="height: 48px; width: auto;" class="flex-shrink-0" />
+            <img src="/images/logo-small.svg" alt="Serendipity yoga" style="height: 48px; width: auto;" class="flex-shrink-0" />  <!-- The word "logo" is usually not an important part of the image's content or function.-->
           </a>
         </div>
 

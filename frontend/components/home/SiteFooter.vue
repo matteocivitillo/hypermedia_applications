@@ -5,7 +5,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
         <!-- Logo and Tagline -->
         <div class="md:col-span-3 flex flex-col items-center">
-          <img src="/images/logo.svg" alt="Yoga Center Logo" class="h-24 mb-2" />
+          <img src="/images/logo.svg" alt="Serendipity yoga" class="h-24 mb-2" />   <!-- The word "logo" is usually not an important part of the image's content or function.-->
           <p class="text-xs text-gray-400 text-center whitespace-nowrap text-[9px] md:text-[10px]">
             TRANSFORMING LIVES THROUGH THE PRACTICE OF YOGA AND MEDITATION.
           </p>

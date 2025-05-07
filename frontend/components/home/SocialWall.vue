@@ -37,7 +37,7 @@
         >
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-secondary">
-              <img :src="review.image" :alt="review.name" class="w-full h-full object-cover" />
+              <img :src="review.image" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <p class="text-gray-800 font-medium text-sm">{{ review.name }}</p>
@@ -65,7 +65,7 @@
             </p>
             
             <div v-if="review.image_url && review.featured" class="mt-2 rounded-lg overflow-hidden">
-              <img :src="review.image_url" alt="Review photo" class="w-full h-auto" />
+              <img :src="review.image_url" alt="" class="w-full h-auto" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             
             <div v-if="review.class_attended" class="flex items-center mt-2 text-xs text-gray-500">

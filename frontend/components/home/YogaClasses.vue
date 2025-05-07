@@ -27,10 +27,10 @@
             <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden border-2 border-primary">
               <img 
                 :src="yogaClass.teacher_image" 
-                :alt="`${yogaClass.teacher_name} Teacher`" 
+                alt=""  
                 class="w-full h-full object-cover object-center"
                 onerror="this.src='/images/teacher-placeholder.jpg'"
-              />
+              />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <NuxtLink 

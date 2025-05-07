@@ -31,12 +31,12 @@
                   <div class="h-96 relative">
                     <img 
                       :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
-                      :alt="`${teacher.name} ${teacher.surname}`" 
+                      alt="" 
                       class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
                       :class="{ 'opacity-0': !imageLoaded }" 
                       @load="imageLoaded = true" 
                       @error="imageError = true"
-                    />
+                    />  <!-- Alt text is empty because it's decorative only -->
                     <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                       <p class="text-gray-600">Loading image...</p>
                     </div>

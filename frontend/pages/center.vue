@@ -71,10 +71,10 @@
             <div class="w-full md:w-1/2">
               <img 
                 :src="orientalRoomImage" 
-                alt="Oriental Room" 
+                alt="" 
                 class="w-full h-auto rounded-3xl shadow-lg object-cover h-96" 
                 loading="lazy"
-              />
+              />  <!-- Alt text is empty because it's decorative only -->
             </div>
           </div>
         </div>
@@ -100,10 +100,10 @@
                 <div class="h-96 w-full rounded-lg overflow-hidden">
                   <img 
                     :src="rooms[currentRoomIndex].image" 
-                    :alt="rooms[currentRoomIndex].name" 
+                    alt="" 
                     class="w-full h-full object-cover" 
                     loading="lazy"
-                  />
+                  />  <!-- Alt text is empty because it's decorative only -->
                 </div>
               </div>
               <div class="w-full md:w-1/2 flex flex-col justify-center">
@@ -197,11 +197,11 @@
               <div class="rounded-xl shadow-lg overflow-hidden h-64 mb-4">
                 <img 
                   :src="area.image" 
-                  :alt="area.title" 
+                  alt="" 
                   class="w-full h-full object-cover" 
                   loading="lazy"
                   @error="handleImageError($event, getDefaultImageForArea(area.title))"
-                />
+                />  <!-- Alt text is empty because it's decorative only -->
               </div>
               <h3 class="text-xl font-bold text-primary mb-2">{{ area.title }}</h3>
               <p class="text-gray-700">{{ area.description || getDefaultDescription(area.title) }}</p>
