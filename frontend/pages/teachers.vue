@@ -115,6 +115,12 @@ const fetchTeachers = async () => {
 
 // Fetch data when component mounts
 onMounted(fetchTeachers)
+
+// SEO metadata for this page
+useSeoMeta({
+    title: 'Our Teachers - Serendipity Yoga',
+    description: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
+  })
 </script>
 
 <style scoped>

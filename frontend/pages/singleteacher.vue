@@ -162,6 +162,16 @@
   
   // Fetch data when component mounts
   onMounted(fetchTeacher)
+
+  // SEO metadata for this page
+  watch(teacher, (newTeacher) => {
+    if (newTeacher) {
+      useSeoMeta({
+        title: `${newTeacher.name} ${newTeacher.surname} - Serendipity Yoga`, // Use template literals
+        description: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
+      });
+    }
+  });
   </script>
   
   <style scoped>

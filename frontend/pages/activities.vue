@@ -104,6 +104,12 @@ const fetchActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(fetchActivities)
+
+ // SEO metadata for this page
+ useSeoMeta({
+    title: 'Our Activities - Serendipity Yoga',
+    description: 'Discover our diverse range of activities designed to nurture your body, mind, and spirit.',
+  })
 </script>
 
 <style scoped>

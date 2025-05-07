@@ -536,6 +536,12 @@ async function navigateToActivity(activityName) {
     window.location.href = '/activities';
   }
 }
+
+ // SEO metadata for this page
+ useSeoMeta({
+    title: 'Our Center - Serendipity Yoga',
+    description: 'Explore our serene and spacious center designed to provide a comfortable and inspiring environment for your yoga practice.',
+  })
 </script>
 
 <style scoped>

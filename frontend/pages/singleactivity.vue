@@ -277,6 +277,16 @@ onMounted(() => {
 // Fetch data when component mounts or when activityId changes
 onMounted(fetchActivity)
 watch(activityId, fetchActivity)
+
+// SEO metadata for this page
+watch(activity, (newActivity) => {
+  if (newActivity) {
+    useSeoMeta({
+      title: `${newActivity.title || newActivity.name} - Serendipity Yoga`, // Use template literals
+      description: 'Discover the details of our activities, including the teachers, schedule, and more.',
+    });
+  }
+});
 </script>
 
 <style scoped>

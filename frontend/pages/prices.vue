@@ -502,6 +502,12 @@
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+
+// SEO metadata for this page
+useSeoMeta({
+    title: 'Our Prices - Serendipity Yoga',
+    description: 'Explore our pricing options for yoga classes, retreats, and spa services. Choose the perfect package to suit your needs and budget.',
+  })
 </script>
 
 <style scoped>
