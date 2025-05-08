@@ -203,31 +203,17 @@ async def get_rooms():
         else:
             features_list = features if isinstance(features, list) else []
         
-        # Process activities - combine activity1 and activity2
-        activities = []
-        activity1 = room.get("activity1")
-        activity2 = room.get("activity2")
+        # Ottieni le attività dalla tabella activity che hanno questa stanza come roomid
+        room_id = room.get("id")
         
-        if activity1:
-            activities.append(activity1)
-        if activity2:
-            activities.append(activity2)
-            
-        # If no activities were found in activity1/2, check activities field
-        if not activities and room.get("activities"):
-            activities_text = room.get("activities")
-            if isinstance(activities_text, str):
-                # Split by hyphens if they exist
-                if "-" in activities_text:
-                    activities = [a.strip() for a in activities_text.split("-") if a.strip()]
-                # Otherwise split by commas if they exist
-                elif "," in activities_text:
-                    activities = [a.strip() for a in activities_text.split(",") if a.strip()]
-                else:
-                    # Single activity
-                    activities = [activities_text]
-            elif isinstance(activities_text, list):
-                activities = activities_text
+        # Cerca le attività che hanno questa stanza come roomid
+        activities_resp = supabase.table("activity")\
+                                 .select("title")\
+                                 .eq("roomid", room_id)\
+                                 .execute()
+        
+        # Estrai i titoli delle attività dai risultati
+        activities = [a["title"] for a in activities_resp.data] if activities_resp.data else []
         
         # Format the processed room data
         processed_room = {
