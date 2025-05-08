@@ -39,7 +39,8 @@
               v-for="(activity, index) in activities" 
               :key="activity.id"
               :to="`/singleactivity?id=${activity.id}`" 
-              class="relative rounded-xl overflow-hidden shadow-lg h-80 group hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              class="relative rounded-xl overflow-hidden shadow-lg h-80 group hover:shadow-2xl transition-all duration-300 transform hover:scale-105 animate-fade-in"
+              :style="`animation-delay: ${index * 100}ms`"
             >
               <div class="absolute inset-0 bg-cover bg-center" :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"></div>
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -117,6 +118,12 @@ onMounted(fetchActivities)
   color: #006A71;
 }
 
+/* Activity card animation */
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
 /* Loading spinner */
 .loading-spinner {
   display: flex;
@@ -140,6 +147,18 @@ onMounted(fetchActivities)
   }
 }
 
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -152,7 +171,7 @@ onMounted(fetchActivities)
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.8s ease-out forwards;
 }
 
 .loading-title, .loading-description {
