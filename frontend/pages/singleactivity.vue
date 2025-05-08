@@ -62,7 +62,14 @@
                       v-if="t.image" 
                     />  <!-- Alt text is empty because it's decorative only -->
                     <div v-else class="w-10 h-10 bg-gray-300 rounded-full"></div> <!-- Placeholder if no image -->
-                    <span class="text-gray-600">{{ t.name }} {{ t.surname }}</span> <!-- Display teacher's name and surname -->
+                    <NuxtLink 
+                      v-if="t.id" 
+                      :to="`/singleteacher?id=${t.id}`" 
+                      class="text-gray-600 hover:text-primary transition-colors"
+                    >
+                      {{ t.name }} {{ t.surname }}
+                    </NuxtLink>
+                    <span v-else class="text-gray-600">{{ t.name }} {{ t.surname }}</span>
                   </div>
                 </div>
                 
@@ -76,7 +83,14 @@
                     />  <!-- Alt text is empty because it's decorative only -->
                   </div>
                   <div>
-                    <p class="text-gray-800 font-medium">{{ teacher.name }}</p>
+                    <NuxtLink 
+                      v-if="teacher.id" 
+                      :to="`/singleteacher?id=${teacher.id}`" 
+                      class="text-gray-800 font-medium hover:text-primary transition-colors"
+                    >
+                      {{ teacher.name }}
+                    </NuxtLink>
+                    <p v-else class="text-gray-800 font-medium">{{ teacher.name }}</p>
                     <p class="text-gray-500 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
                   </div>
                 </div>
