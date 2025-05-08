@@ -36,7 +36,7 @@
           <!-- Activity Data Display -->
           <div v-else-if="activity" class="bg-beige bg-opacity-50 rounded-xl p-6 sm:p-8 shadow-lg">
             <div class="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
-              <!-- Activity Content Section -->
+              <!-- Activity Content Section (but the location) -->
               <div class="flex flex-col gap-8 lg:w-2/3">
                 <!-- Level Badge -->
                 <div class="flex items-center">
@@ -128,12 +128,6 @@
                   <h3 class="text-xl font-bold text-black">Schedule</h3>
                   <p class="text-base text-gray-600">{{ activity.schedule }}</p>
                 </div>
-                
-                <!-- Room -->
-                <div v-if="activity.roomid" class="space-y-2 mt-2">
-                  <h3 class="text-xl font-bold text-black">Location</h3>
-                  <p class="text-base text-gray-600">Room {{ activity.roomid }}</p>
-                </div>
               </div>
               
               <!-- Activity Image -->
@@ -153,6 +147,15 @@
                 </div>
               </div>
             </div>
+
+            <!-- Room -->
+            <div v-if="activity.roomid" class="space-y-2 mt-12 w-full">
+                  <h3 class="text-xl font-bold text-black">Location</h3>
+                  <div v-if="isLoadingRoom" class="text-center py-8">
+                    <p class="text-gray-600">Loading room information...</p>
+                  </div>
+                  <RoomCard v-else-if="room" :room="room" :activityIdsMap="activityIdsMap" />
+                </div>
           </div>
         </div>
       </section>
@@ -176,6 +179,7 @@ import { ref, onMounted, watch } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+import RoomCard from '~/components/misc/RoomCard.vue'
 
 // Query parameters to get activity ID
 const route = useRoute()
@@ -188,6 +192,9 @@ const isLoading = ref(true)
 const error = ref(null)
 const imageLoaded = ref(false)
 const imageError = ref(false)
+const room = ref(null)
+const isLoadingRoom = ref(false)
+const activityIdsMap = ref({})
 
 // Handle image loading error
 const handleImageError = () => {
@@ -212,6 +219,37 @@ const fetchTeacher = async (teacherId) => {
   } catch (err) {
     console.error('Error fetching teacher:', err)
     return null
+  }
+}
+
+// Fetch room data
+const fetchRoom = async (roomId) => {
+  if (!roomId) return null
+  
+  try {
+    isLoadingRoom.value = true
+    const response = await fetch(`http://localhost:8000/room/${roomId}`)
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    if (data.room) {
+      room.value = {
+        id: data.room.id,
+        name: data.room.title || 'Yoga Room',
+        image: data.room.image || `/images/default-room.jpg`,
+        description: data.room.description || 'Experience the tranquility of our specially designed yoga spaces.',
+        features: data.room.features || [],
+        quote: data.room.quote || 'Experience the transformative power of our specially designed spaces.'
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching room:', err)
+    room.value = null
+  } finally {
+    isLoadingRoom.value = false
   }
 }
 
@@ -240,6 +278,11 @@ const fetchActivity = async () => {
       // If the activity has a teacher_id, fetch the teacher
       if (activity.value.teacher_id) {
         teacher.value = await fetchTeacher(activity.value.teacher_id)
+      }
+
+      // If the activity has a roomid, fetch the room
+      if (activity.value.roomid) {
+        await fetchRoom(activity.value.roomid)
       }
     } else {
       error.value = 'Activity not found'

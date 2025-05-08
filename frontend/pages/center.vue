@@ -95,56 +95,11 @@
           
           <div v-else class="relative">
             <!-- Room Carousel -->
-            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg flex flex-wrap md:flex-nowrap gap-16 room-card-fixed" :style="maxRoomCardHeight ? `height: ${maxRoomCardHeight}px` : ''">
-              <div class="w-full md:w-1/2 flex items-center justify-center">
-                <div class="h-96 w-full rounded-lg overflow-hidden">
-                  <img 
-                    :src="rooms[currentRoomIndex].image" 
-                    alt="" 
-                    class="w-full h-full object-cover" 
-                    loading="lazy"
-                  />  <!-- Alt text is empty because it's decorative only -->
-                </div>
-              </div>
-              <div class="w-full md:w-1/2 flex flex-col justify-center">
-                <h3 class="text-2xl font-bold text-primary mb-4">{{ rooms[currentRoomIndex].name }}</h3>
-                
-                <!-- Description Paragraph -->
-                <div class="prose prose-lg mb-6">
-                  <p>{{ rooms[currentRoomIndex].description }}</p>
-                </div>
-                
-                <!-- Features Paragraph -->
-                <div v-if="rooms[currentRoomIndex].features && rooms[currentRoomIndex].features.length > 0" class="mb-6">
-                  <h4 class="text-lg font-semibold text-primary mb-2">Features:</h4>
-                  <ul class="list-disc pl-5 space-y-1">
-                    <li v-for="feature in rooms[currentRoomIndex].features" :key="feature" class="text-gray-700">
-                      {{ feature }}
-                    </li>
-                  </ul>
-                </div>
-                
-                <!-- Activities Paragraph -->
-                <div v-if="rooms[currentRoomIndex].activities && rooms[currentRoomIndex].activities.length > 0" class="mb-6">
-                  <h4 class="text-lg font-semibold text-primary mb-2">Activities:</h4>
-                  <div class="flex flex-wrap gap-2">
-                    <nuxt-link 
-                      v-for="activity in rooms[currentRoomIndex].activities" 
-                      :key="activity"
-                      :to="`/singleactivity?id=${activityIdsMap[activity] || ''}`"
-                      class="inline-flex items-center px-3 py-1 rounded-full bg-primary-light text-primary hover:bg-primary hover:text-white transition-colors"
-                      @click.prevent="navigateToActivity(activity)"
-                    >
-                      {{ activity }}
-                    </nuxt-link>
-                  </div>
-                </div>
-                
-                <!-- Quote -->
-                <div v-if="rooms[currentRoomIndex].quote" class="italic text-gray-600 mt-4">
-                  "{{ rooms[currentRoomIndex].quote }}"
-                </div>
-              </div>
+            <div class="room-card-fixed" :style="maxRoomCardHeight ? `height: ${maxRoomCardHeight}px` : ''">
+              <RoomCard 
+                :room="rooms[currentRoomIndex]" 
+                :activityIdsMap="activityIdsMap"
+              />
             </div>
             
             <!-- Room navigation dots -->
@@ -219,6 +174,7 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+import RoomCard from '~/components/misc/RoomCard.vue'
 
 // Room data
 const rooms = ref([]);
