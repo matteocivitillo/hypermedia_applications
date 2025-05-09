@@ -27,7 +27,7 @@
             <div class="container mx-auto px-6 md:px-10 lg:px-20 flex justify-center">
               <div class="flex flex-col md:flex-row gap-8 justify-center">
                 <!-- Teacher Card (Left) -->
-                <div class="w-full md:w-1/3">
+                <div class="w-full md:w-1/3 teacher-card">
                   <div class="rounded-xl shadow-lg overflow-hidden bg-white hover:shadow-xl transition">
                     <div class="h-96 relative">
                       <img 
@@ -68,7 +68,7 @@
                 </div>
                 
                 <!-- Teacher Information Card (Right) -->
-                <div class="w-full md:w-1/2">
+                <div class="w-full md:w-1/2 teacher-card">
                   <div class="bg-white rounded-xl shadow-lg p-8 h-full">
                     <!-- Teacher Name and Title -->
                     <div class="mb-6 border-b border-gray-300 pb-4">
@@ -128,10 +128,11 @@
               
               <!-- Uso flex invece di grid per centrare meglio le card -->
               <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
-                <div v-for="activity in activities" :key="activity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
+                <div v-for="(activity, index) in activities" :key="activity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
                   <NuxtLink
                     :to="`/singleactivity?id=${activity.id}`"
-                    class="block w-full rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group"
+                    class="block w-full rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group activity-card"
+                    :style="`animation-delay: ${index * 150}ms`"
                   >
                     <div class="h-64 relative">
                       <img
@@ -252,6 +253,44 @@
     color: #006A71;
   }
 
+  /* Teacher Card Styles - No hover effect */
+  .teacher-card {
+    transition: none; /* Remove any transition effects */
+  }
+
+  .teacher-card:hover {
+    transform: none; /* No scaling effect on hover */
+  }
+
+  /* Activity Card Styles - With hover effect */
+  .activity-card {
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
+    will-change: transform; /* Performance optimization for animations */
+    backface-visibility: hidden; /* Prevents flickering in some browsers */
+  }
+
+  .activity-card:hover {
+    transform: scale(1.025) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    z-index: 10;
+  }
+
+  /* Refined animations for labels within cards */
+  .activity-card .group-hover\:translate-y-\[-2px\],
+  .teacher-card .group-hover\:translate-y-\[-2px\] {
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+  }
+
+  .activity-card:hover .group-hover\:translate-y-\[-2px\],
+  .teacher-card:hover .group-hover\:translate-y-\[-2px\] {
+    transform: translateY(-2px) !important;
+  }
+
+  .activity-card .group-hover\:bg-opacity-100,
+  .teacher-card .group-hover\:bg-opacity-100 {
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  }
+
   /* Loading spinner */
   .loading-spinner {
     display: flex;
@@ -259,7 +298,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0; /* Start hidden */
-    animation: fadeIn 0.8s ease forwards; /* Adjust duration */
+    animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
   }
 
   .spinner {
@@ -268,7 +307,7 @@
     border: 5px solid rgba(0, 106, 113, 0.2);
     border-radius: 50%;
     border-top-color: #006A71;
-    animation: spin 1s ease-in-out infinite, scale 0.5s ease-in-out forwards; /* Add scale effect */
+    animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 1) infinite, scale 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower animations */
   }
 
   @keyframes spin {
@@ -302,6 +341,6 @@
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
   }
   </style> 

@@ -36,28 +36,40 @@
               v-for="(teacher, index) in teachers" 
               :key="teacher.id"
               :to="`/singleteacher?id=${teacher.id}`" 
-              class="teacher-card relative rounded-xl overflow-hidden shadow-lg h-80 w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] group cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-2xl animate-fade-in"
-              :style="`animation-delay: ${index * 100}ms`"
+              class="teacher-card relative rounded-xl overflow-hidden shadow-lg h-80 w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
+              :style="`animation-delay: ${index * 150}ms`"
             >
-              <div class="absolute inset-0 bg-cover bg-center" :style="`background-image: url('/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg');`"></div>
+              <div class="h-96 relative">
+                <img 
+                  :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
+                  alt="" 
+                  class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                  :class="{ 'opacity-0': !imageLoaded }" 
+                  @load="imageLoaded = true" 
+                  @error="imageError = true"
+                />
+                <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                  <p class="text-gray-600">Loading image...</p>
+                </div>
+              </div>
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
               <div class="absolute bottom-0 left-0 right-0 p-6">
                 <div class="flex flex-wrap gap-2 items-center mb-2">
-                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
+                  <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
                     {{ teacher.role }}
                   </span>
                 </div>
-                <h3 class="text-2xl font-bold text-white group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">{{ teacher.name }} {{ teacher.surname }}</h3>
+                <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ teacher.name }} {{ teacher.surname }}</h3>
                 <div class="flex flex-wrap gap-2 mt-2">
                   <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
+                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise.split('&')[0].trim() }}
                   </span>
-                  <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
+                  <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise }}
                   </span>
                   <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:transform group-hover:translate-y-[-2px]">
+                        class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
                     {{ teacher.main_expertise.split('&')[1].trim() }}
                   </span>
                 </div>
@@ -128,10 +140,32 @@ useSeoMeta({
   color: #006A71;
 }
 
-/* Hover effect for teacher cards */
+/* Card Animation Styles - Unified across site */
 .teacher-card {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
+  will-change: transform; /* Performance optimization for animations */
+  backface-visibility: hidden; /* Prevents flickering in some browsers */
+}
+
+.teacher-card:hover {
+  transform: scale(1.025) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10;
+}
+
+/* Refined animations for labels within cards */
+.teacher-card .group-hover\:translate-y-\[-2px\] {
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+}
+
+.teacher-card:hover .group-hover\:translate-y-\[-2px\] {
+  transform: translateY(-2px) !important;
+}
+
+.teacher-card .group-hover\:bg-opacity-100 {
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
 
 /* Loading spinner */
@@ -140,6 +174,8 @@ useSeoMeta({
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  opacity: 0; /* Start hidden */
+  animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
 }
 
 .spinner {
@@ -148,13 +184,25 @@ useSeoMeta({
   border: 5px solid rgba(0, 106, 113, 0.2);
   border-radius: 50%;
   border-top-color: #006A71;
-  animation: spin 1s ease-in-out infinite;
+  animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 1) infinite, scale 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower animations */
 }
 
 /* Animations */
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1); /* Slightly scale up */
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -170,41 +218,9 @@ useSeoMeta({
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
+  animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.loading-title, .loading-description {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 4px solid rgba(0, 106, 113, 0.2);
-  border-radius: 50%;
-  border-top-color: #006A71;
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -216,7 +232,10 @@ useSeoMeta({
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+.loading-title, .loading-description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 </style> 
