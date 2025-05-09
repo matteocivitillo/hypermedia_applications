@@ -7,129 +7,156 @@
         { text: `${teacher.name} ${teacher.surname}`, url: '/singleteacher' }
       ]" />
       <main class="flex-grow">
-        <!-- Teacher Details Section -->
-        <section class="bg-white py-14 border-b border-gray-200 shadow-md">
-          <div class="container mx-auto px-6 md:px-20">
-            <!-- Loading State -->
-            <div v-if="isLoading" class="flex justify-center items-center h-96">
-              <div class="loading-spinner animate-fade-in">
-                <div class="spinner"></div>
-                <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading teacher data...</p>
-              </div>
-            </div>
+        <!-- Loading State -->
+        <div v-if="isLoading" class="flex justify-center items-center h-96 bg-white">
+          <div class="loading-spinner animate-fade-in">
+            <div class="spinner"></div>
+            <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading teacher data...</p>
+          </div>
+        </div>
             
-            <!-- Error State -->
-            <div v-else-if="error" class="flex justify-center items-center h-96">
-              <p class="text-xl text-red-600">{{ error }}</p>
-            </div>
+        <!-- Error State -->
+        <div v-else-if="error" class="flex justify-center items-center h-96 bg-white">
+          <p class="text-xl text-red-600">{{ error }}</p>
+        </div>
             
-            <!-- Teacher Data Display -->
-            <div v-else-if="teacher" class="flex flex-col md:flex-row gap-16 lg:gap-24">
-              <!-- Teacher Card Preview -->
-              <div class="w-full md:w-1/3">
-                <div class="rounded-xl shadow-lg overflow-hidden">
-                  <div class="h-96 relative">
-                    <img 
-                      :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
-                      alt="" 
-                      class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
-                      :class="{ 'opacity-0': !imageLoaded }" 
-                      @load="imageLoaded = true" 
-                      @error="imageError = true"
-                    />  <!-- Alt text is empty because it's decorative only -->
-                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-                      <p class="text-gray-600">Loading image...</p>
-                    </div>
-                    <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-                    <div class="absolute inset-x-0 bottom-0 p-6">
-                      <div class="flex flex-wrap gap-2 items-center mb-2">
-                        <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
-                          {{ teacher.role }}
-                        </span>
+        <!-- Teacher Data Display -->
+        <template v-else-if="teacher">
+          <!-- Teacher Details with Cards Section -->
+          <section class="py-14 bg-gray-100">
+            <div class="container mx-auto px-6 md:px-10 lg:px-20 flex justify-center">
+              <div class="flex flex-col md:flex-row gap-8 justify-center">
+                <!-- Teacher Card (Left) -->
+                <div class="w-full md:w-1/3">
+                  <div class="rounded-xl shadow-lg overflow-hidden bg-white hover:shadow-xl transition">
+                    <div class="h-96 relative">
+                      <img 
+                        :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
+                        alt="" 
+                        class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                        :class="{ 'opacity-0': !imageLoaded }" 
+                        @load="imageLoaded = true" 
+                        @error="imageError = true"
+                      />
+                      <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                        <p class="text-gray-600">Loading image...</p>
                       </div>
-                      <h3 class="text-2xl font-bold text-white animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h3>
-                      <div class="flex flex-wrap gap-2 mt-2">
-                        <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
-                          {{ teacher.main_expertise.split('&')[0].trim() }}
-                        </span>
-                        <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
-                          {{ teacher.main_expertise }}
-                        </span>
-                        <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
-                              class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
-                          {{ teacher.main_expertise.split('&')[1].trim() }}
-                        </span>
+                      <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+                      <div class="absolute inset-x-0 bottom-0 p-6">
+                        <div class="flex flex-wrap gap-2 items-center mb-2">
+                          <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
+                            {{ teacher.role }}
+                          </span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                          <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
+                                class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
+                            {{ teacher.main_expertise.split('&')[0].trim() }}
+                          </span>
+                          <span v-else class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
+                            {{ teacher.main_expertise }}
+                          </span>
+                          <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
+                                class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm animate-fade-in">
+                            {{ teacher.main_expertise.split('&')[1].trim() }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+                </div>
+                
+                <!-- Teacher Information Card (Right) -->
+                <div class="w-full md:w-1/2">
+                  <div class="bg-white rounded-xl shadow-lg p-8 h-full">
+                    <!-- Teacher Name and Title -->
+                    <div class="mb-6 border-b border-gray-300 pb-4">
+                      <h1 class="text-4xl font-bold text-primary animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h1>
+                    </div>
+                    
+                    <!-- Two column layout for information -->
+                    <div class="flex flex-col md:flex-row gap-8">
+                      <!-- Left Column: Role and Expertise -->
+                      <div class="w-full md:w-1/2 space-y-6">
+                        <!-- Role -->
+                        <div class="space-y-2">
+                          <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                            Role
+                          </span>
+                          <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.role }}</p>
+                        </div>
+                        
+                        <!-- Expertise -->
+                        <div class="space-y-2">
+                          <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                            Expertise
+                          </span>
+                          <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.main_expertise }}</p>
+                        </div>
+                      </div>
+                      
+                      <!-- Right Column: About -->
+                      <div class="w-full md:w-1/2 space-y-2">
+                        <span class="bg-white bg-opacity-80 border border-primary text-primary px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                          About
+                        </span>
+                        <p class="text-lg text-gray-600 animate-fade-in">{{ teacher.about }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+                
+          <!-- Activities Section -->
+          <section class="py-14 bg-white border-t border-gray-200">
+            <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
+              <h2 class="text-3xl font-bold text-primary mb-8 animate-fade-in text-center">Activities</h2>
+              
+              <div v-if="isLoadingActivities" class="flex justify-center items-center h-32">
+                <div class="loading-spinner animate-fade-in">
+                  <div class="spinner"></div>
+                  <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading activities...</p>
                 </div>
               </div>
               
-              <!-- Teacher Information -->
-              <div class="w-full md:w-2/3 flex flex-col gap-8">
-                <!-- Teacher Name and Title -->
-                <div class="space-y-1">
-                  <h1 class="text-4xl font-bold text-primary animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h1>
-                  <p class="text-2xl text-gray-600 animate-fade-in">{{ teacher.role }}</p>
-                </div>
-                
-                <!-- Expertise -->
-                <div class="space-y-2">
-                  <h2 class="text-3xl font-bold text-black animate-fade-in">Expertise</h2>
-                  <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.main_expertise }}</p>
-                </div>
-                
-                <!-- About -->
-                <div class="space-y-2">
-                  <h2 class="text-3xl font-bold text-black animate-fade-in">About</h2>
-                  <p class="text-xl text-gray-600 animate-fade-in">{{ teacher.about }}</p>
-                </div>
-                
-                <!-- Activities -->
-                <div class="space-y-6">
-                  <h2 class="text-3xl font-bold text-black animate-fade-in">Activities</h2>
-                  <div v-if="isLoadingActivities" class="flex justify-center items-center h-32">
-                    <div class="loading-spinner animate-fade-in">
-                      <div class="spinner"></div>
-                      <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading activities...</p>
-                    </div>
-                  </div>
-                  <div v-else-if="activities.length === 0" class="text-gray-600 text-lg animate-fade-in">
-                    No activities found for this teacher.
-                  </div>
-                  <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <NuxtLink
-                      v-for="activity in activities"
-                      :key="activity.id"
-                      :to="`/singleactivity?id=${activity.id}`"
-                      class="block rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group"
-                    >
-                      <div class="h-56 relative">
-                        <img
-                          :src="activity.image ? activity.image : `/images/activities/${activity.id}.jpg`"
-                          alt=""
-                          class="w-full h-full object-cover rounded-t-xl"
-                          loading="lazy"
-                          @error="(e) => { e.target.style.display = 'none' }"
-                        />
-                        <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300"></div>
-                        <div class="absolute inset-x-0 bottom-0 p-4">
-                          <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title || activity.name }}</h3>
-                          <div class="flex flex-wrap gap-2 mt-2">
-                            <span v-if="activity.level" class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.level }}</span>
-                            <span v-if="activity.schedule" class="bg-[#48A6A7] text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.schedule }}</span>
-                            <span v-if="activity.short_description" class="text-white text-sm group-hover:translate-y-[-2px] transition-all duration-300 shadow-md">{{ activity.short_description }}</span>
-                          </div>
+              <div v-else-if="activities.length === 0" class="text-gray-600 text-lg animate-fade-in p-8 bg-gray-50 rounded-lg text-center">
+                No activities found for this teacher.
+              </div>
+              
+              <!-- Uso flex invece di grid per centrare meglio le card -->
+              <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
+                <div v-for="activity in activities" :key="activity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
+                  <NuxtLink
+                    :to="`/singleactivity?id=${activity.id}`"
+                    class="block w-full rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group"
+                  >
+                    <div class="h-64 relative">
+                      <img
+                        :src="activity.image ? activity.image : `/images/activities/${activity.id}.jpg`"
+                        alt=""
+                        class="w-full h-full object-cover rounded-t-xl"
+                        loading="lazy"
+                        @error="(e) => { e.target.style.display = 'none' }"
+                      />
+                      <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                      <div class="absolute inset-x-0 bottom-0 p-4">
+                        <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title || activity.name }}</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                          <span v-if="activity.level" class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.level }}</span>
+                          <span v-if="activity.schedule" class="bg-[#48A6A7] text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.schedule }}</span>
+                          <span v-if="activity.short_description" class="text-white text-sm group-hover:translate-y-[-2px] transition-all duration-300 shadow-md">{{ activity.short_description }}</span>
                         </div>
                       </div>
-                    </NuxtLink>
-                  </div>
+                    </div>
+                  </NuxtLink>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </template>
       </main>
       <SiteFooter />
     </div>
@@ -247,15 +274,6 @@
   @keyframes spin {
     to {
       transform: rotate(360deg);
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
     }
   }
 
