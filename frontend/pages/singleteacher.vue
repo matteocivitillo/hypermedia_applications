@@ -89,18 +89,40 @@
                 <!-- Activities -->
                 <div class="space-y-6">
                   <h2 class="text-3xl font-bold text-black animate-fade-in">Activities</h2>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
-                      Morning Class
-                    </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
-                      Afternoon Workshop
-                    </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
-                      Advanced Session
-                    </NuxtLink>
-                    <NuxtLink to="/activities" class="block bg-gray-200 rounded-xl px-6 py-4 text-center font-bold hover:bg-gray-300 transition animate-fade-in">
-                      Beginners Class
+                  <div v-if="isLoadingActivities" class="flex justify-center items-center h-32">
+                    <div class="loading-spinner animate-fade-in">
+                      <div class="spinner"></div>
+                      <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading activities...</p>
+                    </div>
+                  </div>
+                  <div v-else-if="activities.length === 0" class="text-gray-600 text-lg animate-fade-in">
+                    No activities found for this teacher.
+                  </div>
+                  <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <NuxtLink
+                      v-for="activity in activities"
+                      :key="activity.id"
+                      :to="`/singleactivity?id=${activity.id}`"
+                      class="block rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group"
+                    >
+                      <div class="h-56 relative">
+                        <img
+                          :src="activity.image ? activity.image : `/images/activities/${activity.id}.jpg`"
+                          alt=""
+                          class="w-full h-full object-cover rounded-t-xl"
+                          loading="lazy"
+                          @error="(e) => { e.target.style.display = 'none' }"
+                        />
+                        <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                        <div class="absolute inset-x-0 bottom-0 p-4">
+                          <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title || activity.name }}</h3>
+                          <div class="flex flex-wrap gap-2 mt-2">
+                            <span v-if="activity.level" class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.level }}</span>
+                            <span v-if="activity.schedule" class="bg-[#48A6A7] text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.schedule }}</span>
+                            <span v-if="activity.short_description" class="text-white text-sm group-hover:translate-y-[-2px] transition-all duration-300 shadow-md">{{ activity.short_description }}</span>
+                          </div>
+                        </div>
+                      </div>
                     </NuxtLink>
                   </div>
                 </div>
@@ -130,6 +152,10 @@
   const imageLoaded = ref(false)
   const imageError = ref(false)
   
+  // Activities managed by the teacher
+  const activities = ref([])
+  const isLoadingActivities = ref(true)
+  
   // Fetch teacher data from the API
   const fetchTeacher = async () => {
     if (!teacherId.value) {
@@ -149,6 +175,8 @@
       
       if (data.teacher) {
         teacher.value = data.teacher
+        // Fetch activities for this teacher
+        fetchActivities()
       } else {
         error.value = 'Teacher not found'
       }
@@ -157,6 +185,24 @@
       error.value = 'Failed to load teacher data'
     } finally {
       isLoading.value = false
+    }
+  }
+  
+  // Fetch activities managed by this teacher
+  const fetchActivities = async () => {
+    isLoadingActivities.value = true
+    try {
+      const response = await fetch(`http://localhost:8000/teacher/${teacherId.value}/activities`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      const data = await response.json()
+      activities.value = data.activities || []
+    } catch (err) {
+      console.error('Error fetching activities:', err)
+      activities.value = []
+    } finally {
+      isLoadingActivities.value = false
     }
   }
   

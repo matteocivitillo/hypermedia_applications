@@ -62,6 +62,27 @@ async def get_teacher_by_activityid(activity_id: str):
         return {"teacher": resp.data}
     return {"teacher": None}
 
+# Get all activities for a specific teacher (many-to-many via teaches)
+@app.get("/teacher/{teacher_id}/activities")
+async def get_teacher_activities(teacher_id: str):
+    # Prendi tutti gli idactivity dalla tabella teaches per questo teacher
+    teaches_resp = supabase.table("teaches") \
+        .select("idactivity") \
+        .eq("idteacher", teacher_id) \
+        .execute()
+    
+    activity_ids = [row["idactivity"] for row in teaches_resp.data] if teaches_resp.data else []
+    if not activity_ids:
+        return {"activities": []}
+    
+    # Prendi tutte le attività corrispondenti
+    activities_resp = supabase.table("activity") \
+        .select("*") \
+        .in_("id", activity_ids) \
+        .execute()
+    
+    return {"activities": activities_resp.data}
+
 # ------------------- ACTIVITIES ------------------- #
 
 # Get all activities information
