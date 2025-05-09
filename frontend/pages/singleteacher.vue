@@ -24,10 +24,11 @@
         <template v-else-if="teacher">
           <!-- Teacher Details with Cards Section -->
           <section class="py-14 bg-gray-100">
-            <div class="container mx-auto px-6 md:px-10 lg:px-20 flex justify-center">
+            <div class="container mx-auto px-6 md:px-10 lg:px-20">
+              <!-- Contenitore flessibile: colonna su mobile, riga su desktop -->
               <div class="flex flex-col md:flex-row gap-8 justify-center">
-                <!-- Teacher Card (Left) -->
-                <div class="w-full md:w-1/3 teacher-card">
+                <!-- Teacher Card (Photo) - Prima card -->
+                <div class="w-full md:w-2/5 lg:w-1/3 teacher-card">
                   <div class="rounded-xl shadow-lg overflow-hidden bg-white hover:shadow-xl transition">
                     <div class="h-96 relative">
                       <img 
@@ -41,7 +42,6 @@
                       <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                         <p class="text-gray-600">Loading image...</p>
                       </div>
-                      <div class="absolute inset-0 bg-black bg-opacity-40"></div>
                       <div class="absolute inset-x-0 bottom-0 p-6">
                         <div class="flex flex-wrap gap-2 items-center mb-2">
                           <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
@@ -67,8 +67,8 @@
                   </div>
                 </div>
                 
-                <!-- Teacher Information Card (Right) -->
-                <div class="w-full md:w-1/2 teacher-card">
+                <!-- Teacher Information Card - Seconda card -->
+                <div class="w-full md:w-3/5 lg:w-1/2 teacher-card">
                   <div class="bg-white rounded-xl shadow-lg p-8 h-full">
                     <!-- Teacher Name and Title -->
                     <div class="mb-6 border-b border-gray-300 pb-4">
@@ -76,9 +76,9 @@
                     </div>
                     
                     <!-- Two column layout for information -->
-                    <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex flex-col sm:flex-row gap-8">
                       <!-- Left Column: Role and Expertise -->
-                      <div class="w-full md:w-1/2 space-y-6">
+                      <div class="w-full sm:w-1/2 space-y-6">
                         <!-- Role -->
                         <div class="space-y-2">
                           <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
@@ -97,7 +97,7 @@
                       </div>
                       
                       <!-- Right Column: About -->
-                      <div class="w-full md:w-1/2 space-y-2">
+                      <div class="w-full sm:w-1/2 space-y-2">
                         <span class="bg-white bg-opacity-80 border border-primary text-primary px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
                           About
                         </span>
@@ -110,7 +110,7 @@
             </div>
           </section>
                 
-          <!-- Activities Section -->
+          <!-- Activities Section - Terza sezione su schermi piccoli -->
           <section class="py-14 bg-white border-t border-gray-200">
             <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
               <h2 class="text-3xl font-bold text-primary mb-8 animate-fade-in text-center">Activities</h2>
