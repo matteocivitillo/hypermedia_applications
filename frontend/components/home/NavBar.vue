@@ -11,7 +11,7 @@
 
         <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
         <div class="lg:hidden">
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none">
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn">
             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -99,11 +99,11 @@
     </div>
 
     <!-- Mobile Menu (visibile quando aperto) -->
-    <div v-show="mobileMenuOpen" class="lg:hidden bg-primary border-t border-gray-700">
+    <div v-show="mobileMenuOpen" class="lg:hidden bg-primary border-t border-gray-200">
       <div class="container mx-auto px-6 py-4">
         <router-link to="/" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/') }"
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/') }"
           @click="mobileMenuOpen = false">
           Home
         </router-link>
@@ -112,26 +112,26 @@
         <div class="relative">
           <button @click="mobileCenterOpen = !mobileCenterOpen"
                 class="w-full text-left py-3 text-white text-base font-medium hover:text-gray-300 focus:outline-none flex justify-between items-center"
-                :class="{ 'bg-blue-900 rounded px-2': isActive('/center') }">
+                :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/center') }">
             <span>The Center</span>
-            <svg class="h-5 w-5 transform transition-transform" :class="{ 'rotate-180': mobileCenterOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div v-show="mobileCenterOpen" class="pl-4 border-l-2 border-gray-600 ml-2 mt-1">
+          <div v-show="mobileCenterOpen" class="pl-4 border-l-2 border-[#9ACBD0] ml-2 mt-2 mb-2 rounded-r-lg bg-[#006A7115]">
             <a href="#" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
-              class="block py-3 text-white text-base font-medium hover:text-gray-300">
+              class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               Our philosophy
             </a>
             <a href="#" 
               @click.prevent="goToRooms(); mobileMenuOpen = false"
-              class="block py-3 text-white text-base font-medium hover:text-gray-300">
+              class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               Rooms
             </a>
             <a href="#" 
               @click.prevent="goToAreas(); mobileMenuOpen = false"
-              class="block py-3 text-white text-base font-medium hover:text-gray-300">
+              class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               Areas
             </a>
           </div>
@@ -139,7 +139,7 @@
         
         <router-link to="/activities" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/activities') }"
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/activities') }"
           @click="mobileMenuOpen = false">
           Activities
         </router-link>
@@ -147,27 +147,27 @@
         <a href="#" 
           @click.prevent="goToHighlights(); mobileMenuOpen = false"
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/highlights') }">
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/highlights') }">
           Highlights
         </a>
         
         <router-link to="/teachers" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/teachers') }"
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/teachers') }"
           @click="mobileMenuOpen = false">
           Teachers
         </router-link>
         
         <router-link to="/prices" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/prices') }"
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/prices') }"
           @click="mobileMenuOpen = false">
           Prices
         </router-link>
         
         <router-link to="/contact" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
-          :class="{ 'bg-blue-900 rounded px-2': isActive('/contact') }"
+          :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/contact') }"
           @click="mobileMenuOpen = false">
           Contact
         </router-link>
@@ -392,5 +392,37 @@ export default {
   left: 0;
   right: 0;
   bottom: -20px;
+}
+
+/* Stili moderni per il menu mobile */
+.lg\:hidden.bg-primary {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Rimuovo hover dal pulsante hamburger ma mantengo negli altri elementi */
+.hamburger-btn {
+  transition: none !important;
+  background-color: transparent !important;
+}
+
+.hamburger-btn:hover {
+  background-color: #9ACBD0 !important;
+  transform: none !important;
+  padding: 0.25rem !important; /* p-1 */
+}
+
+/* Mantengo lo stile di hover per gli altri elementi del menu mobile */
+.lg\:hidden a, 
+.lg\:hidden button:not(.hamburger-btn) {
+  margin: 4px 0;
+  transition: all 0.2s ease-in-out;
+  border-radius: 8px;
+}
+
+.lg\:hidden a:hover, 
+.lg\:hidden button:not(.hamburger-btn):hover {
+  background-color: #9ACBD0;
+  color: #006A71;
+  padding-left: 16px;
 }
 </style> 

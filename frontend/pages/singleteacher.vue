@@ -29,7 +29,7 @@
               <div class="flex flex-col md:flex-row gap-8 justify-center">
                 <!-- Teacher Card (Photo) - Prima card -->
                 <div class="w-full md:w-2/5 lg:w-1/3 teacher-card">
-                  <div class="rounded-xl shadow-lg overflow-hidden bg-white hover:shadow-xl transition">
+                  <div class="rounded-xl shadow-md overflow-hidden bg-white">
                     <div class="h-96 relative">
                       <img 
                         :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
@@ -69,7 +69,7 @@
                 
                 <!-- Teacher Information Card - Seconda card -->
                 <div class="w-full md:w-3/5 lg:w-1/2 teacher-card">
-                  <div class="bg-white rounded-xl shadow-lg p-8 h-full">
+                  <div class="bg-white rounded-xl shadow-md p-8 h-full">
                     <!-- Teacher Name and Title -->
                     <div class="mb-6 border-b border-gray-300 pb-4">
                       <h1 class="text-4xl font-bold text-primary animate-fade-in">{{ teacher.name }} {{ teacher.surname }}</h1>
@@ -131,7 +131,7 @@
                 <div v-for="(activity, index) in activities" :key="activity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
                   <NuxtLink
                     :to="`/singleactivity?id=${activity.id}`"
-                    class="block w-full rounded-xl shadow-lg overflow-hidden bg-white transition animate-fade-in relative group activity-card"
+                    class="block w-full rounded-xl shadow-md overflow-hidden bg-white transition animate-fade-in relative group activity-card"
                     :style="`animation-delay: ${index * 150}ms`"
                   >
                     <div class="h-64 relative">
@@ -253,13 +253,13 @@
     color: #006A71;
   }
 
-  /* Teacher Card Styles - No hover effect */
+  /* Teacher Card Styles - Rimuovo effetto hover e applico lo stile di ombra delle card in prices */
   .teacher-card {
-    transition: none; /* Remove any transition effects */
+    transition: none;
   }
 
-  .teacher-card:hover {
-    transform: none; /* No scaling effect on hover */
+  .teacher-card > div {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   /* Activity Card Styles - With hover effect */
@@ -276,18 +276,15 @@
   }
 
   /* Refined animations for labels within cards */
-  .activity-card .group-hover\:translate-y-\[-2px\],
-  .teacher-card .group-hover\:translate-y-\[-2px\] {
+  .activity-card .group-hover\:translate-y-\[-2px\] {
     transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
   }
 
-  .activity-card:hover .group-hover\:translate-y-\[-2px\],
-  .teacher-card:hover .group-hover\:translate-y-\[-2px\] {
+  .activity-card:hover .group-hover\:translate-y-\[-2px\] {
     transform: translateY(-2px) !important;
   }
 
-  .activity-card .group-hover\:bg-opacity-100,
-  .teacher-card .group-hover\:bg-opacity-100 {
+  .activity-card .group-hover\:bg-opacity-100 {
     transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
 
