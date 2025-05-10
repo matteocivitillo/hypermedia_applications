@@ -74,6 +74,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { API_URL } from '../../utils/api';
 
 const activities = ref([]);
 const currentIndex = ref(0);
@@ -138,7 +139,7 @@ const dummyActivities = [
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:8000/activities');
+    const response = await fetch(`${API_URL}/activities`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

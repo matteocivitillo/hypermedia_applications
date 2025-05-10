@@ -164,10 +164,11 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import NavBar from '~/components/home/NavBar.vue'
   import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
   import SiteFooter from '~/components/home/SiteFooter.vue'
+  import { API_URL } from '../utils/api'
   
   // Query parameters to get teacher ID
   const route = useRoute()
@@ -193,7 +194,7 @@
     }
     
     try {
-      const response = await fetch(`http://localhost:8000/teacher/${teacherId.value}`)
+      const response = await fetch(`${API_URL}/teacher/${teacherId.value}`)
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
@@ -220,7 +221,7 @@
   const fetchActivities = async () => {
     isLoadingActivities.value = true
     try {
-      const response = await fetch(`http://localhost:8000/teacher/${teacherId.value}/activities`)
+      const response = await fetch(`${API_URL}/teacher/${teacherId.value}/activities`)
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
       }

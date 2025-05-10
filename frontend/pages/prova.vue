@@ -16,6 +16,7 @@
   
   <script setup>
   import { ref, onMounted } from 'vue'
+  import { API_URL } from '../utils/api'
   
   const messaggi = ref([])
   
@@ -23,7 +24,7 @@
     try {
       // Se usi proxy Vite -> '/api/messaggi'
       // Altrimenti fetch('http://localhost:8000/messaggi')
-      const res = await fetch('http://localhost:8000/messaggi')
+      const res = await fetch(`${API_URL}/messaggi`)
       const json = await res.json()
       console.log("DEBUG /messaggi ->", json)
       messaggi.value = json.messaggi

@@ -1,5 +1,5 @@
 // API service for fetching data from the backend
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://hypermedia-applications.onrender.com';
 
 export async function fetchAllActivities() {
   try {

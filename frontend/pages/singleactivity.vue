@@ -180,6 +180,7 @@ import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
+import { API_URL } from '../utils/api'
 
 // Query parameters to get activity ID
 const route = useRoute()
@@ -207,7 +208,7 @@ const fetchTeacher = async (teacherId) => {
   if (!teacherId) return null
   
   try {
-    const response = await fetch(`http://localhost:8000/teacher/${teacherId}`)
+    const response = await fetch(`${API_URL}/teacher/${teacherId}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -228,7 +229,7 @@ const fetchRoom = async (roomId) => {
   
   try {
     isLoadingRoom.value = true
-    const response = await fetch(`http://localhost:8000/room/${roomId}`)
+    const response = await fetch(`${API_URL}/room/${roomId}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -263,7 +264,7 @@ const fetchActivity = async () => {
   
   try {
     console.log("Fetching activity with ID:", activityId.value)
-    const response = await fetch(`http://localhost:8000/activity/${activityId.value}`)
+    const response = await fetch(`${API_URL}/activity/${activityId.value}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -304,7 +305,7 @@ const fetchTeacherByActivity = async () => {
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/teacher/activity/${activityId.value}`);
+    const response = await fetch(`${API_URL}/teacher/activity/${activityId.value}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)

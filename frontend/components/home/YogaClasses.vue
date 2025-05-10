@@ -73,6 +73,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { API_URL } from '../../utils/api';
 
 const yogaClasses = ref([]);
 const isLoading = ref(true);
@@ -110,7 +111,7 @@ const defaultYogaClasses = [
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:8000/activities');
+    const response = await fetch(`${API_URL}/activities`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -147,7 +148,7 @@ onMounted(async () => {
       
       // Fetch teachers
       try {
-        const teacherResponse = await fetch('http://localhost:8000/teachers');
+        const teacherResponse = await fetch(`${API_URL}/teachers`);
         
         if (!teacherResponse.ok) {
           throw new Error(`HTTP error! Status: ${teacherResponse.status}`);

@@ -106,6 +106,7 @@ import { ref, onMounted, computed } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+import { API_URL } from '../utils/api'
 
 // Data refs
 const activities = ref([])
@@ -124,7 +125,7 @@ const otherActivities = computed(() => {
 // Fetch activities from API
 const fetchActivities = async () => {
   try {
-    const response = await fetch('http://localhost:8000/activities')
+    const response = await fetch(`${API_URL}/activities`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)

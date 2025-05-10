@@ -95,6 +95,7 @@ import { ref, onMounted } from 'vue'
 import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
+import { API_URL } from '../utils/api'
 
 // Data refs
 const teachers = ref([])
@@ -104,7 +105,7 @@ const error = ref(null)
 // Fetch teachers from API
 const fetchTeachers = async () => {
   try {
-    const response = await fetch('http://localhost:8000/teachers')
+    const response = await fetch(`${API_URL}/teachers`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)

@@ -175,6 +175,7 @@ import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
+import { API_URL } from '../utils/api'
 
 // Room data
 const rooms = ref([]);
@@ -255,7 +256,7 @@ async function updateMaxRoomCardHeight() {
 async function fetchRooms() {
   try {
     isLoading.value = true;
-    const response = await fetch('http://localhost:8000/rooms');
+    const response = await fetch(`${API_URL}/rooms`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -304,7 +305,7 @@ onMounted(async () => {
   
   // Fetch all activities to build the name-to-id mapping
   try {
-    const response = await fetch('http://localhost:8000/activities');
+    const response = await fetch(`${API_URL}/activities`);
     if (response.ok) {
       const data = await response.json();
       if (data.activities && data.activities.length > 0) {
@@ -342,7 +343,7 @@ async function fetchAreas() {
   try {
     areasLoading.value = true;
     console.log('Fetching areas from API...');
-    const response = await fetch('http://localhost:8000/areas');
+    const response = await fetch(`${API_URL}/areas`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -473,7 +474,7 @@ async function navigateToActivity(activityName) {
     }
     
     // Otherwise, fetch it from the backend
-    const response = await fetch(`http://localhost:8000/activity_id_from_name?name=${encodeURIComponent(activityName)}`);
+    const response = await fetch(`${API_URL}/activity_id_from_name?name=${encodeURIComponent(activityName)}`);
     if (response.ok) {
       const data = await response.json();
       if (data.id) {
@@ -497,11 +498,11 @@ async function navigateToActivity(activityName) {
   }
 }
 
- // SEO metadata for this page
- useSeoMeta({
-    title: 'Our Center - Serendipity Yoga',
-    description: 'Explore our serene and spacious center designed to provide a comfortable and inspiring environment for your yoga practice.',
-  })
+// SEO metadata for this page
+useSeoMeta({
+  title: 'Our Center - Serendipity Yoga',
+  description: 'Explore our serene and spacious center designed to provide a comfortable and inspiring environment for your yoga practice.',
+})
 </script>
 
 <style scoped>
