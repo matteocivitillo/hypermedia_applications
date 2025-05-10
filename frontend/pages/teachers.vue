@@ -44,11 +44,11 @@
                   :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
                   alt="" 
                   class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
-                  :class="{ 'opacity-0': !imageLoaded }" 
-                  @load="imageLoaded = true" 
-                  @error="imageError = true"
+                  :class="{ 'opacity-0': !teacher.imageLoaded }" 
+                  @load="teacher.imageLoaded = true" 
+                  @error="teacher.imageError = true"
                 />
-                <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                <div v-if="!teacher.imageLoaded && !teacher.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                   <p class="text-gray-600">Loading image...</p>
                 </div>
               </div>
@@ -114,7 +114,11 @@ const fetchTeachers = async () => {
     const data = await response.json()
     
     if (data.teachers && data.teachers.length > 0) {
-      teachers.value = data.teachers
+      teachers.value = data.teachers.map(teacher => ({
+        ...teacher,
+        imageLoaded: false,
+        imageError: false
+      }))
     } else {
       error.value = 'No teachers found'
     }

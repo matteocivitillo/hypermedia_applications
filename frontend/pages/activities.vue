@@ -48,7 +48,21 @@
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
-                  <div class="absolute inset-0 bg-cover bg-center" :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"></div>
+                  <div class="absolute inset-0 bg-cover bg-center" 
+                    :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"
+                    :class="{ 'opacity-0': !activity.imageLoaded }"
+                  >
+                    <img 
+                      :src="activity.image || `/images/activities/default-activity.jpg`" 
+                      alt=""
+                      class="hidden"
+                      @load="handleImageLoad(activity)"
+                      @error="handleImageError(activity)"
+                    />
+                  </div>
+                  <div v-if="!activity.imageLoaded && !activity.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                    <p class="text-gray-600">Loading image...</p>
+                  </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
                   <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
                     <h3 class="text-xl font-bold mb-2 bg-white bg-opacity-70 text-primary p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
@@ -73,7 +87,21 @@
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
-                  <div class="absolute inset-0 bg-cover bg-center" :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"></div>
+                  <div class="absolute inset-0 bg-cover bg-center" 
+                    :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"
+                    :class="{ 'opacity-0': !activity.imageLoaded }"
+                  >
+                    <img 
+                      :src="activity.image || `/images/activities/default-activity.jpg`" 
+                      alt=""
+                      class="hidden"
+                      @load="handleImageLoad(activity)"
+                      @error="handleImageError(activity)"
+                    />
+                  </div>
+                  <div v-if="!activity.imageLoaded && !activity.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                    <p class="text-gray-600">Loading image...</p>
+                  </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
                   <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
                     <h3 class="text-xl font-bold mb-2 bg-white bg-opacity-70 text-primary p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
@@ -134,7 +162,12 @@ const fetchActivities = async () => {
     const data = await response.json()
     
     if (data.activities && data.activities.length > 0) {
-      activities.value = data.activities
+      // Aggiungi proprietà per tracciare lo stato di caricamento immagine per ogni attività
+      activities.value = data.activities.map(activity => ({
+        ...activity,
+        imageLoaded: false,
+        imageError: false
+      }))
     } else {
       error.value = 'No activities found'
     }
@@ -144,6 +177,16 @@ const fetchActivities = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+// Gestione del caricamento dell'immagine
+const handleImageLoad = (activity) => {
+  activity.imageLoaded = true
+}
+
+const handleImageError = (activity) => {
+  activity.imageError = true
+  activity.imageLoaded = true // Considera l'immagine come "caricata" anche se c'è un errore
 }
 
 // Fetch data when component mounts

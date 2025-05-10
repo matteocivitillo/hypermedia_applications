@@ -37,9 +37,9 @@
                         class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
                         :class="{ 'opacity-0': !imageLoaded }" 
                         @load="imageLoaded = true" 
-                        @error="imageError = true"
+                        @error="handleImageError"
                       />
-                      <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                      <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
                         <p class="text-gray-600">Loading image...</p>
                       </div>
                       <div class="absolute inset-x-0 bottom-0 p-6">
@@ -181,6 +181,12 @@
   const imageLoaded = ref(false)
   const imageError = ref(false)
   
+  // Handle image loading error
+  const handleImageError = () => {
+    imageError.value = true
+    imageLoaded.value = true  // Consider the image "loaded" even if it's an error
+  }
+  
   // Activities managed by the teacher
   const activities = ref([])
   const isLoadingActivities = ref(true)
@@ -204,6 +210,9 @@
       
       if (data.teacher) {
         teacher.value = data.teacher
+        // Reset image loading state
+        imageLoaded.value = false
+        imageError.value = false
         // Fetch activities for this teacher
         fetchActivities()
       } else {
