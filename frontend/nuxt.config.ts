@@ -34,5 +34,10 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     }
+  },
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://fastapi-backend.onrender.com'
+    }
   }
 })
