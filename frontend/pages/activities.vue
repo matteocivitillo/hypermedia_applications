@@ -48,29 +48,34 @@
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
-                  <div class="absolute inset-0 bg-cover bg-center" 
-                    :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"
-                    :class="{ 'opacity-0': !activity.imageLoaded }"
-                  >
+                  <div class="h-96 relative">
                     <img 
                       :src="activity.image || `/images/activities/default-activity.jpg`" 
-                      alt=""
-                      class="hidden"
-                      @load="handleImageLoad(activity)"
-                      @error="handleImageError(activity)"
+                      alt="" 
+                      class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                      :class="{ 'opacity-0': !imageLoaded }" 
+                      @load="imageLoaded = true" 
+                      @error="imageError = true"
                     />
-                  </div>
-                  <div v-if="!activity.imageLoaded && !activity.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-                    <p class="text-gray-600">Loading image...</p>
+                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                      <p class="text-gray-600">Loading image...</p>
+                    </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                  <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <h3 class="text-xl font-bold mb-2 bg-white bg-opacity-70 text-primary p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
-                      {{ activity.title }}
-                    </h3>
-                    <p class="text-base bg-white bg-opacity-70 text-gray-600 p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
-                      {{ activity.short_description }}
-                    </p>
+                  <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <div class="flex flex-wrap gap-2 items-center mb-2">
+                      <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
+                        {{ activity.level }}
+                      </span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title }}</h3>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      <!-- <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]"> -->
+                      <!-- <span class="bg-black bg-opacity-30 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-30 transition-all duration-300 group-hover:translate-y-[-2px]"> -->
+                      <span class="text-white py-1 text-sm transition-all duration-300 group-hover:translate-y-[-2px]">
+                        {{ activity.short_description }}
+                      </span>
+                    </div>
                   </div>
                 </NuxtLink>
               </div>
@@ -87,29 +92,32 @@
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
-                  <div class="absolute inset-0 bg-cover bg-center" 
-                    :style="`background-image: url('${activity.image || `/images/activities/default-activity.jpg`}');`"
-                    :class="{ 'opacity-0': !activity.imageLoaded }"
-                  >
+                  <div class="h-96 relative">
                     <img 
                       :src="activity.image || `/images/activities/default-activity.jpg`" 
-                      alt=""
-                      class="hidden"
-                      @load="handleImageLoad(activity)"
-                      @error="handleImageError(activity)"
+                      alt="" 
+                      class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                      :class="{ 'opacity-0': !imageLoaded }" 
+                      @load="imageLoaded = true" 
+                      @error="imageError = true"
                     />
-                  </div>
-                  <div v-if="!activity.imageLoaded && !activity.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-                    <p class="text-gray-600">Loading image...</p>
+                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                      <p class="text-gray-600">Loading image...</p>
+                    </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                  <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <h3 class="text-xl font-bold mb-2 bg-white bg-opacity-70 text-primary p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
-                      {{ activity.title }}
-                    </h3>
-                    <p class="text-base bg-white bg-opacity-70 text-gray-600 p-2 rounded-lg group-hover:transform group-hover:translate-y-[-2px] transition-all duration-300">
-                      {{ activity.short_description }}
-                    </p>
+                  <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <div class="flex flex-wrap gap-2 items-center mb-2">
+                      <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
+                        {{ activity.level }}
+                      </span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title }}</h3>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      <span class="text-white py-1 text-sm transition-all duration-300 group-hover:translate-y-[-2px]">
+                        {{ activity.short_description }}
+                      </span>
+                    </div>
                   </div>
                 </NuxtLink>
               </div>
@@ -140,6 +148,8 @@ import { API_URL } from '../utils/api'
 const activities = ref([])
 const isLoading = ref(true)
 const error = ref(null)
+const imageLoaded = ref(false)
+const imageError = ref(false)
 
 // Computed properties to filter activities by type
 const yogaClasses = computed(() => {
