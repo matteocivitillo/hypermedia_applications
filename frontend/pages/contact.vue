@@ -77,6 +77,15 @@
           </div>
         </div>
       </section>
+
+      <!-- Contact Form Section -->
+      <section class="bg-white py-16">
+        <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
+          <div class="max-w-4xl mx-auto">
+            <ContactForm title="FAQs not enough? Write to us!"/>
+          </div>
+        </div>
+      </section>
     </main>
     <SiteFooter />
   </div>
@@ -88,30 +97,7 @@ import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import ContactSection from '~/components/home/ContactSection.vue'
-
-const formData = ref({
-  name: '',
-  surname: '',
-  email: '',
-  message: ''
-})
-
-const submitForm = () => {
-  // Here you would typically send the form data to a server
-  // For now, we'll just log it to the console
-  console.log('Form submitted:', formData.value)
-  
-  // Reset form after submission
-  formData.value = {
-    name: '',
-    surname: '',
-    email: '',
-    message: ''
-  }
-  
-  // You could also show a success message to the user
-  alert('Message sent successfully!')
-}
+import ContactForm from '~/components/misc/ContactForm.vue'
 
   // SEO metadata for this page
   useSeoMeta({
