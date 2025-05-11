@@ -6,7 +6,7 @@
       { text: 'Activities', url: '/activities' }, 
       { text: activity.title || activity.name, url: '/singleactivity' }
     ]" />
-    <main class="flex-grow">
+    <main class="flex-grow" :key="activityId">
       <!-- Activity Title Section -->
       <section class="py-14 px-10 bg-gray-100 dark:bg-gray-800">
         <div class="container mx-auto">
@@ -387,9 +387,35 @@ onMounted(() => {
   fetchTeacherByActivity();
   fetchSimilarActivities();
 });
-// Fetch data when component mounts or when activityId changes
-onMounted(fetchActivity)
-watch(activityId, fetchActivity)
+
+// Watch for route changes (for example when clicking on a similar activity)
+watch(() => route.query.id, (newId) => {
+  if (newId) {
+    activityId.value = newId
+    isLoading.value = true
+    error.value = null
+    imageLoaded.value = false
+    imageError.value = false
+    room.value = null
+    similarActivities.value = []
+    fetchActivity()
+    fetchTeacherByActivity()
+    fetchSimilarActivities()
+    // Scroll to top after content is loaded
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 100)
+  }
+}, { immediate: true })
+
+// Add a watcher for isLoading to scroll when content is loaded
+watch(isLoading, (newValue) => {
+  if (!newValue) { // When loading is complete
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 100)
+  }
+})
 
 // Watch for activity changes to fetch similar activities
 watch(activity, (newActivity) => {
