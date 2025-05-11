@@ -3,7 +3,13 @@
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <h2 class="text-4xl font-bold text-primary text-center mb-12">Highlighted Activities</h2>
       
-      <div class="relative" v-if="activities.length > 0">
+      <div v-if="isLoading" class="flex justify-center">
+        <div class="animate-pulse flex space-x-4">
+          <div class="h-80 w-full bg-gray-200 rounded-xl"></div>
+        </div>
+      </div>
+      
+      <div class="relative" v-else-if="activities.length > 0">
         <!-- Activity Cards Carousel -->
         <div class="overflow-hidden w-full">
           <div 
@@ -63,10 +69,8 @@
         </div>
       </div>
       
-      <div v-else class="flex justify-center">
-        <div class="animate-pulse flex space-x-4">
-          <div class="h-80 w-full bg-gray-200 rounded-xl"></div>
-        </div>
+      <div v-else class="text-center py-8">
+        <p class="text-xl text-gray-600">Could not load activities. Please try again later.</p>
       </div>
     </div>
   </section>
@@ -79,6 +83,16 @@ import { API_URL } from '../../utils/api';
 const activities = ref([]);
 const currentIndex = ref(0);
 const isLoading = ref(true);
+
+// List of activities we want to display
+const highlightedActivityNames = [
+  'Zumba',
+  'Meditation',
+  'Ceramics',
+  'Water Yoga',
+  'Sunset Yoga',
+  'Dance Fit Fusion'
+];
 
 const visibleSlides = 3;
 const totalDots = 3; // For 5 cards, always 3 dots
@@ -103,39 +117,45 @@ function goToSlide(index) {
   currentIndex.value = index;
 }
 
-// Dummy data in case the API call fails
-const dummyActivities = [
-  {
-    id: 1,
-    name: 'Water Yoga',
-    short_description: 'Experience the relaxing practice of yoga while floating on water',
-    image_url: '/images/water-yoga.jpg'
-  },
-  {
-    id: 2,
-    name: 'Zumba',
-    short_description: 'Energetic dance fitness program combining Latin and international music',
-    image_url: '/images/zumba.jpg'
-  },
-  {
-    id: 3,
-    name: 'Meditation',
-    short_description: 'Find inner peace through guided meditation sessions',
-    image_url: '/images/meditation.jpg'
-  },
-  {
-    id: 4,
-    name: 'Ceramics',
-    short_description: 'Express your creativity through the art of pottery making',
-    image_url: '/images/ceramics.jpg'
-  },
-  {
-    id: 5,
-    name: 'Aerial Yoga',
-    short_description: 'Combine traditional yoga with aerial arts using a hammock',
-    image_url: '/images/aerial-yoga.jpg'
-  }
-];
+// Helper function to check if an activity title matches our highlighted list
+function isHighlightedActivity(title) {
+  if (!title) return false;
+  
+  // Normalize activity names for comparison
+  const normalizedTitle = title.toLowerCase().trim();
+  
+  // Check direct matches and known variations
+  return highlightedActivityNames.some(name => {
+    const normalizedName = name.toLowerCase().trim();
+    
+    // Direct match
+    if (normalizedTitle === normalizedName) return true;
+    
+    // Check for variations
+    if (normalizedName === 'meditation' && 
+        (normalizedTitle === 'mindfulness meditation' || 
+         normalizedTitle === 'mindfulness')) return true;
+    
+    if (normalizedName === 'ceramics' && 
+        (normalizedTitle === 'mindful pottery' || 
+         normalizedTitle === 'pottery')) return true;
+    
+    if (normalizedName === 'water yoga' && 
+        normalizedTitle.includes('water') && 
+        normalizedTitle.includes('yoga')) return true;
+    
+    if (normalizedName === 'sunset yoga' && 
+        normalizedTitle.includes('sunset') && 
+        normalizedTitle.includes('yoga')) return true;
+    
+    if (normalizedName === 'dance fit fusion' && 
+        (normalizedTitle.includes('dance') && 
+         normalizedTitle.includes('fit') || 
+         normalizedTitle.includes('fitness'))) return true;
+    
+    return false;
+  });
+}
 
 onMounted(async () => {
   try {
@@ -143,19 +163,23 @@ onMounted(async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    
     const data = await response.json();
     if (data.activities && data.activities.length > 0) {
-      activities.value = data.activities.slice(0, 5).map(activity => ({
+      // Filter activities to include only those from our highlighted list
+      const filteredActivities = data.activities.filter(activity => 
+        isHighlightedActivity(activity.title || activity.name)
+      );
+      
+      // If we have at least one of the highlighted activities, show them
+      activities.value = filteredActivities.map(activity => ({
         ...activity,
         name: activity.name || activity.title,
         image_url: activity.image || `/images/activities/${activity.id}.jpg`
       }));
-    } else {
-      activities.value = dummyActivities;
     }
   } catch (error) {
     console.error('Failed to fetch activities:', error);
-    activities.value = dummyActivities;
   } finally {
     isLoading.value = false;
   }

@@ -3,7 +3,26 @@
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
       <h2 class="text-4xl font-bold text-primary text-center mb-16">Our Yoga Classes</h2>
       
-      <div v-if="yogaClasses.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div v-for="i in 3" :key="i" class="animate-pulse bg-white rounded-xl p-8 shadow-custom">
+          <div class="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
+          <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+          <div class="h-20 bg-gray-200 rounded mb-8"></div>
+          <div class="flex items-center mb-6">
+            <div class="rounded-full bg-gray-300 h-12 w-12 mr-4"></div>
+            <div>
+              <div class="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+            </div>
+          </div>
+          <div class="h-10 bg-gray-200 rounded w-full"></div>
+        </div>
+      </div>
+      
+      <div v-else-if="hasError" class="text-center py-12">
+        <p class="text-xl text-gray-600 mb-4">Could not load yoga classes. Please try again later.</p>
+      </div>
+      
+      <div v-else-if="yogaClasses.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Class Card -->
         <div 
           v-for="yogaClass in yogaClasses" 
@@ -53,19 +72,8 @@
         </div>
       </div>
       
-      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div v-for="i in 3" :key="i" class="animate-pulse bg-white rounded-xl p-8 shadow-custom">
-          <div class="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
-          <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-          <div class="h-20 bg-gray-200 rounded mb-8"></div>
-          <div class="flex items-center mb-6">
-            <div class="rounded-full bg-gray-300 h-12 w-12 mr-4"></div>
-            <div>
-              <div class="h-4 bg-gray-300 rounded w-24 mb-2"></div>
-            </div>
-          </div>
-          <div class="h-10 bg-gray-200 rounded w-full"></div>
-        </div>
+      <div v-else class="text-center py-12">
+        <p class="text-xl text-gray-600">No yoga classes found.</p>
       </div>
     </div>
   </section>
@@ -77,37 +85,10 @@ import { API_URL } from '../../utils/api';
 
 const yogaClasses = ref([]);
 const isLoading = ref(true);
+const hasError = ref(false);
 
-// Sample data in case the API fails
-const defaultYogaClasses = [
-  {
-    id: 1,
-    name: 'Hatha Yoga',
-    difficulty: 'Beginner',
-    description: 'A slow-paced style of yoga focusing on postures (asana), breathing (pranayama) and deep relaxation.',
-    teacher_name: 'Michael Chen',
-    teacher_image: '/images/teacher-1.jpg',
-    teacher_id: 1
-  },
-  {
-    id: 2,
-    name: 'Kundalini Yoga',
-    difficulty: 'Intermediate',
-    description: 'Intense energy work incorporating breathing, mantra, meditation and repetitive movements.',
-    teacher_name: 'Sara Johnson',
-    teacher_image: '/images/teacher-2.jpg',
-    teacher_id: 2
-  },
-  {
-    id: 3,
-    name: 'Ashtanga Yoga',
-    difficulty: 'Advanced',
-    description: 'A dynamic, physically demanding practice that synchronizes breath with a progressive series of postures.',
-    teacher_name: 'Diego Martinez',
-    teacher_image: '/images/teacher-3.jpg',
-    teacher_id: 3
-  }
-];
+// List of yoga class types we want to display
+const targetYogaTypes = ['hatha', 'kundalini', 'ashtanga'];
 
 onMounted(async () => {
   try {
@@ -121,13 +102,12 @@ onMounted(async () => {
     
     if (data.activities && data.activities.length > 0) {
       // Cerchiamo specificamente Hatha, Kundalini e Ashtanga Yoga
-      const specificYogaTypes = ['hatha', 'kundalini', 'ashtanga'];
       
       // Filter per trovare queste specifiche classi di yoga
       let selectedYogaClasses = [];
       
       // Prima proviamo a trovare attività che hanno specificamente questi nomi
-      specificYogaTypes.forEach(yogaType => {
+      targetYogaTypes.forEach(yogaType => {
         const matchingActivity = data.activities.find(activity => 
           (activity.name?.toLowerCase().includes(yogaType) || 
            activity.title?.toLowerCase().includes(yogaType))
@@ -138,11 +118,9 @@ onMounted(async () => {
         }
       });
       
-      // Se non abbiamo trovato tutte e 3 le classi, usiamo i dati di default
-      if (selectedYogaClasses.length < 3) {
-        console.log("Non tutte le classi di yoga specificate sono state trovate, uso i dati di default");
-        yogaClasses.value = defaultYogaClasses;
-        isLoading.value = false;
+      // Se non abbiamo trovato nessuna classe, segnaliamo un errore
+      if (selectedYogaClasses.length === 0) {
+        hasError.value = true;
         return;
       }
       
@@ -170,7 +148,7 @@ onMounted(async () => {
           let yogaName = yoga.name || yoga.title || "Yoga Class";
           let yogaType = '';
           
-          for (const type of specificYogaTypes) {
+          for (const type of targetYogaTypes) {
             if (yogaName.toLowerCase().includes(type)) {
               // Capitalize first letter of each word
               yogaName = type.charAt(0).toUpperCase() + type.slice(1) + " Yoga";
@@ -201,15 +179,37 @@ onMounted(async () => {
         
       } catch (error) {
         console.error('Failed to fetch teachers:', error);
-        // Fallback without teacher info
-        yogaClasses.value = defaultYogaClasses;
+        // If we can't get teacher info, we'll still show the yoga classes but without teacher data
+        yogaClasses.value = selectedYogaClasses.map(yoga => {
+          let yogaName = yoga.name || yoga.title || "Yoga Class";
+          let yogaType = '';
+          
+          for (const type of targetYogaTypes) {
+            if (yogaName.toLowerCase().includes(type)) {
+              yogaName = type.charAt(0).toUpperCase() + type.slice(1) + " Yoga";
+              yogaType = type;
+              break;
+            }
+          }
+          
+          return {
+            id: yoga.id,
+            name: yogaName,
+            difficulty: getDifficultyFromType(yogaName) || yoga.level || yoga.difficulty,
+            description: yoga.short_description || yoga.description || getDefaultDescription(yogaName),
+            teacher_name: 'Yoga Teacher',
+            teacher_image: '/images/teacher-placeholder.jpg',
+            teacher_id: null
+          };
+        });
       }
     } else {
-      yogaClasses.value = defaultYogaClasses;
+      // No activities found in the response
+      hasError.value = true;
     }
   } catch (error) {
     console.error('Failed to fetch yoga classes:', error);
-    yogaClasses.value = defaultYogaClasses;
+    hasError.value = true;
   } finally {
     isLoading.value = false;
   }
@@ -243,5 +243,21 @@ function getDefaultDescription(yogaName) {
 <style scoped>
 .shadow-custom {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.text-primary {
+  color: #006A71;
+}
+
+.bg-primary {
+  background-color: #006A71;
+}
+
+.bg-secondary {
+  background-color: #F2EFE7;
+}
+
+.bg-secondary-dark {
+  background-color: #e7e3d2;
 }
 </style> 

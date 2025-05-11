@@ -89,6 +89,10 @@
             <p class="text-gray-600">Loading rooms...</p>
           </div>
           
+          <div v-else-if="roomError" class="text-center py-8">
+            <p class="text-gray-600">Error loading rooms. Please try again later.</p>
+          </div>
+          
           <div v-else-if="rooms.length === 0" class="text-center py-8">
             <p class="text-gray-600">No rooms available at the moment.</p>
           </div>
@@ -182,6 +186,7 @@ const rooms = ref([]);
 const isLoading = ref(true);
 const currentRoomIndex = ref(0);
 const maxRoomCardHeight = ref(0);
+const roomError = ref(false);
 
 // Areas data
 const areas = ref([]);
@@ -189,57 +194,6 @@ const areasLoading = ref(true);
 
 // Map to store activity names to their IDs
 const activityIdsMap = ref({});
-
-// Default room data in case the API call fails
-const defaultRooms = [
-  {
-    id: 1,
-    name: 'Oriental Room',
-    image: '/images/meditation.jpg',
-    description: 'A serene haven infused with Eastern tranquility. Practice amidst elegant Asian-inspired decor, where harmony flows through every detail.',
-    features: [
-      'Warm teak floors & silk drapery',
-      'Soft lantern lighting & incense scents',
-      'Traditional singing bowls & chimes'
-    ],
-    activities: [
-      'Kundalini & Hatha yoga'
-    ],
-    quote: 'Where ancient wisdom meets mindful movement.'
-  },
-  {
-    id: 2,
-    name: 'Forest Room',
-    image: '/images/water-yoga.jpg',
-    description: 'Experience the rejuvenating energy of nature in our forest-inspired practice space. Surrounded by natural elements and botanical accents.',
-    features: [
-      'Natural wood elements & living plant wall',
-      'Ambient nature sounds & essential oil diffusers',
-      'Adjustable daylight-simulating lighting'
-    ],
-    activities: [
-      'Ashtanga yoga & Nature meditation',
-      'Dynamic flow sequences'
-    ],
-    quote: 'Connect with nature\'s rhythm and find your inner strength.'
-  },
-  {
-    id: 3,
-    name: 'Zen Studio',
-    image: '/images/aerial-yoga.jpg',
-    description: 'A minimalist sanctuary designed for focus and clarity. Our Zen studio offers a distraction-free environment for deep practice.',
-    features: [
-      'Bamboo flooring & Japanese shoji screens',
-      'Neutral color palette & natural light',
-      'Meditation cushions & props'
-    ],
-    activities: [
-      'Meditation & Mindfulness practices',
-      'Gentle yoga & Breathing workshops'
-    ],
-    quote: 'Simplicity is the ultimate sophistication for the mindful practitioner.'
-  }
-];
 
 // Dopo aver caricato le stanze, calcola l'altezza massima delle card
 async function updateMaxRoomCardHeight() {
@@ -256,10 +210,13 @@ async function updateMaxRoomCardHeight() {
 async function fetchRooms() {
   try {
     isLoading.value = true;
+    roomError.value = false;
+    
     const response = await fetch(`${API_URL}/rooms`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    
     const data = await response.json();
     if (data.rooms && data.rooms.length > 0) {
       let roomsData = data.rooms.map(room => ({
@@ -273,13 +230,19 @@ async function fetchRooms() {
       }));
       rooms.value = roomsData.reverse();
     } else {
-      rooms.value = defaultRooms.slice().reverse();
+      // No rooms data found
+      roomError.value = true;
+      rooms.value = [];
     }
   } catch (error) {
-    rooms.value = defaultRooms.slice().reverse();
+    console.error('Error fetching rooms:', error);
+    roomError.value = true;
+    rooms.value = [];
   } finally {
     isLoading.value = false;
-    updateMaxRoomCardHeight();
+    if (rooms.value.length > 0) {
+      updateMaxRoomCardHeight();
+    }
   }
 }
 
@@ -447,8 +410,11 @@ function getDefaultDescription(areaTitle) {
 
 // Oriental Room image for main section
 const orientalRoomImage = computed(() => {
-  const orientalRoom = rooms.value.find(room => room.name === 'Oriental Room');
-  return orientalRoom ? orientalRoom.image : '/images/meditation.jpg';
+  if (rooms.value.length === 0) {
+    return '/images/meditation.jpg'; // Fallback image if no rooms are available
+  }
+  const orientalRoom = rooms.value.find(room => room.name.toLowerCase().includes('oriental'));
+  return orientalRoom ? orientalRoom.image : rooms.value[0].image;
 });
 
 // Get default image for an area based on title
