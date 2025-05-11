@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen dark:bg-gray-800">
     <NavBar />
     <BreadCrumbs :breadcrumbs="[
       { text: 'Home', url: '/' }, 
@@ -7,26 +7,26 @@
     ]" />
     <main class="flex-grow">
       <!-- Activities Section -->
-      <section class="bg-white py-14 px-20">
+      <section class="bg-white dark:bg-gray-800 py-14 px-20">
         <div class="container mx-auto">
           <!-- Section Header -->
           <div class="flex flex-col items-center gap-5 mb-12">
             <h1 v-if="isLoading" class="loading-title animate-fade-in">Loading title...</h1>
-            <h1 v-else class="text-3xl font-bold text-primary text-center animate-fade-in">Our Activities</h1>
+            <h1 v-else class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center animate-fade-in">Our Activities</h1>
             <p v-if="isLoading" class="loading-description animate-fade-in">Loading description...</p>
-            <p v-else class="text-xl text-gray-600 text-center max-w-4xl animate-fade-in">
+            <p v-else class="text-xl text-gray-600 dark:text-gray-300 text-center max-w-4xl animate-fade-in">
               Discover our diverse range of activities designed to nurture your body, mind, and spirit.
             </p>
           </div>
 
           <!-- Separator -->
-          <div class="w-full h-px bg-gray-200 mb-12"></div>
+          <div class="w-full h-px bg-gray-200 dark:bg-gray-600 mb-12"></div>
 
           <!-- Loading State -->
           <div v-if="isLoading" class="flex justify-center items-center h-56">
             <div class="loading-spinner">
               <div class="spinner"></div>
-              <p class="mt-4 text-xl text-gray-600">Loading activities...</p>
+              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">Loading activities...</p>
             </div>
           </div>
           
@@ -39,13 +39,13 @@
           <div v-else>
             <!-- Yoga Classes Section -->
             <div class="mb-16">
-              <h2 class="text-2xl font-bold text-primary mb-8 text-center animate-fade-in">Yoga Classes</h2>
+              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">Yoga Classes</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <NuxtLink 
                   v-for="(activity, index) in yogaClasses" 
                   :key="activity.id"
                   :to="`/singleactivity?id=${activity.id}`" 
-                  class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
+                  class="activity-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
                   <div class="h-96 relative">
@@ -57,8 +57,8 @@
                       @load="imageLoaded = true" 
                       @error="imageError = true"
                     />
-                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-                      <p class="text-gray-600">Loading image...</p>
+                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
                     </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -70,8 +70,6 @@
                     </div>
                     <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title }}</h3>
                     <div class="flex flex-wrap gap-2 mt-2">
-                      <!-- <span class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]"> -->
-                      <!-- <span class="bg-black bg-opacity-30 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-30 transition-all duration-300 group-hover:translate-y-[-2px]"> -->
                       <span class="text-white py-1 text-sm transition-all duration-300 group-hover:translate-y-[-2px]">
                         {{ activity.short_description }}
                       </span>
@@ -83,13 +81,13 @@
 
             <!-- Other Activities Section -->
             <div>
-              <h2 class="text-2xl font-bold text-primary mb-8 text-center animate-fade-in">Other Activities</h2>
+              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">Other Activities</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <NuxtLink 
                   v-for="(activity, index) in otherActivities" 
                   :key="activity.id"
                   :to="`/singleactivity?id=${activity.id}`" 
-                  class="activity-card relative rounded-xl overflow-hidden shadow-lg h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
+                  class="activity-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
                   <div class="h-96 relative">
@@ -101,8 +99,8 @@
                       @load="imageLoaded = true" 
                       @error="imageError = true"
                     />
-                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200">
-                      <p class="text-gray-600">Loading image...</p>
+                    <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
                     </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -127,7 +125,7 @@
       </section>
 
       <!-- Activity Grid Section -->
-      <section class="py-16">
+      <section class="py-16 dark:bg-gray-800">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <!-- Existing content -->
         </div>
@@ -214,6 +212,10 @@ onMounted(fetchActivities)
   color: #006A71;
 }
 
+:root.dark .text-primary {
+  color: #9ACBD0;
+}
+
 /* Activity card animation */
 .activity-card {
   animation: fadeInUp 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
@@ -227,6 +229,10 @@ onMounted(fetchActivities)
   transform: scale(1.025) !important;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
   z-index: 10;
+}
+
+.dark .activity-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Refined animations for labels within cards */
@@ -259,6 +265,11 @@ onMounted(fetchActivities)
   border-radius: 50%;
   border-top-color: #006A71;
   animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 1) infinite, scale 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.dark .spinner {
+  border-color: rgba(154, 203, 208, 0.2);
+  border-top-color: #9ACBD0;
 }
 
 /* Animations */
@@ -311,5 +322,10 @@ onMounted(fetchActivities)
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+/* Dark mode transition */
+.dark-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 </style> 

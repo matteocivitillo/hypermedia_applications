@@ -1,39 +1,39 @@
 <template>
-  <div class="bg-gray-50 rounded-xl shadow-custom p-8 h-full">
-    <h3 class="text-2xl font-bold text-primary mb-6 text-center">{{ title }}</h3>
+  <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full">
+    <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-6 text-center">{{ title }}</h3>
 
     <form class="space-y-6" @submit.prevent="handleSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
-          <label for="name" class="text-gray-600 block">Your Name</label>
+          <label for="name" class="text-gray-600 dark:text-gray-300 block">Your Name</label>
           <input 
             type="text" 
             id="name" 
             v-model="formData.name"
-            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition" 
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
             placeholder="John Doe" 
           />
         </div>
 
         <div class="space-y-2">
-          <label for="email" class="text-gray-600 block">Your Email</label>
+          <label for="email" class="text-gray-600 dark:text-gray-300 block">Your Email</label>
           <input 
             type="email" 
             id="email" 
             v-model="formData.email"
-            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition" 
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
             placeholder="john@example.com" 
           />
         </div>
       </div>
 
       <div class="space-y-2">
-        <label for="message" class="text-gray-600 block">Message</label>
+        <label for="message" class="text-gray-600 dark:text-gray-300 block">Message</label>
         <textarea 
           id="message" 
           rows="4" 
           v-model="formData.message"
-          class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition resize-none" 
+          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition resize-none" 
           placeholder="How can we help you?"
         ></textarea>
       </div>
@@ -97,5 +97,13 @@ const handleSubmit = () => {
 
 .shadow-custom {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.dark .text-primary {
+  color: #9ACBD0;
+}
+
+.dark .shadow-custom {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
 }
 </style> 

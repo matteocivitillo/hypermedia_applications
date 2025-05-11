@@ -1,11 +1,11 @@
 <template>
-  <footer class="bg-primary text-gray-300">
+  <footer class="bg-primary footer text-gray-300">
     <!-- Main Footer Content -->
     <div class="container mx-auto py-12 px-6 md:px-16 lg:px-24 xl:px-32">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
         <!-- Logo and Tagline -->
         <div class="md:col-span-3 flex flex-col items-center">
-          <img src="/images/logo.svg" alt="Serendipity yoga" class="h-24 mb-2" />   <!-- The word "logo" is usually not an important part of the image's content or function.-->
+          <img src="/images/logo.svg" alt="Serendipity yoga" class="h-24 mb-2" />
           <p class="text-xs text-gray-400 text-center whitespace-nowrap text-[9px] md:text-[10px]">
             TRANSFORMING LIVES THROUGH THE PRACTICE OF YOGA AND MEDITATION.
           </p>
@@ -73,7 +73,7 @@
     </div>
     
     <!-- Divider Line -->
-    <div class="border-t border-gray-700"></div>
+    <div class="border-t border-gray-700 dark:border-gray-600"></div>
     
     <!-- Copyright -->
     <div class="container mx-auto px-6 md:px-16 lg:px-24 xl:px-32 py-4 text-center">
@@ -81,6 +81,19 @@
     </div>
     
     <!-- Bottom Dark Bar -->
-    <div class="h-10 bg-gray-800"></div>
+    <div class="h-10 bg-gray-800 dark:bg-black"></div>
   </footer>
-</template> 
+</template>
+
+<script>
+export default {
+  // Component logic if needed
+}
+</script>
+
+<style scoped>
+/* Footer transition */
+footer {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+</style> 

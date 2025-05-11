@@ -1,11 +1,11 @@
 <template>
-  <section class="py-16 bg-white">
+  <section class="py-16 bg-white dark:bg-gray-800">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary text-center mb-12">Highlighted Activities</h2>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">Highlighted Activities</h2>
       
       <div v-if="isLoading" class="flex justify-center">
         <div class="animate-pulse flex space-x-4">
-          <div class="h-80 w-full bg-gray-200 rounded-xl"></div>
+          <div class="h-80 w-full bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
         </div>
       </div>
       
@@ -24,7 +24,7 @@
             >
               <NuxtLink 
                 :to="`/singleactivity?id=${activity.id}`" 
-                class="block cursor-pointer h-64 relative rounded-2xl overflow-hidden group shadow-lg transition-shadow duration-300 hover:shadow-none"
+                class="block cursor-pointer h-64 relative rounded-2xl overflow-hidden group shadow-lg dark:shadow-gray-900/70 transition-shadow duration-300 hover:shadow-none"
               >
                 <div class="absolute inset-0 bg-cover bg-center z-0" :style="`background-image: url('${activity.image_url}')`"></div>
                 <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-10 transition-all duration-300 z-10"></div>
@@ -64,13 +64,13 @@
             :key="i"
             @click="goToSlide(i-1)"
             class="w-3 h-3 rounded-full transition-all duration-300 focus:outline-none"
-            :class="currentIndex === (i-1) ? 'bg-primary' : 'bg-gray-300 hover:bg-gray-400'"
+            :class="currentIndex === (i-1) ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-400'"
           ></button>
         </div>
       </div>
       
       <div v-else class="text-center py-8">
-        <p class="text-xl text-gray-600">Could not load activities. Please try again later.</p>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Could not load activities. Please try again later.</p>
       </div>
     </div>
   </section>
@@ -212,5 +212,17 @@ onUnmounted(() => {
 
 .shadow-custom {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.dark .text-primary {
+  color: #9ACBD0;
+}
+
+.dark .bg-primary {
+  background-color: #006A71;
+}
+
+.dark .shadow-custom {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
 }
 </style> 

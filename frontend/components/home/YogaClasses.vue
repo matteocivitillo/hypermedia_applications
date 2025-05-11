@@ -1,25 +1,25 @@
 <template>
-  <section class="py-20 bg-gray-50">
+  <section class="py-20 bg-gray-50 dark:bg-gray-700">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary text-center mb-16">Our Yoga Classes</h2>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-16">Our Yoga Classes</h2>
       
       <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div v-for="i in 3" :key="i" class="animate-pulse bg-white rounded-xl p-8 shadow-custom">
-          <div class="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
-          <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
-          <div class="h-20 bg-gray-200 rounded mb-8"></div>
+        <div v-for="i in 3" :key="i" class="animate-pulse bg-white dark:bg-gray-600 rounded-xl p-8 shadow-custom dark:shadow-gray-900/70">
+          <div class="h-4 bg-gray-200 dark:bg-gray-500 rounded w-1/4 mb-8"></div>
+          <div class="h-6 bg-gray-300 dark:bg-gray-500 rounded w-3/4 mb-4"></div>
+          <div class="h-20 bg-gray-200 dark:bg-gray-500 rounded mb-8"></div>
           <div class="flex items-center mb-6">
-            <div class="rounded-full bg-gray-300 h-12 w-12 mr-4"></div>
+            <div class="rounded-full bg-gray-300 dark:bg-gray-500 h-12 w-12 mr-4"></div>
             <div>
-              <div class="h-4 bg-gray-300 rounded w-24 mb-2"></div>
+              <div class="h-4 bg-gray-300 dark:bg-gray-500 rounded w-24 mb-2"></div>
             </div>
           </div>
-          <div class="h-10 bg-gray-200 rounded w-full"></div>
+          <div class="h-10 bg-gray-200 dark:bg-gray-500 rounded w-full"></div>
         </div>
       </div>
       
       <div v-else-if="hasError" class="text-center py-12">
-        <p class="text-xl text-gray-600 mb-4">Could not load yoga classes. Please try again later.</p>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-4">Could not load yoga classes. Please try again later.</p>
       </div>
       
       <div v-else-if="yogaClasses.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -27,7 +27,7 @@
         <div 
           v-for="yogaClass in yogaClasses" 
           :key="yogaClass.id"
-          class="bg-white rounded-xl shadow-custom p-8 transform hover:-translate-y-2 transition-all duration-300"
+          class="bg-white dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 transform hover:-translate-y-2 transition-all duration-300"
         >
           <div class="mb-5">
             <span class="bg-primary bg-opacity-70 text-white text-sm font-medium py-1.5 px-4 rounded-full">
@@ -36,14 +36,14 @@
           </div>
           
           <div class="mb-8">
-            <h3 class="text-2xl font-bold text-primary mb-4">{{ yogaClass.name }}</h3>
-            <p class="text-gray-600 leading-relaxed">
+            <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-4">{{ yogaClass.name }}</h3>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
               {{ yogaClass.description }}
             </p>
           </div>
           
           <div class="flex items-center">
-            <div class="w-12 h-12 rounded-full bg-gray-300 mr-4 overflow-hidden border-2 border-primary">
+            <div class="w-12 h-12 rounded-full bg-gray-300 dark:bg-gray-500 mr-4 overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
               <img 
                 :src="yogaClass.teacher_image" 
                 alt=""  
@@ -55,17 +55,17 @@
               <NuxtLink 
                 v-if="yogaClass.teacher_id" 
                 :to="`/singleteacher?id=${yogaClass.teacher_id}`" 
-                class="text-gray-800 font-medium hover:text-primary transition-colors"
+                class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
               >
                 {{ yogaClass.teacher_name || 'Yoga Teacher' }}
               </NuxtLink>
-              <p v-else class="text-gray-800 font-medium">{{ yogaClass.teacher_name || 'Yoga Teacher' }}</p>
+              <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ yogaClass.teacher_name || 'Yoga Teacher' }}</p>
             </div>
           </div>
           
           <NuxtLink 
             :to="`/singleactivity?id=${yogaClass.id}`" 
-            class="mt-6 block w-full bg-secondary hover:bg-secondary-dark text-primary font-medium py-3 px-6 rounded-lg text-center transition-colors duration-300"
+            class="mt-6 block w-full bg-primary dark:bg-primary hover:bg-primary-light dark:hover:bg-primary-light text-white dark:text-[#9ACBD0] font-medium py-3 px-6 rounded-lg text-center transition-colors duration-300"
           >
             View Details
           </NuxtLink>
@@ -73,7 +73,7 @@
       </div>
       
       <div v-else class="text-center py-12">
-        <p class="text-xl text-gray-600">No yoga classes found.</p>
+        <p class="text-xl text-gray-600 dark:text-gray-300">No yoga classes found.</p>
       </div>
     </div>
   </section>
@@ -159,11 +159,23 @@ onMounted(async () => {
           
           // Trova l'insegnante giusto in base al tipo di yoga
           let teacherName = teacherAssignments[yogaType] || 'Yoga Teacher';
-          let teacher = teachers.find(t => t.name === teacherName);
           
-          // Se non troviamo l'insegnante specifico, usiamo il primo disponibile
-          if (!teacher && teachers.length > 0) {
-            teacher = teachers[0];
+          // Look for a teacher with matching name or similar to our assignment
+          let teacher = teachers.find(t => 
+            t.name === teacherName || 
+            (t.name && t.name.includes(teacherName.split(' ')[0]))
+          );
+          
+          // If we couldn't find a match by name, assign a specific teacher based on yoga type
+          if (!teacher) {
+            // Find a backup teacher based on index
+            const index = targetYogaTypes.indexOf(yogaType);
+            if (index >= 0 && index < teachers.length) {
+              teacher = teachers[index];
+            } else if (teachers.length > 0) {
+              // If still no match, use the first available teacher
+              teacher = teachers[0];
+            }
           }
           
           return {
@@ -171,7 +183,7 @@ onMounted(async () => {
             name: yogaName,
             difficulty: getDifficultyFromType(yogaName) || yoga.level || yoga.difficulty,
             description: yoga.short_description || yoga.description || getDefaultDescription(yogaName),
-            teacher_name: teacherName,
+            teacher_name: teacher ? teacher.name : teacherName,
             teacher_image: teacher ? (teacher.image?.startsWith('http') ? teacher.image : `/images/teacher-${yogaType === 'hatha' ? '1' : yogaType === 'kundalini' ? '2' : '3'}.jpg`) : '/images/teacher-placeholder.jpg',
             teacher_id: teacher ? teacher.id : yoga.teacher_id || null
           };
@@ -245,19 +257,23 @@ function getDefaultDescription(yogaName) {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
+.dark .shadow-custom {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+}
+
 .text-primary {
   color: #006A71;
 }
 
-.bg-primary {
-  background-color: #006A71;
+.dark .text-primary {
+  color: #9ACBD0;
 }
 
 .bg-secondary {
-  background-color: #F2EFE7;
+  background-color: #E9F5F6;
 }
 
 .bg-secondary-dark {
-  background-color: #e7e3d2;
+  background-color: #D8EBEC;
 }
 </style> 

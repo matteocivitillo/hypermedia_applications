@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-primary border-b-0 sticky top-0 z-50">
+  <nav class="bg-primary navbar border-b-0 sticky top-0 z-50 transition-colors duration-300">
     <div class="container mx-auto px-6 md:px-16 lg:px-24 xl:px-32">
       <div class="flex items-center justify-between h-20">
         <!-- Logo Left, always same size -->
@@ -10,7 +10,10 @@
         </div>
 
         <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
-        <div class="lg:hidden">
+        <div class="lg:hidden flex items-center">
+          <div class="mr-5">
+            <ThemeToggle />
+          </div>
           <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn">
             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -46,17 +49,17 @@
                 <div class="py-2 px-4">
                   <a href="#" 
                      @click.prevent="goToCenter"
-                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2">
+                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     Our philosophy
                   </a>
                   <a href="#" 
                      @click.prevent="goToRooms"
-                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2">
+                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     Rooms
                   </a>
                   <a href="#" 
                      @click.prevent="goToAreas"
-                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2">
+                     class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     Areas
                   </a>
                 </div>
@@ -94,12 +97,17 @@
             :class="{ 'border-b-2 border-white pb-1': isActive('/contact') }">
             Contact
           </router-link>
+          
+          <!-- Theme Toggle for desktop -->
+          <div class="flex items-center">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Mobile Menu (visibile quando aperto) -->
-    <div v-show="mobileMenuOpen" class="lg:hidden bg-primary border-t border-gray-200">
+    <div v-show="mobileMenuOpen" class="lg:hidden bg-primary border-t border-gray-200 dark:border-gray-700">
       <div class="container mx-auto px-6 py-4">
         <router-link to="/" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
@@ -118,7 +126,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div v-show="mobileCenterOpen" class="pl-4 border-l-2 border-[#9ACBD0] ml-2 mt-2 mb-2 rounded-r-lg bg-[#006A7115]">
+          <div v-show="mobileCenterOpen" class="pl-4 border-l-2 border-[#9ACBD0] ml-2 mt-2 mb-2 rounded-r-lg bg-[#006A7115] dark:bg-white/5">
             <a href="#" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
@@ -177,7 +185,12 @@
 </template>
 
 <script>
+import ThemeToggle from './ThemeToggle.vue'
+
 export default {
+  components: {
+    ThemeToggle
+  },
   data() {
     return {
       dropdownOpen: false,
@@ -382,6 +395,7 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
   z-index: 100;
   margin-top: 5px;
+  @apply dark:bg-gray-700 dark:shadow-gray-900/60;
 }
 
 /* Create a safe area to prevent gap between link and dropdown */
@@ -424,5 +438,10 @@ export default {
   background-color: #9ACBD0;
   color: #006A71;
   padding-left: 16px;
+}
+
+/* Navbar transition */
+.navbar {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 </style> 

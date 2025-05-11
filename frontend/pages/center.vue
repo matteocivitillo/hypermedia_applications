@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen dark:bg-gray-800">
     <NavBar />
     <BreadCrumbs :breadcrumbs="[
       { text: 'Home', url: '/' }, 
@@ -18,61 +18,61 @@
       </section>
 
       <!-- Features Section -->
-      <section class="bg-beige py-20">
+      <section class="bg-beige dark:bg-gray-700 py-20">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <div class="flex flex-wrap justify-center gap-12">
-            <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm">
+            <div class="bg-white dark:bg-gray-600 p-8 rounded-xl shadow-lg dark:shadow-gray-900/70 max-w-sm">
               <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">Mindful Practice</h3>
-              <p class="text-gray-600">Experience transformative yoga sessions guided by expert instructors.</p>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Mindful Practice</h3>
+              <p class="text-gray-600 dark:text-gray-300">Experience transformative yoga sessions guided by expert instructors.</p>
             </div>
             
-            <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm">
+            <div class="bg-white dark:bg-gray-600 p-8 rounded-xl shadow-lg dark:shadow-gray-900/70 max-w-sm">
               <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">Community</h3>
-              <p class="text-gray-600">Join a welcoming community of like-minded individuals.</p>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Community</h3>
+              <p class="text-gray-600 dark:text-gray-300">Join a welcoming community of like-minded individuals.</p>
             </div>
             
-            <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm">
+            <div class="bg-white dark:bg-gray-600 p-8 rounded-xl shadow-lg dark:shadow-gray-900/70 max-w-sm">
               <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               </div>
-              <h3 class="text-xl font-semibold text-gray-800 mb-2">Holistic Approach</h3>
-              <p class="text-gray-600">Balance body, mind, and spirit through our comprehensive programs.</p>
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Holistic Approach</h3>
+              <p class="text-gray-600 dark:text-gray-300">Balance body, mind, and spirit through our comprehensive programs.</p>
             </div>
           </div>
         </div>
       </section>
 
       <!-- About the Center -->
-      <section class="py-16 bg-white">
+      <section class="py-16 bg-white dark:bg-gray-800">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-          <h2 class="text-4xl font-bold text-primary text-center mb-8">Serendipity Yoga Center</h2>
+          <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-8">Serendipity Yoga Center</h2>
           <div class="flex flex-wrap md:flex-nowrap gap-16 items-center">
             <div class="w-full md:w-1/2">
-              <div class="prose prose-lg max-w-none">
-                <p class="mb-4">At Serendipity Yoga Center, we believe true wellness begins with daily choices.</p>
-                <p class="mb-4">Our holistic approach blends dynamic yoga, meditation, and rejuvenating activities to guide your full transformation: a stronger body, a clearer mind, a lighter spirit.</p>
-                <p class="mb-4">From energizing classes to immersive retreats, sunset yoga socials to spa relaxation, every experience is a step toward your best self.</p>
-                <p class="mb-4">Because lifestyle change isn't about revolution, but conscious evolution.</p>
-                <p class="font-medium">Start your journey today.</p>
+              <div class="prose prose-lg max-w-none dark:prose-invert">
+                <p class="mb-4 text-gray-700 dark:text-gray-300">At Serendipity Yoga Center, we believe true wellness begins with daily choices.</p>
+                <p class="mb-4 text-gray-700 dark:text-gray-300">Our holistic approach blends dynamic yoga, meditation, and rejuvenating activities to guide your full transformation: a stronger body, a clearer mind, a lighter spirit.</p>
+                <p class="mb-4 text-gray-700 dark:text-gray-300">From energizing classes to immersive retreats, sunset yoga socials to spa relaxation, every experience is a step toward your best self.</p>
+                <p class="mb-4 text-gray-700 dark:text-gray-300">Because lifestyle change isn't about revolution, but conscious evolution.</p>
+                <p class="font-medium text-gray-700 dark:text-gray-300">Start your journey today.</p>
               </div>
             </div>
             <div class="w-full md:w-1/2">
               <img 
                 :src="orientalRoomImage" 
                 alt="" 
-                class="w-full h-auto rounded-3xl shadow-lg object-cover h-96" 
+                class="w-full h-auto rounded-3xl shadow-lg dark:shadow-gray-900/70 object-cover h-96" 
                 loading="lazy"
               />  <!-- Alt text is empty because it's decorative only -->
             </div>
@@ -81,20 +81,20 @@
       </section>
 
       <!-- Our Rooms -->
-      <section class="bg-beige py-16" id="rooms">
+      <section class="bg-beige dark:bg-gray-700 py-16" id="rooms">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-          <h2 class="text-4xl font-bold text-primary text-center mb-12">Our Yoga Rooms</h2>
+          <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">Our Yoga Rooms</h2>
           
           <div v-if="isLoading" class="text-center py-8">
-            <p class="text-gray-600">Loading rooms...</p>
+            <p class="text-gray-600 dark:text-gray-300">Loading rooms...</p>
           </div>
           
           <div v-else-if="roomError" class="text-center py-8">
-            <p class="text-gray-600">Error loading rooms. Please try again later.</p>
+            <p class="text-gray-600 dark:text-gray-300">Error loading rooms. Please try again later.</p>
           </div>
           
           <div v-else-if="rooms.length === 0" class="text-center py-8">
-            <p class="text-gray-600">No rooms available at the moment.</p>
+            <p class="text-gray-600 dark:text-gray-300">No rooms available at the moment.</p>
           </div>
           
           <div v-else class="relative">
@@ -103,6 +103,7 @@
               <RoomCard 
                 :room="rooms[currentRoomIndex]" 
                 :activityIdsMap="activityIdsMap"
+                class="bg-white dark:bg-gray-800"
               />
             </div>
             
@@ -113,7 +114,7 @@
                 :key="index"
                 @click="currentRoomIndex = index"
                 class="w-3 h-3 rounded-full transition-all duration-300 focus:outline-none"
-                :class="currentRoomIndex === index ? 'bg-primary' : 'bg-gray-300 hover:bg-gray-400'"
+                :class="currentRoomIndex === index ? 'bg-primary dark:bg-[#9ACBD0]' : 'bg-gray-300 dark:bg-gray-500 hover:bg-gray-400 dark:hover:bg-gray-400'"
                 :aria-label="`View ${room.name}`"
               ></button>
             </div>
@@ -142,18 +143,18 @@
       </section>
 
       <!-- Our Areas -->
-      <section class="py-16" id="areas">
+      <section class="py-16 dark:bg-gray-800" id="areas">
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-          <h2 class="text-4xl font-bold text-primary text-center mb-12">Serendipity Yoga Center - Areas</h2>
+          <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">Serendipity Yoga Center - Areas</h2>
           
           <div v-if="areasLoading" class="text-center py-8">
-            <p class="text-gray-600">Loading facilities...</p>
+            <p class="text-gray-600 dark:text-gray-300">Loading facilities...</p>
           </div>
           
           <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <!-- Display areas from database -->
             <div v-for="area in areas" :key="area.id" class="flex flex-col">
-              <div class="rounded-xl shadow-lg overflow-hidden h-64 mb-4">
+              <div class="rounded-xl shadow-lg dark:shadow-gray-900/70 overflow-hidden h-64 mb-4">
                 <img 
                   :src="area.image" 
                   alt="" 
@@ -162,8 +163,8 @@
                   @error="handleImageError($event, getDefaultImageForArea(area.title))"
                 />  <!-- Alt text is empty because it's decorative only -->
               </div>
-              <h3 class="text-xl font-bold text-primary mb-2">{{ area.title }}</h3>
-              <p class="text-gray-700">{{ area.description || getDefaultDescription(area.title) }}</p>
+              <h3 class="text-xl font-bold text-primary dark:text-[#9ACBD0] mb-2">{{ area.title }}</h3>
+              <p class="text-gray-700 dark:text-gray-300">{{ area.description || getDefaultDescription(area.title) }}</p>
             </div>
           </div>
         </div>
@@ -476,6 +477,10 @@ useSeoMeta({
   color: #006A71;
 }
 
+:root.dark .text-primary {
+  color: #9ACBD0;
+}
+
 .bg-primary {
   background-color: #006A71;
 }
@@ -492,6 +497,10 @@ useSeoMeta({
   background-color: #F2EFE7;
 }
 
+.dark .bg-beige {
+  background-color: #374151; /* gray-700 */
+}
+
 .bg-secondary {
   background-color: #F2EFE7;
 }
@@ -499,5 +508,10 @@ useSeoMeta({
 .prose img {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+/* Dark mode transition */
+.dark-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 </style> 
