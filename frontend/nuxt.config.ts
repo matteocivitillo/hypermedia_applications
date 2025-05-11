@@ -27,7 +27,7 @@ export default defineNuxtConfig({
         { property: 'og:title', content: 'Serendipity Yoga' }, // Open Graph title
         { property: 'og:description', content: 'Transforming lives through the practise of yoga and meditation' }, // Open Graph description
         { property: 'og:image', content: '/images/logo.svg' }, // Open Graph image
-        { property: 'og:url', content: 'https://www.serendipityyoga.com' }, // Open Graph URL
+        { property: 'og:url', content: 'https://hypermedia-applications-rho.vercel.app' }, // Open Graph URL
         { property: 'og:type', content: 'website' }, // Open Graph type
       ],
       link: [
