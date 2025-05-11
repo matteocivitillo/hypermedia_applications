@@ -162,7 +162,7 @@
       
       <!-- Other Activities Section -->
       <section v-if="activity" class="py-14 px-10 dark:bg-gray-800">
-        <div class="container mx-auto">
+        <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
           <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-10">Other Activities You Might Like</h2>
           
           <div v-if="isLoadingSimilar" class="flex justify-center items-center h-32">
