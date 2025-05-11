@@ -187,16 +187,6 @@ const fetchActivities = async () => {
   }
 }
 
-// Gestione del caricamento dell'immagine
-const handleImageLoad = (activity) => {
-  activity.imageLoaded = true
-}
-
-const handleImageError = (activity) => {
-  activity.imageError = true
-  activity.imageLoaded = true // Considera l'immagine come "caricata" anche se c'è un errore
-}
-
 // Fetch data when component mounts
 onMounted(fetchActivities)
 

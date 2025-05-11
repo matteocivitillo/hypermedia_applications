@@ -164,8 +164,26 @@
       <section v-if="activity" class="py-14 px-10 dark:bg-gray-800">
         <div class="container mx-auto">
           <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-10">Other Activities You Might Like</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- This would contain similar activities, could be implemented later -->
+          
+          <div v-if="isLoadingSimilar" class="flex justify-center items-center h-32">
+            <div class="loading-spinner animate-fade-in">
+              <div class="spinner"></div>
+              <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading similar activities...</p>
+            </div>
+          </div>
+          
+          <div v-else-if="similarActivities.length === 0" class="text-gray-600 text-lg animate-fade-in p-8 bg-gray-50 rounded-lg text-center">
+            No similar activities found.
+          </div>
+          
+          <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
+            <div v-for="(similarActivity, index) in similarActivities" :key="similarActivity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
+            <!-- <div v-for="(similarActivity, index) in similarActivities" :key="similarActivity.id" class="w-full"> -->
+              <ActivityCard 
+                :activity="similarActivity"
+                :style="`animation-delay: ${index * 150}ms`"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -180,6 +198,7 @@ import NavBar from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
+import ActivityCard from '~/components/misc/ActivityCardSuggestion.vue'
 import { API_URL } from '../utils/api'
 
 // Query parameters to get activity ID
@@ -196,6 +215,8 @@ const imageError = ref(false)
 const room = ref(null)
 const isLoadingRoom = ref(false)
 const activityIdsMap = ref({})
+const similarActivities = ref([])
+const isLoadingSimilar = ref(false)
 
 // Handle image loading error
 const handleImageError = () => {
@@ -327,14 +348,55 @@ const fetchTeacherByActivity = async () => {
   }
 };
 
+// Fetch similar activities
+const fetchSimilarActivities = async () => {
+  if (!activity.value || !activity.value.level) return
+  
+  isLoadingSimilar.value = true
+  try {
+    const response = await fetch(`${API_URL}/activities`)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`)
+    }
+    
+    const data = await response.json()
+    if (data.activities) {
+      // Filter activities with the same level and exclude current activity
+      const filtered = data.activities.filter(a => 
+        a.level === activity.value.level && 
+        a.id !== activity.value.id
+      )
+      
+      // Shuffle the array
+      const shuffled = [...filtered].sort(() => Math.random() - 0.5)
+      
+      // Take only 3 activities
+      similarActivities.value = shuffled.slice(0, 3)
+    }
+  } catch (err) {
+    console.error('Error fetching similar activities:', err)
+    similarActivities.value = []
+  } finally {
+    isLoadingSimilar.value = false
+  }
+}
+
 // Call this function after fetching the activity
 onMounted(() => {
   fetchActivity();
   fetchTeacherByActivity();
+  fetchSimilarActivities();
 });
 // Fetch data when component mounts or when activityId changes
 onMounted(fetchActivity)
 watch(activityId, fetchActivity)
+
+// Watch for activity changes to fetch similar activities
+watch(activity, (newActivity) => {
+  if (newActivity) {
+    fetchSimilarActivities()
+  }
+})
 
 // SEO metadata for this page
 watch(activity, (newActivity) => {

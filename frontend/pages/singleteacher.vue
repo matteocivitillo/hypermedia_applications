@@ -129,30 +129,10 @@
               <!-- Uso flex invece di grid per centrare meglio le card -->
               <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
                 <div v-for="(activity, index) in activities" :key="activity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
-                  <NuxtLink
-                    :to="`/singleactivity?id=${activity.id}`"
-                    class="block w-full rounded-xl shadow-md dark:shadow-gray-900/70 overflow-hidden bg-white dark:bg-gray-600 transition animate-fade-in relative group activity-card"
+                  <ActivityCard 
+                    :activity="activity"
                     :style="`animation-delay: ${index * 150}ms`"
-                  >
-                    <div class="h-64 relative">
-                      <img
-                        :src="activity.image ? activity.image : `/images/activities/${activity.id}.jpg`"
-                        alt=""
-                        class="w-full h-full object-cover rounded-t-xl"
-                        loading="lazy"
-                        @error="(e) => { e.target.style.display = 'none' }"
-                      />
-                      <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300"></div>
-                      <div class="absolute inset-x-0 bottom-0 p-4">
-                        <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title || activity.name }}</h3>
-                        <div class="flex flex-wrap gap-2 mt-2">
-                          <span v-if="activity.level" class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.level }}</span>
-                          <span v-if="activity.schedule" class="bg-[#48A6A7] text-white px-3 py-1 rounded-full text-sm group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.schedule }}</span>
-                          <span v-if="activity.short_description" class="text-white text-sm group-hover:translate-y-[-2px] transition-all duration-300 shadow-md">{{ activity.short_description }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </NuxtLink>
+                  />
                 </div>
               </div>
             </div>
@@ -168,6 +148,7 @@
   import NavBar from '~/components/home/NavBar.vue'
   import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
   import SiteFooter from '~/components/home/SiteFooter.vue'
+  import ActivityCard from '~/components/misc/ActivityCardSuggestion.vue'
   import { API_URL } from '../utils/api'
   
   // Query parameters to get teacher ID
