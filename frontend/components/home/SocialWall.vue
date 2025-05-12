@@ -37,7 +37,7 @@
         >
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-secondary dark:border-[#9ACBD0]/50">
-              <img :src="review.image" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image" alt="" class="w-full h-full object-cover" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <p class="text-gray-800 dark:text-gray-200 font-medium text-sm">{{ review.name }}</p>
@@ -65,14 +65,20 @@
             </p>
             
             <div v-if="review.image_url && review.featured" class="mt-2 rounded-lg overflow-hidden">
-              <img :src="review.image_url" alt="" class="w-full h-auto" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image_url" alt="" class="w-full h-auto" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             
-            <div v-if="review.class_attended" class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
-              <span class="bg-secondary bg-opacity-20 dark:bg-opacity-30 text-primary dark:text-[#9ACBD0] py-1 px-2 rounded-full">
+            <div v-if="review.activity_id" class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <NuxtLink
+                :to="`/singleactivity?id=${review.activity_id}`"
+                class="bg-secondary bg-opacity-20 dark:bg-opacity-30 text-primary dark:text-[#9ACBD0] py-1 px-2 rounded-full hover:underline"
+              >
                 {{ review.class_attended }}
-              </span>
+              </NuxtLink>
             </div>
+            <span v-else class="bg-secondary bg-opacity-20 dark:bg-opacity-30 text-primary dark:text-[#9ACBD0] py-1 px-2 rounded-full">
+              {{ review.class_attended }}
+            </span>
           </div>
         </div>
       </div>
@@ -82,72 +88,64 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { API_URL } from '../../utils/api';
 
-// Recensioni statiche per garantire che siano visualizzate correttamente
-const reviews = ref([
-  {
-    name: 'Emma Rossi',
-    title: 'Regular Practitioner',
-    image: '/images/profile-1.jpg',
-    rating: 5,
-    date: 'July 15, 2023',
-    text: "I've been practicing yoga for years, but joining Serendipity has truly transformed my practice. The instructors are incredibly knowledgeable and create a supportive environment where I can deepen my practice. The Hatha classes have helped me improve my flexibility and find balance in my busy life.",
-    class_attended: 'Hatha Yoga',
-    featured: true
-  },
-  {
-    name: 'Marco Bianchi',
-    title: 'Beginner Yogi',
-    image: '/images/profile-2.jpg',
-    rating: 4,
-    date: 'September 3, 2023',
-    text: "As a complete beginner, I was nervous about trying yoga, but the instructors at Serendipity made me feel welcome from day one. The beginner classes are perfectly paced, and they take time to explain proper alignment. After just two months, I'm already noticing improvements in my posture and overall well-being.",
-    class_attended: 'Yoga for Beginners'
-  },
-  {
-    name: 'Sofia Esposito',
-    title: 'Advanced Practitioner',
-    image: '/images/profile-3.jpg',
-    rating: 5,
-    date: 'August 12, 2023',
-    text: "The Ashtanga classes here are challenging in the best way possible. I appreciate how the teachers provide modifications for different levels while still encouraging us to push our boundaries. The studio's peaceful atmosphere makes it my favorite place to practice and grow.",
-    class_attended: 'Ashtanga Yoga',
-    image_url: '/images/yoga-class-review.jpg'
-  },
-  {
-    name: 'Luca Moretti',
-    title: 'Wellness Enthusiast',
-    image: '/images/profile-4.jpg',
-    rating: 5,
-    date: 'October 5, 2023',
-    text: "I started coming to Serendipity for yoga but discovered their meditation sessions, which have been life-changing. Learning to quiet my mind and focus on my breath has helped me manage stress much better. The instructors create such a calming environment - it's my sanctuary in the middle of a hectic week.",
-    class_attended: 'Meditation'
-  },
-  {
-    name: 'Alessia Conti',
-    title: 'Yoga Therapy Participant',
-    image: '/images/profile-5.jpg',
-    rating: 5,
-    date: 'November 8, 2023',
-    text: "After a back injury, I was recommended to try yoga therapy at Serendipity. The personalized approach and gentle guidance from my instructor have made a significant difference in my recovery. I've gained strength, mobility, and most importantly, confidence in my body again. Forever grateful for this amazing studio!",
-    class_attended: 'Yoga Therapy',
-    featured: true
-  },
-  {
-    name: 'Giovanni Romano',
-    title: 'Regular Member',
-    image: '/images/profile-6.jpg',
-    rating: 4,
-    date: 'December 1, 2023',
-    text: "The variety of classes offered at Serendipity keeps my practice interesting and challenging. I particularly enjoy the Kundalini yoga sessions which have helped me develop both physical strength and mental clarity. The community here is supportive and welcoming - it feels like a second home.",
-    class_attended: 'Kundalini Yoga'
+const reviews = ref([]);
+const isLoading = ref(true);
+const hasError = ref(false);
+const errorMessage = ref('');
+
+function handleImageError(event) {
+  event.target.src = '/images/profile-placeholder.jpg';
+}
+
+onMounted(async () => {
+  try {
+    isLoading.value = true;
+    const response = await fetch(`${API_URL}/reviews`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.error) {
+      errorMessage.value = data.error;
+      throw new Error(data.error);
+    }
+    if (data.reviews && data.reviews.length > 0) {
+      reviews.value = data.reviews.map(review => {
+        const user = review.user || {};
+        const activity = review.activity || {};
+        let formattedDate = review.date;
+        try {
+          if (review.date) {
+            formattedDate = new Date(review.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          }
+        } catch (err) {}
+        return {
+          name: user.name || 'Yoga Enthusiast',
+          image: user.image || '/images/profile-placeholder.jpg',
+          rating: review.stars || 0,
+          date: formattedDate,
+          text: review.review || '',
+          class_attended: activity.title || '',
+          activity_id: activity.id || null,
+          featured: review.stars === 5
+        };
+      });
+    } else {
+      hasError.value = true;
+      errorMessage.value = 'No reviews found.';
+    }
+  } catch (error) {
+    hasError.value = true;
+    errorMessage.value = error.message;
+  } finally {
+    isLoading.value = false;
   }
-]);
-
-// In una versione reale, qui si potrebbero recuperare le recensioni dal server
-onMounted(() => {
-  console.log('Social Wall mounted with', reviews.value.length, 'reviews');
-  // Assicurarsi che il component sia montato correttamente e che le recensioni siano disponibili
 });
 </script>
 

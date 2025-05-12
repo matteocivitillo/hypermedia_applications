@@ -380,3 +380,45 @@ async def get_area(area_id: str):
         
         return {"area": area}
     return {"area": None}
+
+# ------------------- REVIEWS ------------------- #
+
+@app.get("/reviews")
+async def get_reviews():
+    try:
+        # Prendi tutte le reviews
+        reviews_resp = supabase.table("reviews").select("*").order("date", desc=True).execute()
+        if not reviews_resp.data:
+            return {"reviews": []}
+        reviews_data = []
+        for review in reviews_resp.data:
+            # User info
+            user = {"name": None, "image": None}
+            if review.get("iduser"):
+                user_resp = supabase.table("participant").select("name,image").eq("id", review["iduser"]).execute()
+                if user_resp.data and len(user_resp.data) > 0:
+                    user = {
+                        "name": user_resp.data[0].get("name"),
+                        "image": user_resp.data[0].get("image")
+                    }
+            # Activity info
+            activity = {"title": None, "id": None}
+            if review.get("idactivity"):
+                activity_resp = supabase.table("activity").select("id,title").eq("id", review["idactivity"]).execute()
+                if activity_resp.data and len(activity_resp.data) > 0:
+                    activity = {
+                        "id": activity_resp.data[0].get("id"),
+                        "title": activity_resp.data[0].get("title")
+                    }
+            # Compose review object
+            reviews_data.append({
+                "review": review.get("review"),
+                "stars": review.get("stars"),
+                "date": review.get("date"),
+                "user": user,
+                "activity": activity
+            })
+        return {"reviews": reviews_data}
+    except Exception as e:
+        print(f"Error fetching reviews: {str(e)}")
+        return {"reviews": [], "error": str(e)}
