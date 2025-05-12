@@ -7,186 +7,225 @@
       { text: activity.title || activity.name, url: '/singleactivity' }
     ]" />
     <main class="flex-grow" :key="activityId">
-      <!-- Activity Title Section -->
-      <section class="py-14 px-10 bg-gray-100 dark:bg-gray-800">
-        <div class="container mx-auto">
-          <h1 v-if="isLoading" class="loading-title text-center animate-fade-in">Loading...</h1>
-          <h1 v-else-if="activity" class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center">
-            {{ activity.title || activity.name }}
-          </h1>
+      <!-- Loading State -->
+      <div v-if="isLoading" class="flex justify-center items-center h-96 bg-white dark:bg-gray-700">
+        <div class="loading-spinner animate-fade-in">
+          <div class="spinner"></div>
+          <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading activity data...</p>
         </div>
-      </section>
-
-      <!-- Activity Details Section -->
-      <section class="bg-gray-100 py-14 px-10 dark:bg-gray-800">
-        <div class="container mx-auto">
-          <!-- Loading State -->
-          <div v-if="isLoading" class="flex justify-center items-center h-96">
-            <div class="loading-spinner animate-fade-in">
-              <div class="spinner"></div>
-              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading activity data...</p>
+      </div>
+            
+      <!-- Error State -->
+      <div v-else-if="error" class="flex justify-center items-center h-96 bg-white dark:bg-gray-700">
+        <p class="text-xl text-red-600">{{ error }}</p>
+      </div>
+            
+      <!-- Activity Data Display -->
+      <template v-else-if="activity">
+        <!-- Activity Details with Cards Section -->
+        <section class="py-14 bg-gray-100 dark:bg-gray-800">
+          <div class="container mx-auto px-6 md:px-10 lg:px-20">
+            <!-- Contenitore flessibile: colonna su mobile, riga su desktop -->
+            <div class="flex flex-col md:flex-row gap-8 justify-center">
+              <!-- Activity Image Card -->
+              <div class="w-full md:w-2/5 lg:w-1/3 activity-card-static">
+                <div class="rounded-xl shadow-md overflow-hidden bg-white dark:bg-gray-700">
+                  <div class="h-96 relative">
+                    <img 
+                      :src="activity.image ? activity.image : `/images/activities/default-activity.jpg`" 
+                      alt="" 
+                      class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
+                      :class="{ 'opacity-0': !imageLoaded }" 
+                      @load="imageLoaded = true" 
+                      @error="handleImageError"
+                    />
+                    <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                    </div>
+                    <div class="absolute inset-x-0 bottom-0 p-6">
+                      <div class="flex flex-wrap gap-2 items-center mb-2">
+                        <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
+                          {{ activity.level || activity.difficulty || 'All Levels' }}
+                        </span>
+                      </div>
+                      <h3 class="text-2xl font-bold text-white animate-fade-in">{{ activity.title || activity.name }}</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Activity Information Card -->
+              <div class="w-full md:w-3/5 lg:w-1/2 activity-card-static">
+                <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8 h-full">
+                  <!-- Activity Title -->
+                  <div class="mb-6 border-b border-gray-300 dark:border-gray-600 pb-4">
+                    <h1 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] animate-fade-in">{{ activity.title || activity.name }}</h1>
+                  </div>
+                  
+                  <!-- Two column layout for information -->
+                  <div class="flex flex-col sm:flex-row gap-8">
+                    <!-- Left Column: Level and Teacher -->
+                    <div class="w-full sm:w-1/2 space-y-6">
+                      <!-- Level -->
+                      <div class="space-y-2">
+                        <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                          Level
+                        </span>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.level || activity.difficulty || 'All Levels' }}</p>
+                      </div>
+                      
+                      <!-- Teacher Info -->
+                      <div v-if="teacher && Array.isArray(teacher) && teacher.length > 0" class="space-y-2">
+                        <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                          Teachers
+                        </span>
+                        <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
+                          <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
+                            <img 
+                              :src="t.image ? (t.image.startsWith('http') ? t.image : `http://localhost:8000${t.image}`) : '/images/teacher-placeholder.jpg'" 
+                              alt="" 
+                              class="w-full h-full object-cover object-center" 
+                              onerror="this.src='/images/teacher-placeholder.jpg'"
+                            />
+                          </div>
+                          <div>
+                            <NuxtLink 
+                              v-if="t.id" 
+                              :to="`/singleteacher?id=${t.id}`" 
+                              class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
+                            >
+                              {{ t.name }} {{ t.surname }}
+                            </NuxtLink>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ t.name }} {{ t.surname }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Teacher Info (Single) -->
+                      <div v-else-if="teacher" class="space-y-2">
+                        <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                          Teacher
+                        </span>
+                        <div class="flex items-center gap-3">
+                          <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
+                            <img 
+                              :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
+                              alt="" 
+                              class="w-full h-full object-cover object-center" 
+                              onerror="this.src='/images/teacher-placeholder.jpg'"
+                            />
+                          </div>
+                          <div>
+                            <NuxtLink 
+                              v-if="teacher.id" 
+                              :to="`/singleteacher?id=${teacher.id}`" 
+                              class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
+                            >
+                              {{ teacher.name }} {{ teacher.surname }}
+                            </NuxtLink>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name }} {{ teacher.surname }}</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Right Column: About -->
+                    <div class="w-full sm:w-1/2 space-y-2">
+                      <span class="bg-white dark:bg-gray-700 bg-opacity-80 border border-primary dark:border-[#9ACBD0] text-primary dark:text-[#9ACBD0] px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                        About
+                      </span>
+                      <p class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.short_description || activity.description }}</p>
+                      
+                      <!-- Schedule (if available) -->
+                      <div v-if="activity.schedule" class="pt-4">
+                        <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
+                          Schedule
+                        </span>
+                        <p class="text-base text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.schedule }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          <!-- Error State -->
-          <div v-else-if="error" class="flex justify-center items-center h-96">
-            <p class="text-xl text-red-600">{{ error }}</p>
-          </div>
-          
-          <!-- Activity Data Display -->
-          <div v-else-if="activity" class="bg-white bg-opacity-50 rounded-xl p-6 sm:p-8 shadow-lg dark:shadow-gray-900/70">
-            <div class="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
-              <!-- Activity Content Section (but the location) -->
-              <div class="flex flex-col gap-8 lg:w-2/3">
-                <!-- Level Badge -->
-                <div class="flex items-center">
-                  <span class="bg-primary bg-opacity-50 text-white px-4 py-2 rounded-full text-sm">
-                    {{ activity.level || activity.difficulty || 'All Levels' }}
-                  </span>
-                </div>
-                
-                <!-- Activity Details -->
-                <div class="space-y-4">
-                  <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0]">{{ activity.title || activity.name }}</h2>
-                  <p class="text-xl text-gray-600 dark:text-gray-300">{{ activity.short_description || activity.description }}</p>
-                </div>
-                
-                <!-- Teacher Info (if available) -->
-                <div v-if="teacher && teacher.length > 0" class="mt-2">
-                  <h3 class="text-xl font-bold text-black dark:text-white">Teachers:</h3>
-                  <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
-                    <img 
-                      :src="t.image" 
-                      alt="" 
-                      class="w-10 h-10 rounded-full" 
-                      v-if="t.image" 
-                    />  <!-- Alt text is empty because it's decorative only -->
-                    <div v-else class="w-10 h-10 bg-gray-300 rounded-full"></div> <!-- Placeholder if no image -->
-                    <NuxtLink 
-                      v-if="t.id" 
-                      :to="`/singleteacher?id=${t.id}`" 
-                      class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
-                    >
-                      {{ t.name }} {{ t.surname }}
-                    </NuxtLink>
-                    <span v-else class="text-gray-600 dark:text-gray-300">{{ t.name }} {{ t.surname }}</span>
-                  </div>
-                </div>
-                
-                <div v-else-if="teacher" class="flex items-center gap-3 mt-2">
-                  <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
-                    <img 
-                      :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
-                      alt="" 
-                      class="w-full h-full object-cover object-center" 
-                      onerror="this.src='/images/teacher-placeholder.jpg'"
-                    />  <!-- Alt text is empty because it's decorative only -->
-                  </div>
-                  <div>
-                    <NuxtLink 
-                      v-if="teacher.id" 
-                      :to="`/singleteacher?id=${teacher.id}`" 
-                      class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
-                    >
-                      {{ teacher.name }}
-                    </NuxtLink>
-                    <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name }}</p>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
-                  </div>
-                </div>
-                
-                <!-- About -->
-                <div v-if="activity.about || activity.description" class="space-y-3 mt-6">
-                  <h3 class="text-2xl font-bold text-black dark:text-white">About</h3>
-                  <p v-if="activity.about" class="text-lg text-gray-600 dark:text-gray-300" v-html="activity.about"></p>
-                  <p v-else class="text-lg text-gray-600 dark:text-gray-300">{{ activity.description }}</p>
-                </div>
-                
-                <!-- Additional Sections -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            
+            <!-- Description Card -->
+            <div v-if="activity.about || activity.description" class="mt-8 w-full activity-card-static">
+              <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8">
+                <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-4 animate-fade-in">
+                  Description
+                </span>
+                <p v-if="activity.about" class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in" v-html="activity.about"></p>
+                <p v-else class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.description }}</p>
+              </div>
+            </div>
+            
+            <!-- Additional Details Card -->
+            <div v-if="activity.ideal_for || activity.main_benefit || activity.additional_info || activity.schedule" class="mt-8 w-full activity-card-static">
+              <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8">
+                <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-4 animate-fade-in">
+                  Details
+                </span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <!-- Ideal For -->
                   <div v-if="activity.ideal_for" class="space-y-2">
-                    <h3 class="text-xl font-bold text-black dark:text-white">Ideal For</h3>
+                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">Ideal For</h3>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.ideal_for"></p>
                   </div>
                   
                   <!-- Main Benefit -->
                   <div v-if="activity.main_benefit" class="space-y-2">
-                    <h3 class="text-xl font-bold text-black dark:text-white">Main Benefit</h3>
+                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">Main Benefit</h3>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.main_benefit"></p>
                   </div>
+                  
+                  <!-- Additional Info -->
+                  <div v-if="activity.additional_info" class="space-y-2">
+                    <h3 class="text-xl font-bold text-black dark:text-white">Additional Information</h3>
+                    <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.additional_info"></p>
+                  </div>
                 </div>
-
-                <!-- Additional Info -->
-                <div v-if="activity.additional_info" class="space-y-2 mt-2">
-                  <h3 class="text-xl font-bold text-black dark:text-white">Additional Information</h3>
-                  <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.additional_info"></p>
-                </div>
+              </div>
+            </div>
+            
+            <!-- Room Card -->
+            <div v-if="activity.roomid" class="mt-8 w-full activity-card-static">
+              <div v-if="isLoadingRoom" class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8 text-center">
+                <p class="text-gray-600 dark:text-gray-300">Loading room information...</p>
+              </div>
+              <RoomCard v-else-if="room" :room="room" :activityIdsMap="activityIdsMap" />
+            </div>
+          </div>
+        </section>
                 
-                <!-- Schedule -->
-                <div v-if="activity.schedule" class="space-y-2 mt-2">
-                  <h3 class="text-xl font-bold text-black dark:text-white">Schedule</h3>
-                  <p class="text-base text-gray-600 dark:text-gray-300">{{ activity.schedule }}</p>
-                </div>
-              </div>
-              
-              <!-- Activity Image -->
-              <div class="lg:w-1/3">
-                <div class="rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 md:h-96">
-                  <img 
-                    :src="activity.image ? activity.image : `/images/activities/default-activity.jpg`" 
-                    alt="" 
-                    class="w-full h-full object-cover" 
-                    :class="{ 'opacity-0': !imageLoaded }" 
-                    @load="imageLoaded = true" 
-                    @error="handleImageError"
-                  />  <!-- Alt text is empty because it's decorative only -->
-                  <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                    <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
-                  </div>
-                </div>
+        <!-- Other Activities Section -->
+        <section class="py-14 bg-white dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+          <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
+            <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] mb-8 animate-fade-in text-center">Other Activities You Might Like</h2>
+            
+            <div v-if="isLoadingSimilar" class="flex justify-center items-center h-32">
+              <div class="loading-spinner animate-fade-in">
+                <div class="spinner"></div>
+                <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading similar activities...</p>
               </div>
             </div>
-
-            <!-- Room -->
-            <div v-if="activity.roomid" class="space-y-2 mt-12 w-full">
-                  <h3 class="text-xl font-bold text-black dark:text-white">Location</h3>
-                  <div v-if="isLoadingRoom" class="text-center py-8">
-                    <p class="text-gray-600 dark:text-gray-300">Loading room information...</p>
-                  </div>
-                  <RoomCard v-else-if="room" :room="room" :activityIdsMap="activityIdsMap" />
-                </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Other Activities Section -->
-      <section v-if="activity" class="py-14 px-10 dark:bg-gray-800">
-        <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
-          <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-10">Other Activities You Might Like</h2>
-          
-          <div v-if="isLoadingSimilar" class="flex justify-center items-center h-32">
-            <div class="loading-spinner animate-fade-in">
-              <div class="spinner"></div>
-              <p class="mt-4 text-xl text-gray-600 animate-fade-in">Loading similar activities...</p>
+            
+            <div v-else-if="similarActivities.length === 0" class="text-gray-600 dark:text-gray-300 text-lg animate-fade-in p-8 bg-gray-50 dark:bg-gray-600 rounded-lg text-center">
+              No similar activities found.
+            </div>
+            
+            <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
+              <div v-for="(similarActivity, index) in similarActivities" :key="similarActivity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
+                <ActivityCard 
+                  :activity="similarActivity"
+                  :style="`animation-delay: ${index * 150}ms`"
+                />
+              </div>
             </div>
           </div>
-          
-          <div v-else-if="similarActivities.length === 0" class="text-gray-600 text-lg animate-fade-in p-8 bg-gray-50 rounded-lg text-center">
-            No similar activities found.
-          </div>
-          
-          <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
-            <div v-for="(similarActivity, index) in similarActivities" :key="similarActivity.id" class="w-full sm:w-[calc(50%-12px)] md:w-[calc(40%-16px)] flex justify-center">
-            <!-- <div v-for="(similarActivity, index) in similarActivities" :key="similarActivity.id" class="w-full"> -->
-              <ActivityCard 
-                :activity="similarActivity"
-                :style="`animation-delay: ${index * 150}ms`"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </template>
     </main>
     <SiteFooter />
   </div>
@@ -381,41 +420,48 @@ const fetchSimilarActivities = async () => {
   }
 }
 
-// Call this function after fetching the activity
+// Fetch data when component mounts
 onMounted(() => {
   fetchActivity();
   fetchTeacherByActivity();
   fetchSimilarActivities();
 });
 
+// Scroll to top function with safety check
+const scrollToTop = () => {
+  if (typeof window !== 'undefined') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
 // Watch for route changes (for example when clicking on a similar activity)
 watch(() => route.query.id, (newId) => {
   if (newId) {
-    activityId.value = newId
-    isLoading.value = true
-    error.value = null
-    imageLoaded.value = false
-    imageError.value = false
-    room.value = null
-    similarActivities.value = []
-    fetchActivity()
-    fetchTeacherByActivity()
-    fetchSimilarActivities()
-    // Scroll to top after content is loaded
+    activityId.value = newId;
+    isLoading.value = true;
+    error.value = null;
+    imageLoaded.value = false;
+    imageError.value = false;
+    room.value = null;
+    similarActivities.value = [];
+    fetchActivity();
+    fetchTeacherByActivity();
+    fetchSimilarActivities();
+    // Scroll to top after content is loaded with safety check
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 100)
+      scrollToTop();
+    }, 100);
   }
-}, { immediate: true })
+}, { immediate: true });
 
 // Add a watcher for isLoading to scroll when content is loaded
 watch(isLoading, (newValue) => {
   if (!newValue) { // When loading is complete
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }, 100)
+      scrollToTop();
+    }, 100);
   }
-})
+});
 
 // Watch for activity changes to fetch similar activities
 watch(activity, (newActivity) => {
@@ -448,6 +494,43 @@ watch(activity, (newActivity) => {
   background-color: #006A71;
 }
 
+/* Activity Card Styles - With hover effect */
+.activity-card {
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
+  will-change: transform; /* Performance optimization for animations */
+  backface-visibility: hidden; /* Prevents flickering in some browsers */
+}
+
+.activity-card:hover {
+  transform: scale(1.025) !important;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10;
+}
+
+.dark .activity-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Static Activity Card - No hover effects */
+.activity-card-static {
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  backface-visibility: hidden;
+  /* No hover transform effect */
+}
+
+/* Refined animations for labels within cards */
+.activity-card .group-hover\:translate-y-\[-2px\] {
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+}
+
+.activity-card:hover .group-hover\:translate-y-\[-2px\] {
+  transform: translateY(-2px) !important;
+}
+
+.activity-card .group-hover\:bg-opacity-100 {
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+}
+
 /* Loading spinner */
 .loading-spinner {
   display: flex;
@@ -455,7 +538,7 @@ watch(activity, (newActivity) => {
   align-items: center;
   justify-content: center;
   opacity: 0; /* Start hidden */
-  animation: fadeIn 0.8s ease forwards; /* Adjust duration */
+  animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
 }
 
 .spinner {
@@ -464,7 +547,7 @@ watch(activity, (newActivity) => {
   border: 5px solid rgba(0, 106, 113, 0.2);
   border-radius: 50%;
   border-top-color: #006A71;
-  animation: spin 1s ease-in-out infinite, scale 0.5s ease-in-out forwards; /* Add scale effect */
+  animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 1) infinite, scale 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower animations */
 }
 
 .dark .spinner {
@@ -475,15 +558,6 @@ watch(activity, (newActivity) => {
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -512,7 +586,7 @@ watch(activity, (newActivity) => {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
 }
 
 /* Dark mode transition */
