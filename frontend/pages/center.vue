@@ -85,11 +85,11 @@
         <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
           <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">Our Yoga Rooms</h2>
           
-          <div v-if="isLoading" class="text-center py-8">
+          <div v-if="isLoadingRooms" class="text-center py-8">
             <p class="text-gray-600 dark:text-gray-300">Loading rooms...</p>
           </div>
           
-          <div v-else-if="roomError" class="text-center py-8">
+          <div v-else-if="errorRooms" class="text-center py-8">
             <p class="text-gray-600 dark:text-gray-300">Error loading rooms. Please try again later.</p>
           </div>
           
@@ -176,18 +176,27 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
 import { API_URL } from '../utils/api'
 
+// Define languages locally
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' }
+];
+
 // Room data
 const rooms = ref([]);
-const isLoading = ref(true);
+const isLoadingRooms = ref(true);
 const currentRoomIndex = ref(0);
 const maxRoomCardHeight = ref(0);
-const roomError = ref(false);
+const errorRooms = ref(null);
 
 // Areas data
 const areas = ref([]);
@@ -196,146 +205,156 @@ const areasLoading = ref(true);
 // Map to store activity names to their IDs
 const activityIdsMap = ref({});
 
-// Dopo aver caricato le stanze, calcola l'altezza massima delle card
-async function updateMaxRoomCardHeight() {
-  await nextTick();
-  const cards = document.querySelectorAll('.room-card-fixed');
-  let maxHeight = 0;
-  cards.forEach(card => {
-    maxHeight = Math.max(maxHeight, card.offsetHeight);
-  });
-  maxRoomCardHeight.value = maxHeight;
-}
+// Reviews data
+const reviews = ref([]);
+const isLoadingReviews = ref(true);
+const errorReviews = ref(null);
 
-// Modifica fetchRooms per aggiornare l'altezza dopo il caricamento
-async function fetchRooms() {
+// Funzione per recuperare le recensioni
+const fetchReviews = async () => {
+  isLoadingReviews.value = true;
+  errorReviews.value = null;
   try {
-    isLoading.value = true;
-    roomError.value = false;
-    
-    const response = await fetch(`${API_URL}/rooms`);
+    const response = await fetch(`${API_URL}/reviews?lang=${selectedLang.value}`);
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    const data = await response.json();
+    if (data.reviews && data.reviews.length > 0) {
+      reviews.value = data.reviews;
+    } else {
+      errorReviews.value = 'No reviews found';
+    }
+  } catch (err) {
+    errorReviews.value = 'Failed to load reviews';
+  } finally {
+    isLoadingReviews.value = false;
+  }
+};
+
+// Funzione per aggiornare l'altezza massima delle card delle stanze
+const updateMaxRoomCardHeight = async () => {
+  // Attendiamo che il DOM si aggiorni dopo il cambio di room
+  await nextTick();
+  
+  // Troviamo tutte le room cards
+  const roomCards = document.querySelectorAll('.room-card');
+  
+  // Se non ci sono cards, non c'è nulla da fare
+  if (roomCards.length === 0) return;
+  
+  // Troviamo l'altezza massima tra tutte le cards
+  let maxHeight = 0;
+  roomCards.forEach(card => {
+    const height = card.offsetHeight;
+    if (height > maxHeight) {
+      maxHeight = height;
+    }
+  });
+  
+  // Impostiamo l'altezza massima nel ref
+  maxHeight += 40; // Aggiungiamo un po' di spazio per sicurezza
+  maxRoomCardHeight.value = maxHeight;
+};
+
+// Funzione per recuperare le stanze
+const fetchRooms = async () => {
+  isLoadingRooms.value = true;
+  errorRooms.value = null;
+  try {
+    const response = await fetch(`${API_URL}/rooms?lang=${selectedLang.value}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
     const data = await response.json();
-    if (data.rooms && data.rooms.length > 0) {
-      let roomsData = data.rooms.map(room => ({
-        id: room.id,
-        name: room.title || 'Yoga Room',
-        image: room.image || `/images/default-room.jpg`,
-        description: room.description || 'Experience the tranquility of our specially designed yoga spaces.',
-        features: room.features || [],
-        activities: room.activities || [],
-        quote: room.quote || 'Experience the transformative power of our specially designed spaces.'
-      }));
-      rooms.value = roomsData.reverse();
-    } else {
-      // No rooms data found
-      roomError.value = true;
-      rooms.value = [];
+    
+    if (data.error) {
+      console.error('API Error:', data.error);
+      errorRooms.value = data.error;
     }
-  } catch (error) {
-    console.error('Error fetching rooms:', error);
-    roomError.value = true;
-    rooms.value = [];
+    else if (data.rooms && data.rooms.length > 0) {
+      rooms.value = data.rooms.map(room => {
+        // Process room data if needed
+        return {
+          ...room,
+          // Any additional transformations
+        };
+      });
+      
+      // Reset current index to 0 when rooms are fetched
+      currentRoomIndex.value = 0;
+    } else {
+      console.log('No rooms found');
+      rooms.value = [];
+      errorRooms.value = 'No rooms found';
+    }
+  } catch (err) {
+    console.error('Error fetching rooms:', err);
+    errorRooms.value = err.message;
   } finally {
-    isLoading.value = false;
+    isLoadingRooms.value = false;
     if (rooms.value.length > 0) {
       updateMaxRoomCardHeight();
     }
   }
-}
+};
 
 // Aggiorna l'altezza anche quando cambi stanza
 watch(currentRoomIndex, () => {
   updateMaxRoomCardHeight();
 });
 
+// Usa selectedLang globale per fetchRooms e fetchReviews
+watch(selectedLang, fetchRooms);
+watch(selectedLang, fetchReviews);
+
 function nextRoom() {
-  if (rooms.value.length === 0) return;
-  currentRoomIndex.value = (currentRoomIndex.value + 1) % rooms.value.length;
+  if (currentRoomIndex.value < rooms.value.length - 1) {
+    currentRoomIndex.value++;
+  } else {
+    currentRoomIndex.value = 0;
+  }
 }
 
 function prevRoom() {
-  if (rooms.value.length === 0) return;
-  currentRoomIndex.value = (currentRoomIndex.value - 1 + rooms.value.length) % rooms.value.length;
+  if (currentRoomIndex.value > 0) {
+    currentRoomIndex.value--;
+  } else {
+    currentRoomIndex.value = rooms.value.length - 1;
+  }
 }
 
-// Fetch rooms and activities when component is mounted
-onMounted(async () => {
-  await fetchRooms();
-  fetchAreas();
+onMounted(() => {
+  fetchRooms();
+  fetchReviews();
   
-  // Fetch all activities to build the name-to-id mapping
-  try {
-    const response = await fetch(`${API_URL}/activities`);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.activities && data.activities.length > 0) {
-        // Build a map from activity names to IDs
-        const mapping = {};
-        data.activities.forEach(activity => {
-          mapping[activity.title] = activity.id;
-          
-          // Add aliases for common variations
-          if (activity.title === 'Mindfulness Meditation') {
-            mapping['Meditation'] = activity.id;
-            mapping['Mindfulness'] = activity.id;
-          } else if (activity.title === 'Mindful Pottery') {
-            mapping['Mindful Potter'] = activity.id;
-          } else if (activity.title === 'Wellness Workshop') {
-            mapping['Wellness Workshops'] = activity.id;
-          } else if (activity.title === 'Kundalini Yoga') {
-            mapping['Kundalini & Hatha yoga'] = activity.id;
-          } else if (activity.title === 'Ashtanga Yoga') {
-            mapping['Ashtanga yoga'] = activity.id;
-          }
-        });
-        
-        activityIdsMap.value = mapping;
-        console.log('Activity ID mapping created:', activityIdsMap.value);
+  // Fetch areas
+  areasLoading.value = true;
+  fetch(`${API_URL}/areas`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.areas) {
+        areas.value = data.areas;
       }
-    }
-  } catch (error) {
-    console.error('Error fetching activities for ID mapping:', error);
-  }
+    })
+    .catch(error => {
+      console.error('Error fetching areas:', error);
+      // In case of error, use default areas
+      areas.value = getDefaultAreas();
+    })
+    .finally(() => {
+      areasLoading.value = false;
+    });
 });
 
-// Fetch areas data from API
-async function fetchAreas() {
-  try {
-    areasLoading.value = true;
-    console.log('Fetching areas from API...');
-    const response = await fetch(`${API_URL}/areas`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log('Areas data received:', data);
-    
-    if (data.areas && data.areas.length > 0) {
-      // Store the areas data directly
-      areas.value = data.areas;
-      console.log('Successfully loaded areas from server:', areas.value);
-    } else {
-      console.error('No areas found in API response or areas array is empty');
-      setupDefaultAreas();
-    }
-  } catch (error) {
-    console.error('Error fetching areas:', error);
-    setupDefaultAreas();
-  } finally {
-    areasLoading.value = false;
-  }
-}
+// SEO metadata for this page
+useSeoMeta({
+  title: 'Our Center - Serendipity Yoga',
+  description: 'Explore our serene and spacious center designed to provide a comfortable and inspiring environment for your yoga practice.',
+});
 
-// Setup default areas as fallback
-function setupDefaultAreas() {
-  console.log('Setting up default areas');
-  areas.value = [
+// Default areas per quando l'API fallisce
+function getDefaultAreas() {
+  return [
     {
       id: 1,
       title: 'Bar',
@@ -357,20 +376,23 @@ function setupDefaultAreas() {
   ];
 }
 
+// Oriental Room image for main section
+const orientalRoomImage = computed(() => {
+  if (rooms.value.length === 0) {
+    return '/images/meditation.jpg'; // Fallback image if no rooms are available
+  }
+  const orientalRoom = rooms.value.find(room => room.name && room.name.toLowerCase().includes('oriental'));
+  return orientalRoom ? orientalRoom.image : rooms.value[0].image;
+});
+
 // Get area image by title
 function getAreaImage(title) {
-  console.log(`Getting image for area: ${title}`);
-  console.log('Current areas:', areas.value);
-  
   // Find the area case-insensitively
   const area = areas.value.find(a => a.title.toLowerCase() === title.toLowerCase());
   
   if (area && area.image) {
-    console.log(`Found image for ${title}:`, area.image);
     return area.image;
   }
-  
-  console.log(`No image found for ${title}, using fallback`);
   
   // Fallback images if not found in database
   const fallbackImages = {
@@ -380,17 +402,6 @@ function getAreaImage(title) {
   };
   
   return fallbackImages[title.toLowerCase()];
-}
-
-// Get area description by title
-function getAreaDescription(title) {
-  // Find the area case-insensitively
-  const area = areas.value.find(a => a.title.toLowerCase() === title.toLowerCase());
-  
-  if (area && area.description) {
-    return area.description;
-  }
-  return getDefaultDescription(title);
 }
 
 // Handle image loading errors
@@ -408,15 +419,6 @@ function getDefaultDescription(areaTitle) {
   
   return descriptions[areaTitle.toLowerCase()] || 'Experience the transformative power of our specially designed spaces.';
 }
-
-// Oriental Room image for main section
-const orientalRoomImage = computed(() => {
-  if (rooms.value.length === 0) {
-    return '/images/meditation.jpg'; // Fallback image if no rooms are available
-  }
-  const orientalRoom = rooms.value.find(room => room.name.toLowerCase().includes('oriental'));
-  return orientalRoom ? orientalRoom.image : rooms.value[0].image;
-});
 
 // Get default image for an area based on title
 function getDefaultImageForArea(title) {
@@ -464,12 +466,6 @@ async function navigateToActivity(activityName) {
     window.location.href = '/activities';
   }
 }
-
-// SEO metadata for this page
-useSeoMeta({
-  title: 'Our Center - Serendipity Yoga',
-  description: 'Explore our serene and spacious center designed to provide a comfortable and inspiring environment for your yoga practice.',
-})
 </script>
 
 <style scoped>

@@ -37,7 +37,7 @@
         >
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-secondary dark:border-[#9ACBD0]/50">
-              <img :src="review.image" alt="" class="w-full h-full object-cover" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <p class="text-gray-800 dark:text-gray-200 font-medium text-sm">{{ review.name }}</p>
@@ -65,7 +65,7 @@
             </p>
             
             <div v-if="review.image_url && review.featured" class="mt-2 rounded-lg overflow-hidden">
-              <img :src="review.image_url" alt="" class="w-full h-auto" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image_url" alt="" class="w-full h-auto" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             
             <div v-if="review.activity_id" class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -87,22 +87,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { API_URL } from '../../utils/api';
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue';
 
 const reviews = ref([]);
 const isLoading = ref(true);
 const hasError = ref(false);
 const errorMessage = ref('');
 
-function handleImageError(event) {
-  event.target.src = '/images/profile-placeholder.jpg';
-}
-
-onMounted(async () => {
+const fetchReviews = async () => {
   try {
     isLoading.value = true;
-    const response = await fetch(`${API_URL}/reviews`);
+    const response = await fetch(`${API_URL}/reviews?lang=${selectedLang.value}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -113,7 +110,8 @@ onMounted(async () => {
     }
     if (data.reviews && data.reviews.length > 0) {
       reviews.value = data.reviews.map(review => {
-        const user = review.user || {};
+        // Ora participant è direttamente collegato alla review tramite idparticipant
+        const participant = review.participant || {};
         const activity = review.activity || {};
         let formattedDate = review.date;
         try {
@@ -126,13 +124,13 @@ onMounted(async () => {
           }
         } catch (err) {}
         return {
-          name: user.name || 'Yoga Enthusiast',
-          image: user.image || '/images/profile-placeholder.jpg',
+          name: participant.name || 'Yoga Enthusiast',
+          image: participant.image,
           rating: review.stars || 0,
           date: formattedDate,
-          text: review.review || '',
+          text: review.review || '', // questo ora arriva dalla tabella review_translations
           class_attended: activity.title || '',
-          activity_id: activity.id || null,
+          activity_id: review.idactivity || null,
           featured: review.stars === 5
         };
       });
@@ -146,7 +144,10 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-});
+};
+
+onMounted(fetchReviews);
+watch(selectedLang, fetchReviews);
 </script>
 
 <style scoped>

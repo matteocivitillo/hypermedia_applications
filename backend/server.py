@@ -17,7 +17,8 @@ app.add_middleware(
       "https://hypermedia-applications-rho.vercel.app",  # Frontend su Vercel
       "http://localhost:5173",
       "http://localhost:8080",
-      "http://localhost:3000"
+      "http://localhost:3000",
+      "http://localhost:3001"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
@@ -37,11 +38,36 @@ async def get_messaggi():
 
 # Get all teachers information
 @app.get("/teachers")
-async def get_teachers():
-    resp = supabase.table("teacher")\
-                   .select("*")\
-                   .execute()
-    return {"teachers": resp.data}
+async def get_teachers(lang: str = "en"):
+    try:
+        base_resp = supabase.table("teacher_base").select("*").execute()
+        base_teachers = base_resp.data if base_resp.data else []
+        if not base_teachers:
+            return {"teachers": []}
+        teachers = []
+        missing_translations = []
+        for base in base_teachers:
+            trans_resp = supabase.table("teacher_translations")\
+                .select("*")\
+                .eq("teacher_id", base["id"])\
+                .eq("language_code", lang)\
+                .execute()
+            trans_data = trans_resp.data[0] if trans_resp.data else None
+            if not trans_data:
+                missing_translations.append(base["id"])
+                continue
+            teacher = {**base, **trans_data}
+            if "teacher_id" in teacher:
+                del teacher["teacher_id"]
+            if "language_code" in teacher:
+                del teacher["language_code"]
+            teachers.append(teacher)
+        if missing_translations:
+            return {"error": f"Missing translations for teachers: {missing_translations}", "teachers": []}
+        return {"teachers": teachers}
+    except Exception as e:
+        print(f"Error fetching teachers: {str(e)}")
+        return {"teachers": [], "error": str(e)}
 
 # Get a specific teacher by ID
 @app.get("/teacher/{teacher_id}")
@@ -87,25 +113,101 @@ async def get_teacher_activities(teacher_id: str):
 
 # ------------------- ACTIVITIES ------------------- #
 
-# Get all activities information
+# Get all activities information with translations for a specific language (NO fallback)
 @app.get("/activities")
-async def get_activities():
-    resp = supabase.table("activity")\
-                   .select("*")\
-                   .execute()
-    return {"activities": resp.data}
+async def get_activities(lang: str = "en"):
+    """
+    Restituisce tutte le attività con le traduzioni nella lingua richiesta.
+    Se una traduzione non esiste per una attività, ritorna errore.
+    """
+    try:
+        # Prendi tutte le attività base
+        base_resp = supabase.table("activity_base").select("*").execute()
+        base_activities = base_resp.data if base_resp.data else []
+
+        if not base_activities:
+            return {"activities": []}
+
+        activities = []
+        missing_translations = []
+        for base in base_activities:
+            # Prendi la traduzione nella lingua richiesta
+            trans_resp = supabase.table("activity_translations")\
+                .select("*")\
+                .eq("activity_id", base["id"])\
+                .eq("language_code", lang)\
+                .execute()
+            trans_data = trans_resp.data[0] if trans_resp.data else None
+
+            # Se non trovi la traduzione, aggiungi a missing_translations
+            if not trans_data:
+                missing_translations.append(base["id"])
+                continue
+
+            # Unisci i dati base e tradotti
+            activity = {**base, **trans_data}
+            # Rimuovi campi duplicati
+            if "activity_id" in activity:
+                del activity["activity_id"]
+            if "language_code" in activity:
+                del activity["language_code"]
+
+            activities.append(activity)
+
+        if missing_translations:
+            return {"error": f"Missing translations for activities: {missing_translations}", "activities": []}
+
+        return {"activities": activities}
+    except Exception as e:
+        print(f"Error fetching activities: {str(e)}")
+        return {"activities": [], "error": str(e)}
 
 # Get a specific activity by ID
 @app.get("/activity/{activity_id}")
-async def get_activity(activity_id: str):
-    resp = supabase.table("activity")\
-                   .select("*")\
-                   .eq("id", activity_id)\
-                   .execute()
-    
-    if len(resp.data) > 0:
-        return {"activity": resp.data[0]}
-    return {"activity": None}
+async def get_activity(activity_id: str, lang: str = "en"):
+    try:
+        # Fetch base activity data
+        base_resp = supabase.table("activity_base").select("*").eq("id", activity_id).execute()
+        
+        if not base_resp.data or len(base_resp.data) == 0:
+            return {"activity": None}
+            
+        base_activity = base_resp.data[0]
+        
+        # Fetch translation for the requested language
+        trans_resp = supabase.table("activity_translations")\
+            .select("*")\
+            .eq("activity_id", activity_id)\
+            .eq("language_code", lang)\
+            .execute()
+            
+        # If translation not found in requested language, try English as fallback
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            if lang != "en":
+                trans_resp = supabase.table("activity_translations")\
+                    .select("*")\
+                    .eq("activity_id", activity_id)\
+                    .eq("language_code", "en")\
+                    .execute()
+        
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            # If still no translation, return just the base data
+            return {"activity": base_activity}
+            
+        # Merge base and translation data
+        trans_data = trans_resp.data[0]
+        activity = {**base_activity, **trans_data}
+        
+        # Remove duplicate fields
+        if "activity_id" in activity:
+            del activity["activity_id"]
+        if "language_code" in activity:
+            del activity["language_code"]
+            
+        return {"activity": activity}
+    except Exception as e:
+        print(f"Error fetching activity {activity_id}: {str(e)}")
+        return {"activity": None, "error": str(e)}
 
 # Get a specific activity by name
 @app.get("/activity_by_name")
@@ -203,55 +305,36 @@ async def get_activity_id_from_name(name: str):
 
 # Get all rooms information
 @app.get("/rooms")
-async def get_rooms():
-    resp = supabase.table("room")\
-                   .select("*")\
-                   .execute()
-    
-    # Process room data to ensure proper formatting
-    rooms_data = []
-    for room in resp.data:
-        # Process features - ensure it's a list
-        features = room.get("features", "")
-        if isinstance(features, str):
-            # Split by hyphens if they exist
-            if "-" in features:
-                features_list = [f.strip() for f in features.split("-") if f.strip()]
-            # Otherwise split by commas if they exist
-            elif "," in features:
-                features_list = [f.strip() for f in features.split(",") if f.strip()]
-            else:
-                # Single feature or empty
-                features_list = [features] if features else []
-        else:
-            features_list = features if isinstance(features, list) else []
-        
-        # Ottieni le attività dalla tabella activity che hanno questa stanza come roomid
-        room_id = room.get("id")
-        
-        # Cerca le attività che hanno questa stanza come roomid
-        activities_resp = supabase.table("activity")\
-                                 .select("title")\
-                                 .eq("roomid", room_id)\
-                                 .execute()
-        
-        # Estrai i titoli delle attività dai risultati
-        activities = [a["title"] for a in activities_resp.data] if activities_resp.data else []
-        
-        # Format the processed room data
-        processed_room = {
-            "id": room.get("id"),
-            "title": room.get("title", ""),
-            "description": room.get("description", ""),
-            "features": features_list,
-            "activities": activities,
-            "image": room.get("image", ""),
-            "quote": room.get("quote", "Experience the transformative power of our specially designed spaces.")
-        }
-        
-        rooms_data.append(processed_room)
-    
-    return {"rooms": rooms_data}
+async def get_rooms(lang: str = "en"):
+    try:
+        base_resp = supabase.table("room_base").select("*").execute()
+        base_rooms = base_resp.data if base_resp.data else []
+        if not base_rooms:
+            return {"rooms": []}
+        rooms = []
+        missing_translations = []
+        for base in base_rooms:
+            trans_resp = supabase.table("room_translations")\
+                .select("*")\
+                .eq("room_id", base["id"])\
+                .eq("language_code", lang)\
+                .execute()
+            trans_data = trans_resp.data[0] if trans_resp.data else None
+            if not trans_data:
+                missing_translations.append(base["id"])
+                continue
+            room = {**base, **trans_data}
+            if "room_id" in room:
+                del room["room_id"]
+            if "language_code" in room:
+                del room["language_code"]
+            rooms.append(room)
+        if missing_translations:
+            return {"error": f"Missing translations for rooms: {missing_translations}", "rooms": []}
+        return {"rooms": rooms}
+    except Exception as e:
+        print(f"Error fetching rooms: {str(e)}")
+        return {"rooms": [], "error": str(e)}
 
 # Get a specific room by ID
 @app.get("/room/{room_id}")
@@ -384,41 +467,80 @@ async def get_area(area_id: str):
 # ------------------- REVIEWS ------------------- #
 
 @app.get("/reviews")
-async def get_reviews():
+async def get_reviews(lang: str = "en"):
     try:
-        # Prendi tutte le reviews
-        reviews_resp = supabase.table("reviews").select("*").order("date", desc=True).execute()
-        if not reviews_resp.data:
+        # Recupera le review di base
+        base_resp = supabase.table("reviews_base").select("*").order("date", desc=True).execute()
+        base_reviews = base_resp.data if base_resp.data else []
+        if not base_reviews:
             return {"reviews": []}
-        reviews_data = []
-        for review in reviews_resp.data:
-            # User info
-            user = {"name": None, "image": None}
-            if review.get("iduser"):
-                user_resp = supabase.table("participant").select("name,image").eq("id", review["iduser"]).execute()
-                if user_resp.data and len(user_resp.data) > 0:
-                    user = {
-                        "name": user_resp.data[0].get("name"),
-                        "image": user_resp.data[0].get("image")
-                    }
-            # Activity info
-            activity = {"title": None, "id": None}
-            if review.get("idactivity"):
-                activity_resp = supabase.table("activity").select("id,title").eq("id", review["idactivity"]).execute()
-                if activity_resp.data and len(activity_resp.data) > 0:
-                    activity = {
-                        "id": activity_resp.data[0].get("id"),
-                        "title": activity_resp.data[0].get("title")
-                    }
-            # Compose review object
-            reviews_data.append({
-                "review": review.get("review"),
-                "stars": review.get("stars"),
-                "date": review.get("date"),
-                "user": user,
-                "activity": activity
-            })
-        return {"reviews": reviews_data}
+            
+        reviews = []
+        missing_translations = []
+        
+        for base in base_reviews:
+            # Recupera le traduzioni per questa lingua
+            trans_resp = supabase.table("review_translations")\
+                .select("*")\
+                .eq("review_id", base["id"])\
+                .eq("language_code", lang)\
+                .execute()
+            trans_data = trans_resp.data[0] if trans_resp.data else None
+            
+            if not trans_data:
+                missing_translations.append(base["id"])
+                continue
+                
+            # Recupera le informazioni del partecipante
+            participant_resp = supabase.table("participant")\
+                .select("*")\
+                .eq("id", base["idparticipant"])\
+                .execute()
+            participant_data = participant_resp.data[0] if participant_resp.data else {}
+            
+            # Recupera le informazioni dell'attività
+            activity_resp = supabase.table("activity_base")\
+                .select("id")\
+                .eq("id", base["idactivity"])\
+                .execute()
+                
+            activity_id = None
+            if activity_resp.data and len(activity_resp.data) > 0:
+                activity_id = activity_resp.data[0].get("id")
+                
+                # Recupera il titolo dell'attività nella lingua specifica
+                activity_trans_resp = supabase.table("activity_translations")\
+                    .select("title")\
+                    .eq("activity_id", activity_id)\
+                    .eq("language_code", lang)\
+                    .execute()
+                    
+                activity_title = None
+                if activity_trans_resp.data and len(activity_trans_resp.data) > 0:
+                    activity_title = activity_trans_resp.data[0].get("title")
+            
+            # Unisci tutti i dati
+            review = {**base, **trans_data}
+            if "review_id" in review:
+                del review["review_id"]
+            if "language_code" in review:
+                del review["language_code"]
+                
+            # Aggiungi le informazioni del partecipante
+            review["participant"] = participant_data
+            
+            # Aggiungi le informazioni dell'attività
+            review["activity"] = {
+                "id": activity_id,
+                "title": activity_title
+            }
+            
+            reviews.append(review)
+            
+        if missing_translations:
+            return {"error": f"Missing translations for reviews: {missing_translations}", "reviews": []}
+            
+        return {"reviews": reviews}
     except Exception as e:
         print(f"Error fetching reviews: {str(e)}")
         return {"reviews": [], "error": str(e)}

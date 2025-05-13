@@ -82,7 +82,7 @@
                         <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
                           <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
                             <img 
-                              :src="t.image ? (t.image.startsWith('http') ? t.image : `http://localhost:8000${t.image}`) : '/images/teacher-placeholder.jpg'" 
+                              :src="t.image ? (t.image.startsWith('http') ? t.image : `/images/teacher-placeholder.jpg`) : '/images/teacher-placeholder.jpg'" 
                               alt="" 
                               class="w-full h-full object-cover object-center" 
                               onerror="this.src='/images/teacher-placeholder.jpg'"
@@ -94,9 +94,9 @@
                               :to="`/singleteacher?id=${t.id}`" 
                               class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
                             >
-                              {{ t.name }} {{ t.surname }}
+                              {{ t.name || '' }} {{ t.surname || '' }}
                             </NuxtLink>
-                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ t.name }} {{ t.surname }}</p>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ t.name || '' }} {{ t.surname || '' }}</p>
                           </div>
                         </div>
                       </div>
@@ -109,7 +109,7 @@
                         <div class="flex items-center gap-3">
                           <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
                             <img 
-                              :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
+                              :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `/images/teacher-placeholder.jpg`) : '/images/teacher-placeholder.jpg'" 
                               alt="" 
                               class="w-full h-full object-cover object-center" 
                               onerror="this.src='/images/teacher-placeholder.jpg'"
@@ -121,9 +121,9 @@
                               :to="`/singleteacher?id=${teacher.id}`" 
                               class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
                             >
-                              {{ teacher.name }} {{ teacher.surname }}
+                              {{ teacher.name || '' }} {{ teacher.surname || '' }}
                             </NuxtLink>
-                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name }} {{ teacher.surname }}</p>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name || '' }} {{ teacher.surname || '' }}</p>
                             <p class="text-gray-500 dark:text-gray-400 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
                           </div>
                         </div>
@@ -233,7 +233,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
@@ -319,12 +319,12 @@ const fetchActivity = async () => {
   if (!activityId.value) {
     error.value = 'No activity ID specified'
     isLoading.value = false
-    return
+    return Promise.resolve() // Return resolved promise if no ID
   }
   
   try {
     console.log("Fetching activity with ID:", activityId.value)
-    const response = await fetch(`${API_URL}/activity/${activityId.value}`)
+    const response = await fetch(`${API_URL}/activity/${activityId.value}?lang=${selectedLang.value}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -354,14 +354,14 @@ const fetchActivity = async () => {
   } finally {
     isLoading.value = false
   }
+  
+  return Promise.resolve() // Always return a resolved promise
 }
 
 // Fetch teacher data when the activity is loaded
 const fetchTeacherByActivity = async () => {
   if (!activityId.value) {
-    error.value = 'No activity ID specified'
-    isLoading.value = false
-    return
+    return;
   }
 
   try {
@@ -374,16 +374,24 @@ const fetchTeacherByActivity = async () => {
     const data = await response.json();
 
     if (data.teacher) {
-      // Store the teacher data in a ref or reactive variable
-      teacher.value = data.teacher;
+      // Make sure teacher data is properly formatted
+      if (Array.isArray(data.teacher)) {
+        // It's already an array
+        teacher.value = data.teacher;
+      } else {
+        // It's an object, put it in an array
+        teacher.value = [data.teacher];
+      }
+      console.log("Teacher data loaded:", teacher.value);
     } else {
-      error.value = 'Teacher not found'
+      // No teacher assigned to this activity (not an error)
+      console.log("No teacher assigned to this activity");
+      teacher.value = null;
     }
   } catch (err) {
     console.error('Error fetching teacher:', err)
-    error.value = 'Failed to load teacher data'
-  } finally {
-    isLoading.value = false
+    // Don't set error.value here as it affects the whole page
+    teacher.value = null;
   }
 };
 
@@ -422,9 +430,10 @@ const fetchSimilarActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(() => {
-  fetchActivity();
-  fetchTeacherByActivity();
-  fetchSimilarActivities();
+  fetchActivity().then(() => {
+    fetchTeacherByActivity();
+    fetchSimilarActivities();
+  });
 });
 
 // Scroll to top function with safety check
@@ -444,9 +453,13 @@ watch(() => route.query.id, (newId) => {
     imageError.value = false;
     room.value = null;
     similarActivities.value = [];
-    fetchActivity();
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
+    
+    // Make sure fetchActivity completes first, then call the others
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
+    });
+    
     // Scroll to top after content is loaded with safety check
     setTimeout(() => {
       scrollToTop();
@@ -476,6 +489,21 @@ watch(activity, (newActivity) => {
     useSeoMeta({
       title: `${newActivity.title || newActivity.name} - Serendipity Yoga`, // Use template literals
       description: 'Discover the details of our activities, including the teachers, schedule, and more.',
+    });
+  }
+});
+
+// Watch for language changes to reload activity data
+watch(selectedLang, () => {
+  if (activityId.value) {
+    isLoading.value = true;
+    error.value = null;
+    imageLoaded.value = false;
+    imageError.value = false;
+    
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
     });
   }
 });

@@ -145,7 +145,7 @@
   
   <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import NavBar from '~/components/home/NavBar.vue'
+  import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
   import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
   import SiteFooter from '~/components/home/SiteFooter.vue'
   import ActivityCard from '~/components/misc/ActivityCardSuggestion.vue'
@@ -181,7 +181,7 @@
     }
     
     try {
-      const response = await fetch(`${API_URL}/teacher/${teacherId.value}`)
+      const response = await fetch(`${API_URL}/teacher/${teacherId.value}?lang=${selectedLang.value}`)
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
@@ -226,7 +226,8 @@
   }
   
   // Fetch data when component mounts
-  onMounted(fetchTeacher)
+  onMounted(() => fetchTeacher(route.query.id))
+  watch(selectedLang, () => fetchTeacher(route.query.id))
 
   // SEO metadata for this page
   watch(teacher, (newTeacher) => {

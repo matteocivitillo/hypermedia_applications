@@ -136,8 +136,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import { API_URL } from '../utils/api'
@@ -158,19 +158,17 @@ const otherActivities = computed(() => {
   return activities.value.filter(activity => activity.type === 'Activity')
 })
 
-// Fetch activities from API
+// Fetch activities from API con lingua
 const fetchActivities = async () => {
+  isLoading.value = true
+  error.value = null
   try {
-    const response = await fetch(`${API_URL}/activities`)
-    
+    const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
-    
     const data = await response.json()
-    
     if (data.activities && data.activities.length > 0) {
-      // Aggiungi proprietà per tracciare lo stato di caricamento immagine per ogni attività
       activities.value = data.activities.map(activity => ({
         ...activity,
         imageLoaded: false,
@@ -189,6 +187,7 @@ const fetchActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(fetchActivities)
+watch(selectedLang, fetchActivities)
 
  // SEO metadata for this page
  useSeoMeta({

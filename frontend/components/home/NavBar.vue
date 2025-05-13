@@ -11,10 +11,9 @@
 
         <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
         <div class="lg:hidden flex items-center">
-          <div class="mr-5">
-            <ThemeToggle />
-          </div>
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn">
+          <ThemeToggle class="mr-2" />
+          <LanguageSelector v-model="selectedLang" :languages="languages" />
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn ml-2">
             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -98,9 +97,9 @@
             Contact
           </router-link>
           
-          <!-- Theme Toggle for desktop -->
-          <div class="flex items-center">
+          <div class="flex items-center space-x-2">
             <ThemeToggle />
+            <LanguageSelector v-model="selectedLang" :languages="languages" />
           </div>
         </div>
       </div>
@@ -186,17 +185,35 @@
 
 <script>
 import ThemeToggle from './ThemeToggle.vue'
+import LanguageSelector from './LanguageSelector.vue'
+import { ref, watch } from 'vue'
+
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' }
+];
+
+// Stato globale della lingua selezionata con valore di default
+export const selectedLang = ref('en')
+
+// La parte di localStorage verrà gestita nel ciclo di vita del componente
 
 export default {
   components: {
-    ThemeToggle
+    ThemeToggle,
+    LanguageSelector
   },
   data() {
     return {
       dropdownOpen: false,
       dropdownTimer: null,
       mobileMenuOpen: false,
-      mobileCenterOpen: false
+      mobileCenterOpen: false,
+      languages,
+      selectedLang
     }
   },
   methods: {
@@ -241,7 +258,9 @@ export default {
       // First navigate to center page if not already there
       if (this.$route.path !== '/center') {
         // Set a flag in localStorage to indicate we want to scroll to rooms after navigation
-        localStorage.setItem('scrollToTarget', 'rooms');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToTarget', 'rooms');
+        }
         this.$router.push('/center');
       } else {
         this.scrollToSection('rooms');
@@ -254,7 +273,9 @@ export default {
       // First navigate to center page if not already there
       if (this.$route.path !== '/center') {
         // Set a flag in localStorage to indicate we want to scroll to areas after navigation
-        localStorage.setItem('scrollToTarget', 'areas');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToTarget', 'areas');
+        }
         this.$router.push('/center');
       } else {
         this.scrollToSection('areas');
@@ -267,7 +288,9 @@ export default {
       // Navigate to home page if not already there
       if (this.$route.path !== '/') {
         // We want to scroll to the highlighted activities section
-        localStorage.setItem('scrollToHighlights', 'true');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToHighlights', 'true');
+        }
         this.$router.push('/');
       } else {
         this.scrollToHighlights();
@@ -327,8 +350,16 @@ export default {
     }
   },
   mounted() {
+    // Inizializza selectedLang con il valore da localStorage, se disponibile
+    if (typeof localStorage !== 'undefined') {
+      const storedLang = localStorage.getItem('language');
+      if (storedLang) {
+        selectedLang.value = storedLang;
+      }
+    }
+    
     // Check if we need to scroll to a section on page load
-    if (this.$route.path === '/center') {
+    if (this.$route.path === '/center' && typeof localStorage !== 'undefined') {
       // Check if we're coming from another page with the intent to scroll to a section
       const scrollTarget = localStorage.getItem('scrollToTarget');
       if (scrollTarget) {
@@ -346,7 +377,7 @@ export default {
           this.scrollToSection(sectionId);
         }, 300);
       }
-    } else if (this.$route.path === '/' && localStorage.getItem('scrollToHighlights') === 'true') {
+    } else if (this.$route.path === '/' && typeof localStorage !== 'undefined' && localStorage.getItem('scrollToHighlights') === 'true') {
       // If we're on the homepage and want to scroll to highlights
       localStorage.removeItem('scrollToHighlights');
       setTimeout(() => {
@@ -368,6 +399,12 @@ export default {
           this.scrollToSection(sectionId);
         }, 300);
       }
+    },
+    selectedLang(newLang) {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('language', newLang);
+      }
+      this.$emit('language-changed', newLang);
     }
   }
 }

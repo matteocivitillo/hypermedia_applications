@@ -91,47 +91,46 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import { ref, onMounted, watch } from 'vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import { API_URL } from '../utils/api'
 
-// Data refs
-const teachers = ref([])
-const isLoading = ref(true)
-const error = ref(null)
+// Define languages locally
+const languages = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' }
+];
 
-// Fetch teachers from API
+const teachers = ref([])
+const isLoadingTeachers = ref(true)
+const errorTeachers = ref(null)
+
 const fetchTeachers = async () => {
+  isLoadingTeachers.value = true
+  errorTeachers.value = null
   try {
-    const response = await fetch(`${API_URL}/teachers`)
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-    
+    const response = await fetch(`${API_URL}/teachers?lang=${selectedLang.value}`)
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
     const data = await response.json()
-    
     if (data.teachers && data.teachers.length > 0) {
-      teachers.value = data.teachers.map(teacher => ({
-        ...teacher,
-        imageLoaded: false,
-        imageError: false
-      }))
+      teachers.value = data.teachers
     } else {
-      error.value = 'No teachers found'
+      errorTeachers.value = 'No teachers found'
     }
   } catch (err) {
-    console.error('Error fetching teachers:', err)
-    error.value = 'Failed to load teachers'
+    errorTeachers.value = 'Failed to load teachers'
   } finally {
-    isLoading.value = false
+    isLoadingTeachers.value = false
   }
 }
 
-// Fetch data when component mounts
 onMounted(fetchTeachers)
+watch(selectedLang, fetchTeachers)
 
 // SEO metadata for this page
 useSeoMeta({
