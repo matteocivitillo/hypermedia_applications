@@ -26,6 +26,7 @@
         <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full min-h-[400px] flex">
           <div class="w-full h-full rounded-lg overflow-hidden flex-1">
             <iframe 
+              title="mapFrame"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.1963944546087!2d9.215345715774256!3d45.47972887910111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c6dd6eaaaaab%3A0xdee5f7e0c5112208!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI!5e0!3m2!1sit!2sit!4v1614356585378!5m2!1sit!2sit" 
               width="100%" 
               height="100%" 
@@ -33,7 +34,7 @@
               allowfullscreen="" 
               loading="lazy"
               class="rounded-lg"
-            ></iframe>
+            >Map frame</iframe>
           </div>
         </div>
         

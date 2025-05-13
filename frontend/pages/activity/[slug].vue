@@ -170,19 +170,19 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <!-- Ideal For -->
                   <div v-if="activity.ideal_for" class="space-y-2">
-                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('idealFor') }}</h3>
+                    <h1 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('idealFor') }}</h1>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.ideal_for"></p>
                   </div>
                   
                   <!-- Main Benefit -->
                   <div v-if="activity.main_benefit" class="space-y-2">
-                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('mainBenefit') }}</h3>
+                    <h1 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('mainBenefit') }}</h1>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.main_benefit"></p>
                   </div>
                   
                   <!-- Additional Info -->
                   <div v-if="activity.additional_info" class="space-y-2">
-                    <h3 class="text-xl font-bold text-black dark:text-white">{{ t('additionalInfo') }}</h3>
+                    <h1 class="text-xl font-bold text-black dark:text-white">{{ t('additionalInfo') }}</h1>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.additional_info"></p>
                   </div>
                 </div>

@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="w-full md:w-1/2 flex flex-col justify-center">
-      <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-4">{{ room.name || room.title }}</h3>
+      <h1 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-4">{{ room.name || room.title }}</h1>
       
       <!-- Description Paragraph -->
       <div class="prose prose-lg dark:prose-invert mb-6">
@@ -20,7 +20,7 @@
       
       <!-- Features Paragraph -->
       <div v-if="room.features && room.features.length > 0" class="mb-6">
-        <h4 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('features') }}:</h4>
+        <h1 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('features') }}:</h1>
         <ul class="list-disc pl-5 space-y-1">
           <li v-for="feature in room.features" :key="feature" class="text-gray-700 dark:text-gray-300">
             {{ feature }}
@@ -30,7 +30,7 @@
       
       <!-- Activities Paragraph -->
       <div v-if="room.activities && room.activities.length > 0" class="mb-6">
-        <h4 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('activities') }}:</h4>
+        <h1 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('activities') }}:</h1>
         <div class="flex flex-wrap gap-2">
           <nuxt-link 
             v-for="activity in room.activities" 
@@ -45,7 +45,7 @@
       
       <!-- Legacy Activities (if no DB activities were found) -->
       <div v-else-if="room.legacy_activities && room.legacy_activities.length > 0" class="mb-6">
-        <h4 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('activities') }}:</h4>
+        <h1 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">{{ t('activities') }}:</h1>
         <div class="flex flex-wrap gap-2">
           <nuxt-link 
             v-for="activity in room.legacy_activities" 

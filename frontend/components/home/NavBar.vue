@@ -4,7 +4,7 @@
       <div class="flex items-center justify-between h-20">
         <!-- Logo Left, always same size -->
         <div class="flex items-center -ml-12">
-          <a href="/" class="flex items-center">
+          <a href="#" class="flex items-center">
             <img src="/images/logo-small.svg" alt="Serendipity yoga" style="height: 48px; width: auto;" class="flex-shrink-0" />  <!-- The word "logo" is usually not an important part of the image's content or function.-->
           </a>
         </div>
@@ -13,7 +13,10 @@
         <div class="lg:hidden flex items-center">
           <ThemeToggle class="mr-2" />
           <LanguageSelector v-model="selectedLang" :languages="languages" />
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn ml-2">
+          <button @click="mobileMenuOpen = !mobileMenuOpen" 
+            class="text-white focus:outline-none p-1 rounded-lg hamburger-btn ml-2"
+            :aria-label="mobileMenuOpen ? t('closeMenu') : t('openMenu')"
+            :aria-expanded="mobileMenuOpen">
             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -37,26 +40,32 @@
               <a href="#" 
                 @click.prevent="goToCenter"
                 class="text-white text-base font-medium hover:text-gray-300 transition-colors flex items-center"
-                :class="{ 'border-b-2 border-white pb-1': isActive('/center') || isActive('/rooms') || isActive('/areas') }">
+                :class="{ 'border-b-2 border-white pb-1': isActive('/center') || isActive('/rooms') || isActive('/areas') }"
+                aria-haspopup="true"
+                :aria-expanded="dropdownOpen"
+                aria-controls="center-dropdown-menu">
                 {{ t('theCenter') }}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </a>
               <div v-show="dropdownOpen" 
-                  class="dropdown-menu">
+                  id="center-dropdown-menu"
+                  class="dropdown-menu"
+                  role="menu"
+                  aria-labelledby="center-dropdown-trigger">
                 <div class="py-2 px-4">
-                  <a href="#" 
+                  <a href="/center" 
                      @click.prevent="goToCenter"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     {{ t('ourPhilosophy') }}
                   </a>
-                  <a href="#" 
+                  <a href="/center" 
                      @click.prevent="goToRooms"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     {{ t('rooms') }}
                   </a>
-                  <a href="#" 
+                  <a href="/center" 
                      @click.prevent="goToAreas"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
                     {{ t('areas') }}
@@ -106,12 +115,16 @@
     </div>
 
     <!-- Mobile Menu (visibile quando aperto) -->
-    <div v-show="mobileMenuOpen" class="lg:hidden bg-primary border-t border-gray-200 dark:border-gray-700">
+    <div v-show="mobileMenuOpen" 
+         class="lg:hidden bg-primary border-t border-gray-200 dark:border-gray-700"
+         role="menu"
+         aria-labelledby="mobile-menu-trigger">
       <div class="container mx-auto px-6 py-4">
         <router-link to="/" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/') }"
-          @click="mobileMenuOpen = false">
+          @click="mobileMenuOpen = false"
+          role="menuitem">
           {{ t('home') }}
         </router-link>
         
@@ -119,24 +132,32 @@
         <div class="relative">
           <button @click="mobileCenterOpen = !mobileCenterOpen"
                 class="w-full text-left py-3 text-white text-base font-medium hover:text-gray-300 focus:outline-none flex justify-between items-center"
-                :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/center') }">
+                :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/center') }"
+                aria-haspopup="true"
+                :aria-expanded="mobileCenterOpen"
+                aria-controls="mobile-center-menu"
+                role="menuitem">
             <span>{{ t('theCenter') }}</span>
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <div v-show="mobileCenterOpen" class="pl-4 border-l-2 border-[#9ACBD0] ml-2 mt-2 mb-2 rounded-r-lg bg-[#006A7115] dark:bg-white/5">
-            <a href="#" 
+          <div v-show="mobileCenterOpen" 
+               id="mobile-center-menu"
+               class="pl-4 border-l-2 border-[#9ACBD0] ml-2 mt-2 mb-2 rounded-r-lg bg-[#006A7115] dark:bg-white/5"
+               role="menu"
+               aria-labelledby="mobile-center-trigger">
+            <a href="/center" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               {{ t('ourPhilosophy') }}
             </a>
-            <a href="#" 
+            <a href="/center" 
               @click.prevent="goToRooms(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               {{ t('rooms') }}
             </a>
-            <a href="#" 
+            <a href="/center" 
               @click.prevent="goToAreas(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
               {{ t('areas') }}
@@ -211,7 +232,9 @@ const translations = {
     highlights: 'Highlights',
     teachers: 'Teachers',
     prices: 'Prices',
-    contact: 'Contact'
+    contact: 'Contact',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
   },
   it: {
     home: 'Home',
@@ -223,7 +246,9 @@ const translations = {
     highlights: 'In Evidenza',
     teachers: 'Insegnanti',
     prices: 'Prezzi',
-    contact: 'Contatti'
+    contact: 'Contatti',
+    openMenu: 'Apri menu',
+    closeMenu: 'Chiudi menu',
   },
   fr: {
     home: 'Accueil',
@@ -235,7 +260,9 @@ const translations = {
     highlights: 'À la Une',
     teachers: 'Professeurs',
     prices: 'Tarifs',
-    contact: 'Contact'
+    contact: 'Contact',
+    openMenu: 'Ouvrir le menu',
+    closeMenu: 'Fermer le menu',
   },
   de: {
     home: 'Startseite',
@@ -247,7 +274,9 @@ const translations = {
     highlights: 'Highlights',
     teachers: 'Lehrer',
     prices: 'Preise',
-    contact: 'Kontakt'
+    contact: 'Kontakt',
+    openMenu: 'Menü öffnen',
+    closeMenu: 'Menü schließen',
   },
   zh: {
     home: '首页',
@@ -259,7 +288,9 @@ const translations = {
     highlights: '精选',
     teachers: '教师',
     prices: '价格',
-    contact: '联系我们'
+    contact: '联系我们',
+    openMenu: '打开菜单',
+    closeMenu: '关闭菜单',
   }
 };
 

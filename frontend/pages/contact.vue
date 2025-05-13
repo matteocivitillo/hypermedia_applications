@@ -16,61 +16,113 @@
           
           <div class="max-w-4xl mx-auto space-y-6">
             <!-- FAQ Item 1 -->
-            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8 cursor-pointer">
-              <div class="flex justify-between items-center">
+            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8">
+              <button 
+                @click="toggleFaq(0)"
+                @keydown.enter="toggleFaq(0)"
+                @keydown.space="toggleFaq(0)"
+                class="w-full flex justify-between items-center focus:outline-none"
+                :aria-expanded="openFaqs[0]"
+                :aria-controls="'faq-content-0'"
+                role="button"
+                tabindex="0">
                 <h3 class="text-xl font-medium dark:text-white">{{ t('faq1Title') }}</h3>
                 <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-500 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-              </div>
-              <div class="mt-4 hidden">
+              </button>
+              <div 
+                :id="'faq-content-0'"
+                class="mt-4"
+                :class="{ 'hidden': !openFaqs[0] }"
+                role="region"
+                :aria-labelledby="'faq-title-0'">
                 <p class="text-gray-600 dark:text-gray-300">{{ t('faq1Answer') }}</p>
               </div>
             </div>
             
             <!-- FAQ Item 2 -->
-            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8 cursor-pointer">
-              <div class="flex justify-between items-center">
+            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8">
+              <button 
+                @click="toggleFaq(1)"
+                @keydown.enter="toggleFaq(1)"
+                @keydown.space="toggleFaq(1)"
+                class="w-full flex justify-between items-center focus:outline-none"
+                :aria-expanded="openFaqs[1]"
+                :aria-controls="'faq-content-1'"
+                role="button"
+                tabindex="0">
                 <h3 class="text-xl font-medium dark:text-white">{{ t('faq2Title') }}</h3>
                 <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-500 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-              </div>
-              <div class="mt-4 hidden">
+              </button>
+              <div 
+                :id="'faq-content-1'"
+                class="mt-4"
+                :class="{ 'hidden': !openFaqs[1] }"
+                role="region"
+                :aria-labelledby="'faq-title-1'">
                 <p class="text-gray-600 dark:text-gray-300">{{ t('faq2Answer') }}</p>
               </div>
             </div>
             
             <!-- FAQ Item 3 -->
-            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8 cursor-pointer">
-              <div class="flex justify-between items-center">
+            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8">
+              <button 
+                @click="toggleFaq(2)"
+                @keydown.enter="toggleFaq(2)"
+                @keydown.space="toggleFaq(2)"
+                class="w-full flex justify-between items-center focus:outline-none"
+                :aria-expanded="openFaqs[2]"
+                :aria-controls="'faq-content-2'"
+                role="button"
+                tabindex="0">
                 <h3 class="text-xl font-medium dark:text-white">{{ t('faq3Title') }}</h3>
                 <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-500 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-              </div>
-              <div class="mt-4 hidden">
+              </button>
+              <div 
+                :id="'faq-content-2'"
+                class="mt-4"
+                :class="{ 'hidden': !openFaqs[2] }"
+                role="region"
+                :aria-labelledby="'faq-title-2'">
                 <p class="text-gray-600 dark:text-gray-300">{{ t('faq3Answer') }}</p>
               </div>
             </div>
             
             <!-- FAQ Item 4 -->
-            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8 cursor-pointer">
-              <div class="flex justify-between items-center">
+            <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-lg dark:shadow-gray-900/70 p-8">
+              <button 
+                @click="toggleFaq(3)"
+                @keydown.enter="toggleFaq(3)"
+                @keydown.space="toggleFaq(3)"
+                class="w-full flex justify-between items-center focus:outline-none"
+                :aria-expanded="openFaqs[3]"
+                :aria-controls="'faq-content-3'"
+                role="button"
+                tabindex="0">
                 <h3 class="text-xl font-medium dark:text-white">{{ t('faq4Title') }}</h3>
                 <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-500 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
-              </div>
-              <div class="mt-4 hidden">
+              </button>
+              <div 
+                :id="'faq-content-3'"
+                class="mt-4"
+                :class="{ 'hidden': !openFaqs[3] }"
+                role="region"
+                :aria-labelledby="'faq-title-3'">
                 <p class="text-gray-600 dark:text-gray-300">{{ t('faq4Answer') }}</p>
               </div>
             </div>
@@ -248,25 +300,18 @@ useSeoMeta({
   title: t('seoTitle'),
   description: t('seoDescription'),
 })
+
+const openFaqs = ref([false, false, false, false]);
+
+const toggleFaq = (index) => {
+  openFaqs.value[index] = !openFaqs.value[index];
+};
 </script>
 
 <script>
 export default {
   mounted() {
-    // Add event listeners for FAQ toggles
-    document.querySelectorAll('.bg-gray-50.rounded-xl.shadow-lg.p-8, .bg-gray-50.dark\\:bg-gray-600.rounded-xl.shadow-lg.dark\\:shadow-gray-900\\/70.p-8').forEach(card => {
-      card.addEventListener('click', function() {
-        const content = this.querySelector('.mt-4');
-        const svg = this.querySelector('svg path');
-        content.classList.toggle('hidden');
-        
-        if (content.classList.contains('hidden')) {
-          svg.setAttribute('d', 'M19 9l-7 7-7-7');
-        } else {
-          svg.setAttribute('d', 'M19 14l-7-7-7 7');
-        }
-      });
-    });
+    // Remove the old event listeners as we now use Vue's event handling
   }
 }
 </script> 

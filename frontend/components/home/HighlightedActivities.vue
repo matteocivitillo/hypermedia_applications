@@ -38,6 +38,8 @@
         
         <!-- Navigation Arrows -->
         <button 
+          id="previousButton"
+          title="Previous activity"
           @click="prevSlide"
           class="absolute -left-4 top-1/2 -translate-y-1/2 bg-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-primary-dark transition-colors duration-300 z-20"
           style="transform: translateY(-50%) translateX(-50%);"
@@ -48,6 +50,8 @@
         </button>
         
         <button 
+          id="nextButton"
+          title="Next activity"
           @click="nextSlide"
           class="absolute -right-4 top-1/2 -translate-y-1/2 bg-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-primary-dark transition-colors duration-300 z-20"
           style="transform: translateY(-50%) translateX(50%);"
@@ -60,6 +64,8 @@
         <!-- Dots Navigation: 3 dots for 5 cards, each dot for a window of 3 cards -->
         <div class="flex justify-center mt-8 space-x-2">
           <button 
+            id="activityDot"
+            title="Highlighted activity"
             v-for="i in 3" 
             :key="i"
             @click="goToSlide(i-1)"

@@ -59,7 +59,7 @@
                     {{ teacher.role }}
                   </span>
                 </div>
-                <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ teacher.name }} {{ teacher.surname }}</h3>
+                <h1 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ teacher.name }} {{ teacher.surname }}</h1>
                 <div class="flex flex-wrap gap-2 mt-2">
                   <span v-if="teacher.main_expertise && teacher.main_expertise.includes('&')" 
                         class="bg-white bg-opacity-80 text-gray-600 px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">

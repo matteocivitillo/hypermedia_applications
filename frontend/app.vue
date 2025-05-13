@@ -1,8 +1,12 @@
 <template>
-  <div>
+  <div :lang="selectedLang">
     <NuxtPage />
   </div>
 </template>
+
+<script setup>
+import { selectedLang } from '~/components/home/NavBar.vue'
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
