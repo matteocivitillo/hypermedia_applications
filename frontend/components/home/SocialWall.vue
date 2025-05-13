@@ -1,12 +1,12 @@
 <template>
   <section class="py-20 bg-gray-50 dark:bg-gray-700">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">Yoga Stories</h2>
-      <p class="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">See what our community members have to say about their transformative experiences with us.</p>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">{{ t('yogaStories') }}</h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">{{ t('yogaStoriesSubtitle') }}</p>
       
       <!-- Social Media Links - spostato sopra le recensioni -->
       <div class="mb-12 text-center">
-        <h3 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">Follow Us</h3>
+        <h3 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">{{ t('followUs') }}</h3>
         <div class="flex justify-center space-x-6">
           <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-[#9ACBD0] transition-colors duration-300">
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -95,6 +95,41 @@ const reviews = ref([]);
 const isLoading = ref(true);
 const hasError = ref(false);
 const errorMessage = ref('');
+
+// Translations
+const translations = {
+  en: {
+    yogaStories: 'Yoga Stories',
+    yogaStoriesSubtitle: 'See what our community members have to say about their transformative experiences with us.',
+    followUs: 'Follow Us'
+  },
+  it: {
+    yogaStories: 'Storie di Yoga',
+    yogaStoriesSubtitle: 'Scopri cosa hanno da dire i membri della nostra comunità sulle loro esperienze trasformative con noi.',
+    followUs: 'Seguici'
+  },
+  fr: {
+    yogaStories: 'Histoires de Yoga',
+    yogaStoriesSubtitle: 'Découvrez ce que les membres de notre communauté ont à dire sur leurs expériences transformatrices avec nous.',
+    followUs: 'Suivez-nous'
+  },
+  de: {
+    yogaStories: 'Yoga-Geschichten',
+    yogaStoriesSubtitle: 'Erfahren Sie, was die Mitglieder unserer Gemeinschaft über ihre transformativen Erfahrungen mit uns zu sagen haben.',
+    followUs: 'Folgen Sie uns'
+  },
+  zh: {
+    yogaStories: '瑜伽故事',
+    yogaStoriesSubtitle: '看看我们社区成员对他们与我们一起的变革性体验有何评价。',
+    followUs: '关注我们'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 
 const fetchReviews = async () => {
   try {

@@ -1,7 +1,7 @@
 <template>
   <section class="py-20 dark:bg-gray-800">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">About Us</h2>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">{{ t('aboutUs') }}</h2>
       
       <!-- Contact Info -->
       <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12 mb-12">
@@ -39,50 +39,50 @@
         
         <!-- Working Hours -->
         <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full">
-          <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-6">Working Hours</h3>
+          <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-6">{{ t('workingHours') }}</h3>
           
           <div class="overflow-hidden rounded-lg">
             <table class="w-full border-collapse table-alternate">
               <thead>
                 <tr>
-                  <th class="bg-primary text-white py-3 font-medium text-base text-left pl-4">DAY</th>
-                  <th class="bg-primary text-white py-3 font-medium text-base text-center">OPEN</th>
-                  <th class="bg-primary text-white py-3 font-medium text-base text-center">CLOSE</th>
+                  <th class="bg-primary text-white py-3 font-medium text-base text-left pl-4">{{ t('day') }}</th>
+                  <th class="bg-primary text-white py-3 font-medium text-base text-center">{{ t('open') }}</th>
+                  <th class="bg-primary text-white py-3 font-medium text-base text-center">{{ t('close') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr class="border-b border-gray-200 dark:border-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Monday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('monday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">09:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">21:00</td>
                 </tr>
                 <tr class="border-b border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Tuesday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('tuesday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">09:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">21:00</td>
                 </tr>
                 <tr class="border-b border-gray-200 dark:border-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Wednesday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('wednesday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">09:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">21:00</td>
                 </tr>
                 <tr class="border-b border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Thursday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('thursday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">09:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">21:00</td>
                 </tr>
                 <tr class="border-b border-gray-200 dark:border-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Friday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('friday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">09:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">21:00</td>
                 </tr>
                 <tr class="border-b border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-500">
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Saturday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('saturday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">10:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">19:00</td>
                 </tr>
                 <tr>
-                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">Sunday</td>
+                  <td class="py-3 pl-4 text-gray-700 dark:text-gray-300">{{ t('sunday') }}</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">10:00</td>
                   <td class="py-3 text-center text-gray-700 dark:text-gray-300">15:00</td>
                 </tr>
@@ -96,7 +96,87 @@
 </template>
 
 <script setup>
-// Contact section doesn't need data fetching
+import { selectedLang } from '../home/NavBar.vue';
+
+// Translations
+const translations = {
+  en: {
+    aboutUs: 'About Us',
+    workingHours: 'Working Hours',
+    day: 'DAY',
+    open: 'OPEN',
+    close: 'CLOSE',
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday'
+  },
+  it: {
+    aboutUs: 'Chi Siamo',
+    workingHours: 'Orari di Apertura',
+    day: 'GIORNO',
+    open: 'APRE',
+    close: 'CHIUDE',
+    monday: 'Lunedì',
+    tuesday: 'Martedì',
+    wednesday: 'Mercoledì',
+    thursday: 'Giovedì',
+    friday: 'Venerdì',
+    saturday: 'Sabato',
+    sunday: 'Domenica'
+  },
+  fr: {
+    aboutUs: 'À Propos de Nous',
+    workingHours: 'Heures d\'Ouverture',
+    day: 'JOUR',
+    open: 'OUVERT',
+    close: 'FERMÉ',
+    monday: 'Lundi',
+    tuesday: 'Mardi',
+    wednesday: 'Mercredi',
+    thursday: 'Jeudi',
+    friday: 'Vendredi',
+    saturday: 'Samedi',
+    sunday: 'Dimanche'
+  },
+  de: {
+    aboutUs: 'Über Uns',
+    workingHours: 'Öffnungszeiten',
+    day: 'TAG',
+    open: 'ÖFFNET',
+    close: 'SCHLIEßT',
+    monday: 'Montag',
+    tuesday: 'Dienstag',
+    wednesday: 'Mittwoch',
+    thursday: 'Donnerstag',
+    friday: 'Freitag',
+    saturday: 'Samstag',
+    sunday: 'Sonntag'
+  },
+  zh: {
+    aboutUs: '关于我们',
+    workingHours: '营业时间',
+    day: '天',
+    open: '开放',
+    close: '关闭',
+    monday: '星期一',
+    tuesday: '星期二',
+    wednesday: '星期三',
+    thursday: '星期四',
+    friday: '星期五',
+    saturday: '星期六',
+    sunday: '星期日'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 </script>
 
 <style scoped>

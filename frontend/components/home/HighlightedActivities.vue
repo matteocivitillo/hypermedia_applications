@@ -1,7 +1,7 @@
 <template>
   <section class="py-16 bg-white dark:bg-gray-800">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">Highlighted Activities</h2>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-12">{{ t('highlightedActivities') }}</h2>
       
       <div v-if="isLoading" class="flex justify-center">
         <div class="animate-pulse flex space-x-4">
@@ -70,29 +70,93 @@
       </div>
       
       <div v-else class="text-center py-8">
-        <p class="text-xl text-gray-600 dark:text-gray-300">Could not load activities. Please try again later.</p>
+        <p class="text-xl text-gray-600 dark:text-gray-300">{{ t('couldNotLoadActivities') }}</p>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { API_URL } from '../../utils/api';
+import { selectedLang } from '../home/NavBar.vue';
 
 const activities = ref([]);
 const currentIndex = ref(0);
 const isLoading = ref(true);
 
-// List of activities we want to display
+// List of activities we want to display with variations in different languages
 const highlightedActivityNames = [
+  // English
+  'Zumba', 'Zumba Fitness',
+  'Meditation', 'Mindfulness', 'Mindfulness Meditation',
+  'Ceramics', 'Pottery', 'Mindful Pottery',
+  'Water Yoga', 'Aqua Yoga',
+  'Sunset Yoga',
+  'Dance Fit Fusion', 'Dance Fitness',
+  
+  // Italian
+  'Zumba', 'Fitness Zumba',
+  'Meditazione', 'Mindfulness', 'Meditazione Mindfulness',
+  'Ceramica', 'Ceramica Consapevole', 'Pottery',
+  'Yoga in Acqua', 'Yoga Acquatico',
+  'Yoga al Tramonto',
+  'Danza Fitness', 'Fusion Dance',
+  
+  // French
+  'Zumba', 'Zumba Fitness',
+  'Méditation', 'Pleine Conscience',
+  'Céramique', 'Poterie',
+  'Yoga Aquatique',
+  'Yoga au Coucher du Soleil',
+  'Danse Fitness',
+  
+  // German
   'Zumba',
-  'Meditation',
-  'Ceramics',
+  'Meditation', 'Achtsamkeit',
+  'Keramik', 'Töpfern',
+  'Wasser-Yoga', 'Aqua-Yoga',
+  'Sonnenuntergang-Yoga',
+  'Tanz-Fitness',
+  
+  // Chinese (using pinyin for simplicity)
+  'Zumba',
+  'Meditation', 'Mindfulness',
+  'Ceramics', 'Pottery',
   'Water Yoga',
   'Sunset Yoga',
-  'Dance Fit Fusion'
+  'Dance Fitness'
 ];
+
+// Traduzioni
+const translations = {
+  en: {
+    highlightedActivities: 'Highlighted Activities',
+    couldNotLoadActivities: 'Could not load activities. Please try again later.'
+  },
+  it: {
+    highlightedActivities: 'Attività in Evidenza',
+    couldNotLoadActivities: 'Impossibile caricare le attività. Riprova più tardi.'
+  },
+  fr: {
+    highlightedActivities: 'Activités en Vedette',
+    couldNotLoadActivities: 'Impossible de charger les activités. Veuillez réessayer plus tard.'
+  },
+  de: {
+    highlightedActivities: 'Hervorgehobene Aktivitäten',
+    couldNotLoadActivities: 'Aktivitäten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.'
+  },
+  zh: {
+    highlightedActivities: '精选活动',
+    couldNotLoadActivities: '无法加载活动。请稍后再试。'
+  }
+};
+
+// Funzione per ottenere traduzioni
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 
 const visibleSlides = 3;
 const totalDots = 3; // For 5 cards, always 3 dots
@@ -124,72 +188,156 @@ function isHighlightedActivity(title) {
   // Normalize activity names for comparison
   const normalizedTitle = title.toLowerCase().trim();
   
+  // Log per debug
+  console.log(`Checking activity: "${normalizedTitle}"`);
+  
   // Check direct matches and known variations
-  return highlightedActivityNames.some(name => {
+  for (const name of highlightedActivityNames) {
     const normalizedName = name.toLowerCase().trim();
     
     // Direct match
-    if (normalizedTitle === normalizedName) return true;
+    if (normalizedTitle === normalizedName) {
+      console.log(`Found direct match: ${normalizedTitle} = ${normalizedName}`);
+      return true;
+    }
     
-    // Check for variations
+    // Check if the title contains the name (more lenient matching)
+    if (normalizedTitle.includes(normalizedName)) {
+      console.log(`Found partial match: ${normalizedTitle} contains ${normalizedName}`);
+      return true;
+    }
+    
+    // Check for variations of meditation
     if (normalizedName === 'meditation' && 
-        (normalizedTitle === 'mindfulness meditation' || 
-         normalizedTitle === 'mindfulness')) return true;
+        (normalizedTitle.includes('meditation') || 
+         normalizedTitle.includes('mindfulness'))) {
+      console.log(`Found meditation match: ${normalizedTitle}`);
+      return true;
+    }
     
+    // Check for variations of ceramics
     if (normalizedName === 'ceramics' && 
-        (normalizedTitle === 'mindful pottery' || 
-         normalizedTitle === 'pottery')) return true;
+        (normalizedTitle.includes('pottery') || 
+         normalizedTitle.includes('ceramic'))) {
+      console.log(`Found ceramics match: ${normalizedTitle}`);
+      return true;
+    }
     
-    if (normalizedName === 'water yoga' && 
-        normalizedTitle.includes('water') && 
-        normalizedTitle.includes('yoga')) return true;
+    // Check for variations of yoga
+    if ((normalizedName === 'water yoga' || normalizedName === 'sunset yoga') && 
+        normalizedTitle.includes('yoga')) {
+      console.log(`Found yoga match: ${normalizedTitle} for ${normalizedName}`);
+      return true;
+    }
     
-    if (normalizedName === 'sunset yoga' && 
-        normalizedTitle.includes('sunset') && 
-        normalizedTitle.includes('yoga')) return true;
-    
+    // Check for variations of dance
     if (normalizedName === 'dance fit fusion' && 
-        (normalizedTitle.includes('dance') && 
-         normalizedTitle.includes('fit') || 
-         normalizedTitle.includes('fitness'))) return true;
+        (normalizedTitle.includes('dance') || 
+         normalizedTitle.includes('fitness') || 
+         normalizedTitle.includes('zumba'))) {
+      console.log(`Found dance match: ${normalizedTitle}`);
+      return true;
+    }
     
-    return false;
-  });
+    // Check for Zumba specifically
+    if (normalizedName === 'zumba' && 
+        normalizedTitle.includes('zumba')) {
+      console.log(`Found zumba match: ${normalizedTitle}`);
+      return true;
+    }
+  }
+  
+  return false;
 }
 
-onMounted(async () => {
+// Fetch activities function
+const fetchActivities = async () => {
+  isLoading.value = true;
+  activities.value = []; // Resetta le attività
+  
   try {
-    const response = await fetch(`${API_URL}/activities`);
+    const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
     const data = await response.json();
+    console.log(`Fetched ${data.activities?.length || 0} activities in language: ${selectedLang.value}`);
+    
     if (data.activities && data.activities.length > 0) {
+      // Mostra le prime 5 attività per debug
+      const sampleActivities = data.activities.slice(0, 5);
+      console.log("Sample activities:", sampleActivities.map(a => ({
+        id: a.id,
+        title: a.title || a.name,
+        type: a.type
+      })));
+      
       // Filter activities to include only those from our highlighted list
       const filteredActivities = data.activities.filter(activity => 
         isHighlightedActivity(activity.title || activity.name)
       );
       
-      // If we have at least one of the highlighted activities, show them
-      activities.value = filteredActivities.map(activity => ({
-        ...activity,
-        name: activity.name || activity.title,
-        image_url: activity.image || `/images/activities/${activity.id}.jpg`
-      }));
+      console.log(`Found ${filteredActivities.length} activities matching our highlighted list`);
+      
+      // Se non abbiamo abbastanza attività filtrate, mostriamo alcune attività casuali
+      if (filteredActivities.length < 3) {
+        console.log("Not enough highlighted activities, adding some random activities");
+        
+        // Seleziona attività casuali che non sono già nella lista filtrata
+        const remainingActivities = data.activities.filter(a => 
+          !filteredActivities.some(fa => fa.id === a.id)
+        );
+        
+        // Prendi attività casuali fino a raggiungere almeno 3 attività totali
+        const randomActivities = remainingActivities
+          .sort(() => Math.random() - 0.5)
+          .slice(0, Math.max(3 - filteredActivities.length, 0));
+        
+        // Unisci le attività filtrate con quelle casuali
+        const combinedActivities = [...filteredActivities, ...randomActivities];
+        console.log(`Total activities after adding random: ${combinedActivities.length}`);
+        
+        // Aggiorna la lista di attività
+        activities.value = combinedActivities.map(activity => ({
+          ...activity,
+          name: activity.title || activity.name,
+          image_url: activity.image || `/images/activities/${activity.id}.jpg`
+        }));
+      } else {
+        // Se abbiamo abbastanza attività filtrate, le usiamo direttamente
+        activities.value = filteredActivities.map(activity => ({
+          ...activity,
+          name: activity.title || activity.name,
+          image_url: activity.image || `/images/activities/${activity.id}.jpg`
+        }));
+      }
+      
+      // Log final activities
+      console.log(`Final activities to display: ${activities.value.length}`);
+    } else {
+      console.error("No activities found in response");
     }
   } catch (error) {
     console.error('Failed to fetch activities:', error);
   } finally {
     isLoading.value = false;
   }
+};
+
+onMounted(() => {
+  fetchActivities();
+  // Auto slide every 5 seconds
+  autoSlideInterval = setInterval(nextSlide, 5000);
+});
+
+// Quando cambia la lingua, aggiorna le attività
+watch(selectedLang, () => {
+  fetchActivities();
 });
 
 // Auto slide every 5 seconds
 let autoSlideInterval;
-onMounted(() => {
-  autoSlideInterval = setInterval(nextSlide, 5000);
-});
 
 // Clean up interval when component is unmounted
 onUnmounted(() => {

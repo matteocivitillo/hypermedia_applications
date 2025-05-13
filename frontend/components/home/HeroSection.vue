@@ -14,16 +14,50 @@
         
         <div class="max-w-3xl space-y-6 text-left pl-4 md:pl-16 self-start">
           <h1 class="text-5xl md:text-6xl font-bold text-white leading-tight">
-            Discover Your Inner Peace Through Yoga
+            {{ t('heroTitle') }}
           </h1>
           <p class="text-xl text-gray-200">
-            Join our community and transform your life with expert guidance in yoga, meditation, and mindful living.
+            {{ t('heroSubtitle') }}
           </p>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+import { selectedLang } from '../home/NavBar.vue';
+
+// Translations
+const translations = {
+  en: {
+    heroTitle: 'Discover Your Inner Peace Through Yoga',
+    heroSubtitle: 'Join our community and transform your life with expert guidance in yoga, meditation, and mindful living.'
+  },
+  it: {
+    heroTitle: 'Scopri la Tua Pace Interiore Con lo Yoga',
+    heroSubtitle: 'Unisciti alla nostra comunità e trasforma la tua vita con la guida di esperti in yoga, meditazione e vita consapevole.'
+  },
+  fr: {
+    heroTitle: 'Découvrez Votre Paix Intérieure Grâce au Yoga',
+    heroSubtitle: 'Rejoignez notre communauté et transformez votre vie avec les conseils d\'experts en yoga, méditation et vie consciente.'
+  },
+  de: {
+    heroTitle: 'Entdecke Deinen Inneren Frieden Durch Yoga',
+    heroSubtitle: 'Werde Teil unserer Gemeinschaft und verändere dein Leben mit fachkundiger Anleitung in Yoga, Meditation und bewusstem Leben.'
+  },
+  zh: {
+    heroTitle: '通过瑜伽发现内心平静',
+    heroSubtitle: '加入我们的社区，在瑜伽、冥想和正念生活方面获得专业指导，改变您的生活。'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
+</script>
 
 <style scoped>
 .dark img {
