@@ -11,10 +11,9 @@
 
         <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
         <div class="lg:hidden flex items-center">
-          <div class="mr-5">
-            <ThemeToggle />
-          </div>
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn">
+          <ThemeToggle class="mr-2" />
+          <LanguageSelector v-model="selectedLang" :languages="languages" />
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white focus:outline-none p-1 rounded-lg hamburger-btn ml-2">
             <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
               <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -27,7 +26,7 @@
           <router-link to="/" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/') }">
-            Home
+            {{ t('home') }}
           </router-link>
           
           <!-- The Center Dropdown -->
@@ -39,7 +38,7 @@
                 @click.prevent="goToCenter"
                 class="text-white text-base font-medium hover:text-gray-300 transition-colors flex items-center"
                 :class="{ 'border-b-2 border-white pb-1': isActive('/center') || isActive('/rooms') || isActive('/areas') }">
-                The Center
+                {{ t('theCenter') }}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -50,17 +49,17 @@
                   <a href="#" 
                      @click.prevent="goToCenter"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Our philosophy
+                    {{ t('ourPhilosophy') }}
                   </a>
                   <a href="#" 
                      @click.prevent="goToRooms"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Rooms
+                    {{ t('rooms') }}
                   </a>
                   <a href="#" 
                      @click.prevent="goToAreas"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Areas
+                    {{ t('areas') }}
                   </a>
                 </div>
               </div>
@@ -70,37 +69,37 @@
           <router-link to="/activities" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/activities') }">
-            Activities
+            {{ t('activities') }}
           </router-link>
           
           <a href="#" 
              @click.prevent="goToHighlights"
              class="text-white text-base font-medium hover:text-gray-300 transition-colors"
              :class="{ 'border-b-2 border-white pb-1': isActive('/highlights') }">
-            Highlights
+            {{ t('highlights') }}
           </a>
           
           <router-link to="/teachers" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/teachers') }">
-            Teachers
+            {{ t('teachers') }}
           </router-link>
           
           <router-link to="/prices" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/prices') }">
-            Prices
+            {{ t('prices') }}
           </router-link>
           
           <router-link to="/contact" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/contact') }">
-            Contact
+            {{ t('contact') }}
           </router-link>
           
-          <!-- Theme Toggle for desktop -->
-          <div class="flex items-center">
+          <div class="flex items-center space-x-2">
             <ThemeToggle />
+            <LanguageSelector v-model="selectedLang" :languages="languages" />
           </div>
         </div>
       </div>
@@ -113,7 +112,7 @@
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/') }"
           @click="mobileMenuOpen = false">
-          Home
+          {{ t('home') }}
         </router-link>
         
         <!-- Mobile Dropdown -->
@@ -121,7 +120,7 @@
           <button @click="mobileCenterOpen = !mobileCenterOpen"
                 class="w-full text-left py-3 text-white text-base font-medium hover:text-gray-300 focus:outline-none flex justify-between items-center"
                 :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/center') }">
-            <span>The Center</span>
+            <span>{{ t('theCenter') }}</span>
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -130,17 +129,17 @@
             <a href="#" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Our philosophy
+              {{ t('ourPhilosophy') }}
             </a>
             <a href="#" 
               @click.prevent="goToRooms(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Rooms
+              {{ t('rooms') }}
             </a>
             <a href="#" 
               @click.prevent="goToAreas(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Areas
+              {{ t('areas') }}
             </a>
           </div>
         </div>
@@ -149,35 +148,35 @@
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/activities') }"
           @click="mobileMenuOpen = false">
-          Activities
+          {{ t('activities') }}
         </router-link>
         
         <a href="#" 
           @click.prevent="goToHighlights(); mobileMenuOpen = false"
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/highlights') }">
-          Highlights
+          {{ t('highlights') }}
         </a>
         
         <router-link to="/teachers" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/teachers') }"
           @click="mobileMenuOpen = false">
-          Teachers
+          {{ t('teachers') }}
         </router-link>
         
         <router-link to="/prices" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/prices') }"
           @click="mobileMenuOpen = false">
-          Prices
+          {{ t('prices') }}
         </router-link>
         
         <router-link to="/contact" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/contact') }"
           @click="mobileMenuOpen = false">
-          Contact
+          {{ t('contact') }}
         </router-link>
       </div>
     </div>
@@ -186,20 +185,109 @@
 
 <script>
 import ThemeToggle from './ThemeToggle.vue'
+import LanguageSelector from './LanguageSelector.vue'
+import { ref, watch } from 'vue'
+
+const languages = [
+  { code: 'en', name: 'English', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/gb.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9nYi5wbmciLCJpYXQiOjE3NDcxNDI5MDEsImV4cCI6MTkwNDgyMjkwMX0.gI5MGHW6Ol-B5QM_oBwC_ijHR6dLUDZZC1vXjH5pmsE' },
+  { code: 'it', name: 'Italiano', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/ita.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9pdGEucG5nIiwiaWF0IjoxNzQ3MTQyODEwLCJleHAiOjE5MDQ4MjI4MTB9.gGqlPw-_1auGlQayER_AzOjv46aMwJh3Y1myQMW_P00' },
+  { code: 'fr', name: 'Français', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/francia.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9mcmFuY2lhLnBuZyIsImlhdCI6MTc0NzE0MjkyMCwiZXhwIjoxOTA0ODIyOTIwfQ.PuOYAY3xRUPlf6BytlmM1OBQnB4nBYnnirVBAHrYOCw' },
+  { code: 'de', name: 'Deutsch', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/germania.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9nZXJtYW5pYS5wbmciLCJpYXQiOjE3NDcxNDI4ODAsImV4cCI6MTkwNDgyMjg4MH0.bz5-eZHqvrAVWLtSeMBWEPmxSoHksxQdCJ6uRBSyIH0' },
+  { code: 'zh', name: '中文', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/cina.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9jaW5hLnBuZyIsImlhdCI6MTc0NzE0MjkzOCwiZXhwIjoxOTA0ODIyOTM4fQ.5D8Z3NPE1X3voQeks9DNx3t9xsUxkR-AJCmFbL8OjuI' }
+];
+
+// Stato globale della lingua selezionata con valore di default
+export const selectedLang = ref('en')
+
+// Traduzioni per la navbar
+const translations = {
+  en: {
+    home: 'Home',
+    theCenter: 'The Center',
+    ourPhilosophy: 'Our Philosophy',
+    rooms: 'Rooms',
+    areas: 'Areas',
+    activities: 'Activities',
+    highlights: 'Highlights',
+    teachers: 'Teachers',
+    prices: 'Prices',
+    contact: 'Contact'
+  },
+  it: {
+    home: 'Home',
+    theCenter: 'Il Centro',
+    ourPhilosophy: 'La Nostra Filosofia',
+    rooms: 'Sale',
+    areas: 'Aree',
+    activities: 'Attività',
+    highlights: 'In Evidenza',
+    teachers: 'Insegnanti',
+    prices: 'Prezzi',
+    contact: 'Contatti'
+  },
+  fr: {
+    home: 'Accueil',
+    theCenter: 'Le Centre',
+    ourPhilosophy: 'Notre Philosophie',
+    rooms: 'Salles',
+    areas: 'Espaces',
+    activities: 'Activités',
+    highlights: 'À la Une',
+    teachers: 'Professeurs',
+    prices: 'Tarifs',
+    contact: 'Contact'
+  },
+  de: {
+    home: 'Startseite',
+    theCenter: 'Das Zentrum',
+    ourPhilosophy: 'Unsere Philosophie',
+    rooms: 'Räume',
+    areas: 'Bereiche',
+    activities: 'Aktivitäten',
+    highlights: 'Highlights',
+    teachers: 'Lehrer',
+    prices: 'Preise',
+    contact: 'Kontakt'
+  },
+  zh: {
+    home: '首页',
+    theCenter: '中心',
+    ourPhilosophy: '我们的理念',
+    rooms: '房间',
+    areas: '区域',
+    activities: '活动',
+    highlights: '精选',
+    teachers: '教师',
+    prices: '价格',
+    contact: '联系我们'
+  }
+};
+
+// Funzione per ottenere traduzioni
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
+
+// La parte di localStorage verrà gestita nel ciclo di vita del componente
 
 export default {
   components: {
-    ThemeToggle
+    ThemeToggle,
+    LanguageSelector
   },
   data() {
     return {
       dropdownOpen: false,
       dropdownTimer: null,
       mobileMenuOpen: false,
-      mobileCenterOpen: false
+      mobileCenterOpen: false,
+      languages,
+      selectedLang
     }
   },
   methods: {
+    t,
     isActive(route) {
       return this.$route && this.$route.path === route;
     },
@@ -241,7 +329,9 @@ export default {
       // First navigate to center page if not already there
       if (this.$route.path !== '/center') {
         // Set a flag in localStorage to indicate we want to scroll to rooms after navigation
-        localStorage.setItem('scrollToTarget', 'rooms');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToTarget', 'rooms');
+        }
         this.$router.push('/center');
       } else {
         this.scrollToSection('rooms');
@@ -254,7 +344,9 @@ export default {
       // First navigate to center page if not already there
       if (this.$route.path !== '/center') {
         // Set a flag in localStorage to indicate we want to scroll to areas after navigation
-        localStorage.setItem('scrollToTarget', 'areas');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToTarget', 'areas');
+        }
         this.$router.push('/center');
       } else {
         this.scrollToSection('areas');
@@ -267,7 +359,9 @@ export default {
       // Navigate to home page if not already there
       if (this.$route.path !== '/') {
         // We want to scroll to the highlighted activities section
-        localStorage.setItem('scrollToHighlights', 'true');
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToHighlights', 'true');
+        }
         this.$router.push('/');
       } else {
         this.scrollToHighlights();
@@ -294,23 +388,33 @@ export default {
     scrollToHighlights() {
       // Find the Highlighted Activities section
       this.$nextTick(() => {
-        // Trova il componente HighlightedActivities
-        const highlightsSections = document.querySelectorAll('section');
-        let highlightsSection = null;
-        
-        // Cerca la sezione che contiene "Highlighted Activities" come testo
-        for (const section of highlightsSections) {
-          if (section.textContent.includes('Highlighted Activities')) {
-            highlightsSection = section;
-            break;
+        // Metodo 1: HighlightedActivities è la seconda section all'interno di main
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+          const sections = mainElement.querySelectorAll(':scope > section');
+          if (sections.length >= 2) {
+            const highlightsSection = sections[1]; // HighlightedActivities è la seconda sezione
+            if (highlightsSection) {
+              // Calculate position to center the element in viewport
+              const elementRect = highlightsSection.getBoundingClientRect();
+              const absoluteElementTop = elementRect.top + window.pageYOffset;
+              const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+              
+              // Smooth scroll with animation
+              window.scrollTo({
+                top: middle,
+                behavior: 'smooth'
+              });
+              return; // Termina qui se abbiamo trovato e scrollato
+            }
           }
         }
         
-        // Fallback alla prima sezione con classe bg-white se non troviamo la sezione per titolo
-        if (!highlightsSection) {
-          highlightsSection = document.querySelector('section.py-12.bg-white');
-        }
-        
+        // Metodo 2: Fallback - cerca una sezione con il componente HighlightedActivities
+        // che di solito ha classi specifiche
+        const highlightsSection = document.querySelector('section.py-16.bg-white') ||
+                                 document.querySelector('section.py-16.dark\\:bg-gray-800');
+                                 
         if (highlightsSection) {
           // Calculate position to center the element in viewport
           const elementRect = highlightsSection.getBoundingClientRect();
@@ -327,8 +431,20 @@ export default {
     }
   },
   mounted() {
+    // Inizializza selectedLang con il valore da localStorage, se disponibile
+    if (typeof localStorage !== 'undefined') {
+      const storedLang = localStorage.getItem('language');
+      if (storedLang) {
+        selectedLang.value = storedLang;
+      } else {
+        // Se non c'è una lingua salvata, imposta inglese come default
+        selectedLang.value = 'en';
+        localStorage.setItem('language', 'en');
+      }
+    }
+    
     // Check if we need to scroll to a section on page load
-    if (this.$route.path === '/center') {
+    if (this.$route.path === '/center' && typeof localStorage !== 'undefined') {
       // Check if we're coming from another page with the intent to scroll to a section
       const scrollTarget = localStorage.getItem('scrollToTarget');
       if (scrollTarget) {
@@ -346,7 +462,7 @@ export default {
           this.scrollToSection(sectionId);
         }, 300);
       }
-    } else if (this.$route.path === '/' && localStorage.getItem('scrollToHighlights') === 'true') {
+    } else if (this.$route.path === '/' && typeof localStorage !== 'undefined' && localStorage.getItem('scrollToHighlights') === 'true') {
       // If we're on the homepage and want to scroll to highlights
       localStorage.removeItem('scrollToHighlights');
       setTimeout(() => {
@@ -368,6 +484,12 @@ export default {
           this.scrollToSection(sectionId);
         }, 300);
       }
+    },
+    selectedLang(newLang) {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('language', newLang);
+      }
+      this.$emit('language-changed', newLang);
     }
   }
 }

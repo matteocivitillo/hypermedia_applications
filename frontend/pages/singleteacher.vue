@@ -2,8 +2,8 @@
     <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
       <NavBar />
       <BreadCrumbs v-if="teacher" :breadcrumbs="[
-        { text: 'Home', url: '/' }, 
-        { text: 'Teachers', url: '/teachers' }, 
+        { text: t('home'), url: '/' }, 
+        { text: t('teachers'), url: '/teachers' }, 
         { text: `${teacher.name} ${teacher.surname}`, url: '/singleteacher' }
       ]" />
       <main class="flex-grow">
@@ -11,7 +11,7 @@
         <div v-if="isLoading" class="flex justify-center items-center h-96 bg-white dark:bg-gray-700">
           <div class="loading-spinner animate-fade-in">
             <div class="spinner"></div>
-            <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading teacher data...</p>
+            <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ t('loadingTeacher') }}</p>
           </div>
         </div>
             
@@ -40,7 +40,7 @@
                         @error="handleImageError"
                       />
                       <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                        <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                        <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                       </div>
                       <div class="absolute inset-x-0 bottom-0 p-6">
                         <div class="flex flex-wrap gap-2 items-center mb-2">
@@ -82,7 +82,7 @@
                         <!-- Role -->
                         <div class="space-y-2">
                           <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                            Role
+                            {{ t('role') }}
                           </span>
                           <p class="text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ teacher.role }}</p>
                         </div>
@@ -90,7 +90,7 @@
                         <!-- Expertise -->
                         <div class="space-y-2">
                           <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                            Expertise
+                            {{ t('expertise') }}
                           </span>
                           <p class="text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ teacher.main_expertise }}</p>
                         </div>
@@ -99,7 +99,7 @@
                       <!-- Right Column: About -->
                       <div class="w-full sm:w-1/2 space-y-2">
                         <span class="bg-white dark:bg-gray-700 bg-opacity-80 border border-primary dark:border-[#9ACBD0] text-primary dark:text-[#9ACBD0] px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                          About
+                          {{ t('about') }}
                         </span>
                         <p class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in">{{ teacher.about }}</p>
                       </div>
@@ -113,17 +113,17 @@
           <!-- Activities Section - Terza sezione su schermi piccoli -->
           <section class="py-14 bg-white dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
             <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
-              <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] mb-8 animate-fade-in text-center">Activities</h2>
+              <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] mb-8 animate-fade-in text-center">{{ t('activities') }}</h2>
               
               <div v-if="isLoadingActivities" class="flex justify-center items-center h-32">
                 <div class="loading-spinner animate-fade-in">
                   <div class="spinner"></div>
-                  <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading activities...</p>
+                  <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ t('loadingActivities') }}</p>
                 </div>
               </div>
               
               <div v-else-if="activities.length === 0" class="text-gray-600 dark:text-gray-300 text-lg animate-fade-in p-8 bg-gray-50 dark:bg-gray-600 rounded-lg text-center">
-                No activities found for this teacher.
+                {{ t('noActivities') }}
               </div>
               
               <!-- Uso flex invece di grid per centrare meglio le card -->
@@ -145,11 +145,91 @@
   
   <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import NavBar from '~/components/home/NavBar.vue'
+  import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
   import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
   import SiteFooter from '~/components/home/SiteFooter.vue'
   import ActivityCard from '~/components/misc/ActivityCardSuggestion.vue'
   import { API_URL } from '../utils/api'
+  
+  // Translations
+  const translations = {
+    en: {
+      home: 'Home',
+      teachers: 'Teachers',
+      role: 'Role',
+      expertise: 'Expertise',
+      about: 'About',
+      activities: 'Activities',
+      loadingTeacher: 'Loading teacher data...',
+      loadingImage: 'Loading image...',
+      loadingActivities: 'Loading activities...',
+      noActivities: 'No activities found for this teacher.',
+      seoTitle: '{name} {surname} - Serendipity Yoga',
+      seoDescription: 'Meet our dedicated teachers and learn more about their expertise and teaching style.'
+    },
+    it: {
+      home: 'Home',
+      teachers: 'Insegnanti',
+      role: 'Ruolo',
+      expertise: 'Specialità',
+      about: 'Informazioni',
+      activities: 'Attività',
+      loadingTeacher: 'Caricamento dati insegnante...',
+      loadingImage: 'Caricamento immagine...',
+      loadingActivities: 'Caricamento attività...',
+      noActivities: 'Nessuna attività trovata per questo insegnante.',
+      seoTitle: '{name} {surname} - Serendipity Yoga',
+      seoDescription: 'Incontra i nostri dedicati insegnanti e scopri di più sulla loro specialità e il loro stile di insegnamento.'
+    },
+    fr: {
+      home: 'Accueil',
+      teachers: 'Professeurs',
+      role: 'Rôle',
+      expertise: 'Expertise',
+      about: 'À propos',
+      activities: 'Activités',
+      loadingTeacher: 'Chargement des données du professeur...',
+      loadingImage: 'Chargement de l\'image...',
+      loadingActivities: 'Chargement des activités...',
+      noActivities: 'Aucune activité trouvée pour ce professeur.',
+      seoTitle: '{name} {surname} - Serendipity Yoga',
+      seoDescription: 'Rencontrez nos professeurs dévoués et découvrez leur expertise et leur style d\'enseignement.'
+    },
+    de: {
+      home: 'Startseite',
+      teachers: 'Lehrer',
+      role: 'Rolle',
+      expertise: 'Expertise',
+      about: 'Über',
+      activities: 'Aktivitäten',
+      loadingTeacher: 'Lehrerdaten werden geladen...',
+      loadingImage: 'Bild wird geladen...',
+      loadingActivities: 'Aktivitäten werden geladen...',
+      noActivities: 'Keine Aktivitäten für diesen Lehrer gefunden.',
+      seoTitle: '{name} {surname} - Serendipity Yoga',
+      seoDescription: 'Lernen Sie unsere engagierten Lehrer kennen und erfahren Sie mehr über ihre Expertise und ihren Unterrichtsstil.'
+    },
+    zh: {
+      home: '首页',
+      teachers: '教师',
+      role: '角色',
+      expertise: '专长',
+      about: '关于',
+      activities: '活动',
+      loadingTeacher: '正在加载教师数据...',
+      loadingImage: '正在加载图片...',
+      loadingActivities: '正在加载活动...',
+      noActivities: '未找到此教师的活动。',
+      seoTitle: '{name} {surname} - Serendipity瑜伽',
+      seoDescription: '认识我们敬业的教师，了解更多关于他们的专长和教学风格。'
+    }
+  };
+  
+  // Function to get translations
+  const t = (key) => {
+    const lang = selectedLang.value;
+    return translations[lang]?.[key] || translations.en[key];
+  };
   
   // Query parameters to get teacher ID
   const route = useRoute()
@@ -181,7 +261,7 @@
     }
     
     try {
-      const response = await fetch(`${API_URL}/teacher/${teacherId.value}`)
+      const response = await fetch(`${API_URL}/teacher/${teacherId.value}?lang=${selectedLang.value}`)
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
@@ -226,14 +306,31 @@
   }
   
   // Fetch data when component mounts
-  onMounted(fetchTeacher)
-
-  // SEO metadata for this page
+  onMounted(() => fetchTeacher(route.query.id))
+  
+  // Watch for language changes to reload data
+  watch(selectedLang, () => {
+    fetchTeacher(route.query.id);
+    
+    // Update SEO if teacher data is already loaded
+    if (teacher.value) {
+      useSeoMeta({
+        title: t('seoTitle')
+          .replace('{name}', teacher.value.name)
+          .replace('{surname}', teacher.value.surname),
+        description: t('seoDescription'),
+      });
+    }
+  })
+  
+  // SEO metadata for this page (on initial load)
   watch(teacher, (newTeacher) => {
     if (newTeacher) {
       useSeoMeta({
-        title: `${newTeacher.name} ${newTeacher.surname} - Serendipity Yoga`, // Use template literals
-        description: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
+        title: t('seoTitle')
+          .replace('{name}', newTeacher.name)
+          .replace('{surname}', newTeacher.surname),
+        description: t('seoDescription'),
       });
     }
   });

@@ -1,12 +1,12 @@
 <template>
   <section class="py-20 bg-gray-50 dark:bg-gray-700">
     <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32">
-      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">Yoga Stories</h2>
-      <p class="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">See what our community members have to say about their transformative experiences with us.</p>
+      <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">{{ t('yogaStories') }}</h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">{{ t('yogaStoriesSubtitle') }}</p>
       
       <!-- Social Media Links - spostato sopra le recensioni -->
       <div class="mb-12 text-center">
-        <h3 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">Follow Us</h3>
+        <h3 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">{{ t('followUs') }}</h3>
         <div class="flex justify-center space-x-6">
           <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-[#9ACBD0] transition-colors duration-300">
             <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -37,7 +37,7 @@
         >
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-secondary dark:border-[#9ACBD0]/50">
-              <img :src="review.image" alt="" class="w-full h-full object-cover" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <p class="text-gray-800 dark:text-gray-200 font-medium text-sm">{{ review.name }}</p>
@@ -65,7 +65,7 @@
             </p>
             
             <div v-if="review.image_url && review.featured" class="mt-2 rounded-lg overflow-hidden">
-              <img :src="review.image_url" alt="" class="w-full h-auto" @error="handleImageError" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image_url" alt="" class="w-full h-auto" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             
             <div v-if="review.activity_id" class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -87,22 +87,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { API_URL } from '../../utils/api';
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue';
 
 const reviews = ref([]);
 const isLoading = ref(true);
 const hasError = ref(false);
 const errorMessage = ref('');
 
-function handleImageError(event) {
-  event.target.src = '/images/profile-placeholder.jpg';
-}
+// Translations
+const translations = {
+  en: {
+    yogaStories: 'Yoga Stories',
+    yogaStoriesSubtitle: 'See what our community members have to say about their transformative experiences with us.',
+    followUs: 'Follow Us'
+  },
+  it: {
+    yogaStories: 'Storie di Yoga',
+    yogaStoriesSubtitle: 'Scopri cosa hanno da dire i membri della nostra comunità sulle loro esperienze trasformative con noi.',
+    followUs: 'Seguici'
+  },
+  fr: {
+    yogaStories: 'Histoires de Yoga',
+    yogaStoriesSubtitle: 'Découvrez ce que les membres de notre communauté ont à dire sur leurs expériences transformatrices avec nous.',
+    followUs: 'Suivez-nous'
+  },
+  de: {
+    yogaStories: 'Yoga-Geschichten',
+    yogaStoriesSubtitle: 'Erfahren Sie, was die Mitglieder unserer Gemeinschaft über ihre transformativen Erfahrungen mit uns zu sagen haben.',
+    followUs: 'Folgen Sie uns'
+  },
+  zh: {
+    yogaStories: '瑜伽故事',
+    yogaStoriesSubtitle: '看看我们社区成员对他们与我们一起的变革性体验有何评价。',
+    followUs: '关注我们'
+  }
+};
 
-onMounted(async () => {
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
+
+const fetchReviews = async () => {
   try {
     isLoading.value = true;
-    const response = await fetch(`${API_URL}/reviews`);
+    const response = await fetch(`${API_URL}/reviews?lang=${selectedLang.value}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -113,7 +145,8 @@ onMounted(async () => {
     }
     if (data.reviews && data.reviews.length > 0) {
       reviews.value = data.reviews.map(review => {
-        const user = review.user || {};
+        // Ora participant è direttamente collegato alla review tramite idparticipant
+        const participant = review.participant || {};
         const activity = review.activity || {};
         let formattedDate = review.date;
         try {
@@ -126,13 +159,13 @@ onMounted(async () => {
           }
         } catch (err) {}
         return {
-          name: user.name || 'Yoga Enthusiast',
-          image: user.image || '/images/profile-placeholder.jpg',
+          name: participant.name || 'Yoga Enthusiast',
+          image: participant.image,
           rating: review.stars || 0,
           date: formattedDate,
-          text: review.review || '',
+          text: review.review || '', // questo ora arriva dalla tabella review_translations
           class_attended: activity.title || '',
-          activity_id: activity.id || null,
+          activity_id: review.idactivity || null,
           featured: review.stars === 5
         };
       });
@@ -146,7 +179,10 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-});
+};
+
+onMounted(fetchReviews);
+watch(selectedLang, fetchReviews);
 </script>
 
 <style scoped>

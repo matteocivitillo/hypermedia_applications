@@ -3,7 +3,7 @@
     <NavBar />
     <BreadCrumbs :breadcrumbs="[
       { text: 'Home', url: '/' }, 
-      { text: 'Activities' }
+      { text: t('activities') }
     ]" />
     <main class="flex-grow">
       <!-- Activities Section -->
@@ -11,11 +11,11 @@
         <div class="container mx-auto">
           <!-- Section Header -->
           <div class="flex flex-col items-center gap-5 mb-12">
-            <h1 v-if="isLoading" class="loading-title animate-fade-in">Loading title...</h1>
-            <h1 v-else class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center animate-fade-in">Our Activities</h1>
-            <p v-if="isLoading" class="loading-description animate-fade-in">Loading description...</p>
+            <h1 v-if="isLoading" class="loading-title animate-fade-in">{{ t('loadingTitle') }}</h1>
+            <h1 v-else class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center animate-fade-in">{{ t('ourActivities') }}</h1>
+            <p v-if="isLoading" class="loading-description animate-fade-in">{{ t('loadingDescription') }}</p>
             <p v-else class="text-xl text-gray-600 dark:text-gray-300 text-center max-w-4xl animate-fade-in">
-              Discover our diverse range of activities designed to nurture your body, mind, and spirit.
+              {{ t('activitiesDescription') }}
             </p>
           </div>
 
@@ -26,7 +26,7 @@
           <div v-if="isLoading" class="flex justify-center items-center h-56">
             <div class="loading-spinner">
               <div class="spinner"></div>
-              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">Loading activities...</p>
+              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">{{ t('loadingActivities') }}</p>
             </div>
           </div>
           
@@ -39,7 +39,7 @@
           <div v-else>
             <!-- Yoga Classes Section -->
             <div class="mb-16">
-              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">Yoga Classes</h2>
+              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">{{ t('yogaClasses') }}</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <NuxtLink 
                   v-for="(activity, index) in yogaClasses" 
@@ -58,7 +58,7 @@
                       @error="imageError = true"
                     />
                     <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                      <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                     </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -81,7 +81,7 @@
 
             <!-- Other Activities Section -->
             <div>
-              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">Other Activities</h2>
+              <h2 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-8 text-center animate-fade-in">{{ t('otherActivities') }}</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <NuxtLink 
                   v-for="(activity, index) in otherActivities" 
@@ -100,7 +100,7 @@
                       @error="imageError = true"
                     />
                     <div v-if="!imageLoaded" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                      <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                     </div>
                   </div>
                   <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -136,11 +136,96 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import { API_URL } from '../utils/api'
+
+// Translations
+const translations = {
+  en: {
+    activities: 'Activities',
+    loadingTitle: 'Loading title...',
+    ourActivities: 'Our Activities',
+    loadingDescription: 'Loading description...',
+    activitiesDescription: 'Discover our diverse range of activities designed to nurture your body, mind, and spirit.',
+    loadingActivities: 'Loading activities...',
+    yogaClasses: 'Yoga Classes',
+    otherActivities: 'Other Activities',
+    loadingImage: 'Loading image...',
+    seoTitle: 'Our Activities - Serendipity Yoga',
+    seoDescription: 'Discover our diverse range of activities designed to nurture your body, mind, and spirit.',
+    noActivitiesFound: 'No activities found',
+    failedToLoad: 'Failed to load activities'
+  },
+  it: {
+    activities: 'Attività',
+    loadingTitle: 'Caricamento titolo...',
+    ourActivities: 'Le Nostre Attività',
+    loadingDescription: 'Caricamento descrizione...',
+    activitiesDescription: 'Scopri la nostra variegata gamma di attività progettate per nutrire il tuo corpo, la tua mente e il tuo spirito.',
+    loadingActivities: 'Caricamento attività...',
+    yogaClasses: 'Lezioni di Yoga',
+    otherActivities: 'Altre Attività',
+    loadingImage: 'Caricamento immagine...',
+    seoTitle: 'Le Nostre Attività - Serendipity Yoga',
+    seoDescription: 'Scopri la nostra variegata gamma di attività progettate per nutrire il tuo corpo, la tua mente e il tuo spirito.',
+    noActivitiesFound: 'Nessuna attività trovata',
+    failedToLoad: 'Impossibile caricare le attività'
+  },
+  fr: {
+    activities: 'Activités',
+    loadingTitle: 'Chargement du titre...',
+    ourActivities: 'Nos Activités',
+    loadingDescription: 'Chargement de la description...',
+    activitiesDescription: 'Découvrez notre gamme variée d\'activités conçues pour nourrir votre corps, votre esprit et votre âme.',
+    loadingActivities: 'Chargement des activités...',
+    yogaClasses: 'Cours de Yoga',
+    otherActivities: 'Autres Activités',
+    loadingImage: 'Chargement de l\'image...',
+    seoTitle: 'Nos Activités - Serendipity Yoga',
+    seoDescription: 'Découvrez notre gamme variée d\'activités conçues pour nourrir votre corps, votre esprit et votre âme.',
+    noActivitiesFound: 'Aucune activité trouvée',
+    failedToLoad: 'Échec du chargement des activités'
+  },
+  de: {
+    activities: 'Aktivitäten',
+    loadingTitle: 'Titel wird geladen...',
+    ourActivities: 'Unsere Aktivitäten',
+    loadingDescription: 'Beschreibung wird geladen...',
+    activitiesDescription: 'Entdecken Sie unsere vielfältigen Aktivitäten, die Körper, Geist und Seele nähren.',
+    loadingActivities: 'Aktivitäten werden geladen...',
+    yogaClasses: 'Yoga-Kurse',
+    otherActivities: 'Andere Aktivitäten',
+    loadingImage: 'Bild wird geladen...',
+    seoTitle: 'Unsere Aktivitäten - Serendipity Yoga',
+    seoDescription: 'Entdecken Sie unsere vielfältigen Aktivitäten, die Körper, Geist und Seele nähren.',
+    noActivitiesFound: 'Keine Aktivitäten gefunden',
+    failedToLoad: 'Aktivitäten konnten nicht geladen werden'
+  },
+  zh: {
+    activities: '活动',
+    loadingTitle: '正在加载标题...',
+    ourActivities: '我们的活动',
+    loadingDescription: '正在加载描述...',
+    activitiesDescription: '探索我们多样化的活动，为您的身体、心灵和精神提供滋养。',
+    loadingActivities: '正在加载活动...',
+    yogaClasses: '瑜伽课程',
+    otherActivities: '其他活动',
+    loadingImage: '正在加载图片...',
+    seoTitle: '我们的活动 - Serendipity瑜伽',
+    seoDescription: '探索我们多样化的活动，为您的身体、心灵和精神提供滋养。',
+    noActivitiesFound: '未找到活动',
+    failedToLoad: '加载活动失败'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 
 // Data refs
 const activities = ref([])
@@ -158,30 +243,28 @@ const otherActivities = computed(() => {
   return activities.value.filter(activity => activity.type === 'Activity')
 })
 
-// Fetch activities from API
+// Fetch activities from API con lingua
 const fetchActivities = async () => {
+  isLoading.value = true
+  error.value = null
   try {
-    const response = await fetch(`${API_URL}/activities`)
-    
+    const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
-    
     const data = await response.json()
-    
     if (data.activities && data.activities.length > 0) {
-      // Aggiungi proprietà per tracciare lo stato di caricamento immagine per ogni attività
       activities.value = data.activities.map(activity => ({
         ...activity,
         imageLoaded: false,
         imageError: false
       }))
     } else {
-      error.value = 'No activities found'
+      error.value = t('noActivitiesFound')
     }
   } catch (err) {
     console.error('Error fetching activities:', err)
-    error.value = 'Failed to load activities'
+    error.value = t('failedToLoad')
   } finally {
     isLoading.value = false
   }
@@ -189,12 +272,13 @@ const fetchActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(fetchActivities)
+watch(selectedLang, fetchActivities)
 
- // SEO metadata for this page
- useSeoMeta({
-    title: 'Our Activities - Serendipity Yoga',
-    description: 'Discover our diverse range of activities designed to nurture your body, mind, and spirit.',
-  })
+// SEO metadata for this page
+useSeoMeta({
+  title: t('seoTitle'),
+  description: t('seoDescription'),
+})
 </script>
 
 <style scoped>

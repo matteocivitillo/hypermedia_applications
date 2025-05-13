@@ -2,8 +2,8 @@
   <div class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-800">
     <NavBar />
     <BreadCrumbs v-if="activity" :breadcrumbs="[
-      { text: 'Home', url: '/' }, 
-      { text: 'Activities', url: '/activities' }, 
+      { text: t('home'), url: '/' }, 
+      { text: t('activities'), url: '/activities' }, 
       { text: activity.title || activity.name, url: '/singleactivity' }
     ]" />
     <main class="flex-grow" :key="activityId">
@@ -11,7 +11,7 @@
       <div v-if="isLoading" class="flex justify-center items-center h-96 bg-white dark:bg-gray-700">
         <div class="loading-spinner animate-fade-in">
           <div class="spinner"></div>
-          <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading activity data...</p>
+          <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ t('loadingActivity') }}</p>
         </div>
       </div>
             
@@ -40,12 +40,12 @@
                       @error="handleImageError"
                     />
                     <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                      <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                      <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                     </div>
                     <div class="absolute inset-x-0 bottom-0 p-6">
                       <div class="flex flex-wrap gap-2 items-center mb-2">
                         <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm animate-fade-in">
-                          {{ activity.level || activity.difficulty || 'All Levels' }}
+                          {{ activity.level || activity.difficulty || t('allLevels') }}
                         </span>
                       </div>
                       <h3 class="text-2xl font-bold text-white animate-fade-in">{{ activity.title || activity.name }}</h3>
@@ -69,20 +69,20 @@
                       <!-- Level -->
                       <div class="space-y-2">
                         <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                          Level
+                          {{ t('level') }}
                         </span>
-                        <p class="text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.level || activity.difficulty || 'All Levels' }}</p>
+                        <p class="text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.level || activity.difficulty || t('allLevels') }}</p>
                       </div>
                       
                       <!-- Teacher Info -->
                       <div v-if="teacher && Array.isArray(teacher) && teacher.length > 0" class="space-y-2">
                         <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                          Teachers
+                          {{ t('teachers') }}
                         </span>
                         <div v-for="(t, index) in teacher" :key="index" class="flex items-center gap-3 mt-2">
                           <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
                             <img 
-                              :src="t.image ? (t.image.startsWith('http') ? t.image : `http://localhost:8000${t.image}`) : '/images/teacher-placeholder.jpg'" 
+                              :src="t.image ? (t.image.startsWith('http') ? t.image : `/images/teacher-placeholder.jpg`) : '/images/teacher-placeholder.jpg'" 
                               alt="" 
                               class="w-full h-full object-cover object-center" 
                               onerror="this.src='/images/teacher-placeholder.jpg'"
@@ -94,9 +94,9 @@
                               :to="`/singleteacher?id=${t.id}`" 
                               class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
                             >
-                              {{ t.name }} {{ t.surname }}
+                              {{ t.name || '' }} {{ t.surname || '' }}
                             </NuxtLink>
-                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ t.name }} {{ t.surname }}</p>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ t.name || '' }} {{ t.surname || '' }}</p>
                           </div>
                         </div>
                       </div>
@@ -104,12 +104,12 @@
                       <!-- Teacher Info (Single) -->
                       <div v-else-if="teacher" class="space-y-2">
                         <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                          Teacher
+                          {{ t('teacher') }}
                         </span>
                         <div class="flex items-center gap-3">
                           <div class="w-12 h-12 bg-gray-300 dark:bg-gray-500 rounded-full overflow-hidden border-2 border-primary dark:border-[#9ACBD0]">
                             <img 
-                              :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `http://localhost:8000${teacher.image}`) : '/images/teacher-placeholder.jpg'" 
+                              :src="teacher.image ? (teacher.image.startsWith('http') ? teacher.image : `/images/teacher-placeholder.jpg`) : '/images/teacher-placeholder.jpg'" 
                               alt="" 
                               class="w-full h-full object-cover object-center" 
                               onerror="this.src='/images/teacher-placeholder.jpg'"
@@ -121,10 +121,10 @@
                               :to="`/singleteacher?id=${teacher.id}`" 
                               class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
                             >
-                              {{ teacher.name }} {{ teacher.surname }}
+                              {{ teacher.name || '' }} {{ teacher.surname || '' }}
                             </NuxtLink>
-                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name }} {{ teacher.surname }}</p>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm">{{ teacher.experience || 'Expert Teacher' }}</p>
+                            <p v-else class="text-gray-800 dark:text-gray-200 font-medium">{{ teacher.name || '' }} {{ teacher.surname || '' }}</p>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">{{ teacher.experience || t('expertTeacher') }}</p>
                           </div>
                         </div>
                       </div>
@@ -133,14 +133,14 @@
                     <!-- Right Column: About -->
                     <div class="w-full sm:w-1/2 space-y-2">
                       <span class="bg-white dark:bg-gray-700 bg-opacity-80 border border-primary dark:border-[#9ACBD0] text-primary dark:text-[#9ACBD0] px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                        About
+                        {{ t('about') }}
                       </span>
                       <p class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.short_description || activity.description }}</p>
                       
                       <!-- Schedule (if available) -->
                       <div v-if="activity.schedule" class="pt-4">
                         <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-2 animate-fade-in">
-                          Schedule
+                          {{ t('schedule') }}
                         </span>
                         <p class="text-base text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.schedule }}</p>
                       </div>
@@ -154,7 +154,7 @@
             <div v-if="activity.about || activity.description" class="mt-8 w-full activity-card-static">
               <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8">
                 <span class="bg-primary bg-opacity-80 text-white px-4 py-1.5 rounded-full text-base inline-block mb-4 animate-fade-in">
-                  Description
+                  {{ t('description') }}
                 </span>
                 <p v-if="activity.about" class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in" v-html="activity.about"></p>
                 <p v-else class="text-lg text-gray-600 dark:text-gray-300 animate-fade-in">{{ activity.description }}</p>
@@ -165,24 +165,24 @@
             <div v-if="activity.ideal_for || activity.main_benefit || activity.additional_info || activity.schedule" class="mt-8 w-full activity-card-static">
               <div class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8">
                 <span class="bg-[#48A6A7] text-white px-4 py-1.5 rounded-full text-base inline-block mb-4 animate-fade-in">
-                  Details
+                  {{ t('details') }}
                 </span>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <!-- Ideal For -->
                   <div v-if="activity.ideal_for" class="space-y-2">
-                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">Ideal For</h3>
+                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('idealFor') }}</h3>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.ideal_for"></p>
                   </div>
                   
                   <!-- Main Benefit -->
                   <div v-if="activity.main_benefit" class="space-y-2">
-                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">Main Benefit</h3>
+                    <h3 class="text-xl font-bold text-gray-600 dark:text-white">{{ t('mainBenefit') }}</h3>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.main_benefit"></p>
                   </div>
                   
                   <!-- Additional Info -->
                   <div v-if="activity.additional_info" class="space-y-2">
-                    <h3 class="text-xl font-bold text-black dark:text-white">Additional Information</h3>
+                    <h3 class="text-xl font-bold text-black dark:text-white">{{ t('additionalInfo') }}</h3>
                     <p class="text-base text-gray-600 dark:text-gray-300" v-html="activity.additional_info"></p>
                   </div>
                 </div>
@@ -192,7 +192,7 @@
             <!-- Room Card -->
             <div v-if="activity.roomid" class="mt-8 w-full activity-card-static">
               <div v-if="isLoadingRoom" class="bg-white dark:bg-gray-700 rounded-xl shadow-md p-8 text-center">
-                <p class="text-gray-600 dark:text-gray-300">Loading room information...</p>
+                <p class="text-gray-600 dark:text-gray-300">{{ t('loadingRoom') }}</p>
               </div>
               <RoomCard v-else-if="room" :room="room" :activityIdsMap="activityIdsMap" />
             </div>
@@ -202,17 +202,17 @@
         <!-- Other Activities Section -->
         <section class="py-14 bg-white dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
           <div class="container mx-auto px-6 md:px-20 flex flex-col items-center">
-            <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] mb-8 animate-fade-in text-center">Other Activities You Might Like</h2>
+            <h2 class="text-3xl font-bold text-primary dark:text-[#9ACBD0] mb-8 animate-fade-in text-center">{{ t('otherActivities') }}</h2>
             
             <div v-if="isLoadingSimilar" class="flex justify-center items-center h-32">
               <div class="loading-spinner animate-fade-in">
                 <div class="spinner"></div>
-                <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">Loading similar activities...</p>
+                <p class="mt-4 text-xl text-gray-600 dark:text-gray-300 animate-fade-in">{{ t('loadingSimilar') }}</p>
               </div>
             </div>
             
             <div v-else-if="similarActivities.length === 0" class="text-gray-600 dark:text-gray-300 text-lg animate-fade-in p-8 bg-gray-50 dark:bg-gray-600 rounded-lg text-center">
-              No similar activities found.
+              {{ t('noSimilarActivities') }}
             </div>
             
             <div v-else class="flex flex-wrap justify-center gap-6 w-full max-w-5xl">
@@ -233,12 +233,142 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import NavBar from '~/components/home/NavBar.vue'
+import NavBar, { selectedLang } from '~/components/home/NavBar.vue'
 import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import RoomCard from '~/components/misc/RoomCard.vue'
 import ActivityCard from '~/components/misc/ActivityCardSuggestion.vue'
 import { API_URL } from '../utils/api'
+
+// Translations
+const translations = {
+  en: {
+    home: 'Home',
+    activities: 'Activities',
+    level: 'Level',
+    teacher: 'Teacher',
+    teachers: 'Teachers',
+    about: 'About',
+    schedule: 'Schedule',
+    description: 'Description',
+    details: 'Details',
+    idealFor: 'Ideal For',
+    mainBenefit: 'Main Benefit',
+    additionalInfo: 'Additional Information',
+    otherActivities: 'Other Activities You Might Like',
+    expertTeacher: 'Expert Teacher',
+    allLevels: 'All Levels',
+    loadingActivity: 'Loading activity data...',
+    loadingImage: 'Loading image...',
+    loadingRoom: 'Loading room information...',
+    loadingSimilar: 'Loading similar activities...',
+    noSimilarActivities: 'No similar activities found.',
+    seoTitle: '{name} - Serendipity Yoga',
+    seoDescription: 'Discover the details of our activities, including the teachers, schedule, and more.'
+  },
+  it: {
+    home: 'Home',
+    activities: 'Attività',
+    level: 'Livello',
+    teacher: 'Insegnante',
+    teachers: 'Insegnanti',
+    about: 'Informazioni',
+    schedule: 'Orario',
+    description: 'Descrizione',
+    details: 'Dettagli',
+    idealFor: 'Ideale Per',
+    mainBenefit: 'Beneficio Principale',
+    additionalInfo: 'Informazioni Aggiuntive',
+    otherActivities: 'Altre Attività Che Potrebbero Piacerti',
+    expertTeacher: 'Insegnante Esperto',
+    allLevels: 'Tutti i Livelli',
+    loadingActivity: 'Caricamento dati attività...',
+    loadingImage: 'Caricamento immagine...',
+    loadingRoom: 'Caricamento informazioni sulla sala...',
+    loadingSimilar: 'Caricamento attività simili...',
+    noSimilarActivities: 'Nessuna attività simile trovata.',
+    seoTitle: '{name} - Serendipity Yoga',
+    seoDescription: 'Scopri i dettagli delle nostre attività, inclusi gli insegnanti, gli orari e altro ancora.'
+  },
+  fr: {
+    home: 'Accueil',
+    activities: 'Activités',
+    level: 'Niveau',
+    teacher: 'Professeur',
+    teachers: 'Professeurs',
+    about: 'À propos',
+    schedule: 'Horaire',
+    description: 'Description',
+    details: 'Détails',
+    idealFor: 'Idéal Pour',
+    mainBenefit: 'Avantage Principal',
+    additionalInfo: 'Informations Supplémentaires',
+    otherActivities: 'Autres Activités Qui Pourraient Vous Plaire',
+    expertTeacher: 'Professeur Expert',
+    allLevels: 'Tous Niveaux',
+    loadingActivity: 'Chargement des données d\'activité...',
+    loadingImage: 'Chargement de l\'image...',
+    loadingRoom: 'Chargement des informations de la salle...',
+    loadingSimilar: 'Chargement d\'activités similaires...',
+    noSimilarActivities: 'Aucune activité similaire trouvée.',
+    seoTitle: '{name} - Serendipity Yoga',
+    seoDescription: 'Découvrez les détails de nos activités, y compris les professeurs, l\'horaire et plus encore.'
+  },
+  de: {
+    home: 'Startseite',
+    activities: 'Aktivitäten',
+    level: 'Niveau',
+    teacher: 'Lehrer',
+    teachers: 'Lehrer',
+    about: 'Über',
+    schedule: 'Zeitplan',
+    description: 'Beschreibung',
+    details: 'Details',
+    idealFor: 'Ideal Für',
+    mainBenefit: 'Hauptvorteil',
+    additionalInfo: 'Zusätzliche Informationen',
+    otherActivities: 'Andere Aktivitäten, die Ihnen gefallen könnten',
+    expertTeacher: 'Erfahrener Lehrer',
+    allLevels: 'Alle Niveaus',
+    loadingActivity: 'Aktivitätsdaten werden geladen...',
+    loadingImage: 'Bild wird geladen...',
+    loadingRoom: 'Rauminformationen werden geladen...',
+    loadingSimilar: 'Ähnliche Aktivitäten werden geladen...',
+    noSimilarActivities: 'Keine ähnlichen Aktivitäten gefunden.',
+    seoTitle: '{name} - Serendipity Yoga',
+    seoDescription: 'Entdecken Sie die Details unserer Aktivitäten, einschließlich der Lehrer, des Zeitplans und mehr.'
+  },
+  zh: {
+    home: '首页',
+    activities: '活动',
+    level: '级别',
+    teacher: '教师',
+    teachers: '教师',
+    about: '关于',
+    schedule: '时间表',
+    description: '描述',
+    details: '详情',
+    idealFor: '适合',
+    mainBenefit: '主要好处',
+    additionalInfo: '附加信息',
+    otherActivities: '您可能喜欢的其他活动',
+    expertTeacher: '专业教师',
+    allLevels: '所有级别',
+    loadingActivity: '正在加载活动数据...',
+    loadingImage: '正在加载图片...',
+    loadingRoom: '正在加载房间信息...',
+    loadingSimilar: '正在加载类似活动...',
+    noSimilarActivities: '未找到类似活动。',
+    seoTitle: '{name} - Serendipity瑜伽',
+    seoDescription: '了解我们活动的详情，包括教师、时间表等。'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 
 // Query parameters to get activity ID
 const route = useRoute()
@@ -289,7 +419,7 @@ const fetchRoom = async (roomId) => {
   
   try {
     isLoadingRoom.value = true
-    const response = await fetch(`${API_URL}/room/${roomId}`)
+    const response = await fetch(`${API_URL}/room/${roomId}?lang=${selectedLang.value}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -297,12 +427,18 @@ const fetchRoom = async (roomId) => {
     
     const data = await response.json()
     if (data.room) {
+      // Creare struttura dati che mantiene sia le attività dal database che quelle legacy
+      const roomActivities = data.room.activities || [];
+      const legacyActivities = data.room.legacy_activities || [];
+      
       room.value = {
         id: data.room.id,
         name: data.room.title || 'Yoga Room',
         image: data.room.image || `/images/default-room.jpg`,
         description: data.room.description || 'Experience the tranquility of our specially designed yoga spaces.',
         features: data.room.features || [],
+        activities: roomActivities,
+        legacy_activities: legacyActivities,
         quote: data.room.quote || 'Experience the transformative power of our specially designed spaces.'
       }
     }
@@ -319,12 +455,12 @@ const fetchActivity = async () => {
   if (!activityId.value) {
     error.value = 'No activity ID specified'
     isLoading.value = false
-    return
+    return Promise.resolve() // Return resolved promise if no ID
   }
   
   try {
     console.log("Fetching activity with ID:", activityId.value)
-    const response = await fetch(`${API_URL}/activity/${activityId.value}`)
+    const response = await fetch(`${API_URL}/activity/${activityId.value}?lang=${selectedLang.value}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -354,14 +490,14 @@ const fetchActivity = async () => {
   } finally {
     isLoading.value = false
   }
+  
+  return Promise.resolve() // Always return a resolved promise
 }
 
 // Fetch teacher data when the activity is loaded
 const fetchTeacherByActivity = async () => {
   if (!activityId.value) {
-    error.value = 'No activity ID specified'
-    isLoading.value = false
-    return
+    return;
   }
 
   try {
@@ -374,37 +510,44 @@ const fetchTeacherByActivity = async () => {
     const data = await response.json();
 
     if (data.teacher) {
-      // Store the teacher data in a ref or reactive variable
-      teacher.value = data.teacher;
+      // Make sure teacher data is properly formatted
+      if (Array.isArray(data.teacher)) {
+        // It's already an array
+        teacher.value = data.teacher;
+      } else {
+        // It's an object, put it in an array
+        teacher.value = [data.teacher];
+      }
+      console.log("Teacher data loaded:", teacher.value);
     } else {
-      error.value = 'Teacher not found'
+      // No teacher assigned to this activity (not an error)
+      console.log("No teacher assigned to this activity");
+      teacher.value = null;
     }
   } catch (err) {
     console.error('Error fetching teacher:', err)
-    error.value = 'Failed to load teacher data'
-  } finally {
-    isLoading.value = false
+    // Don't set error.value here as it affects the whole page
+    teacher.value = null;
   }
 };
 
 // Fetch similar activities
 const fetchSimilarActivities = async () => {
-  if (!activity.value || !activity.value.level) return
+  if (!activity.value || !activity.value.id) return
   
   isLoadingSimilar.value = true
   try {
-    const response = await fetch(`${API_URL}/activities`)
+    // Recuperiamo tutte le attività (le API restituiscono già i dati nella lingua corretta)
+    const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
     
     const data = await response.json()
     if (data.activities) {
-      // Filter activities with the same level and exclude current activity
-      const filtered = data.activities.filter(a => 
-        a.level === activity.value.level && 
-        a.id !== activity.value.id
-      )
+      // Filtriamo escludendo solo l'attività corrente, senza filtrare per level
+      // poiché i livelli potrebbero essere tradotti/diversi in lingue diverse
+      const filtered = data.activities.filter(a => a.id !== activity.value.id)
       
       // Shuffle the array
       const shuffled = [...filtered].sort(() => Math.random() - 0.5)
@@ -422,9 +565,10 @@ const fetchSimilarActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(() => {
-  fetchActivity();
-  fetchTeacherByActivity();
-  fetchSimilarActivities();
+  fetchActivity().then(() => {
+    fetchTeacherByActivity();
+    fetchSimilarActivities();
+  });
 });
 
 // Scroll to top function with safety check
@@ -444,9 +588,13 @@ watch(() => route.query.id, (newId) => {
     imageError.value = false;
     room.value = null;
     similarActivities.value = [];
-    fetchActivity();
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
+    
+    // Make sure fetchActivity completes first, then call the others
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
+    });
+    
     // Scroll to top after content is loaded with safety check
     setTimeout(() => {
       scrollToTop();
@@ -474,8 +622,31 @@ watch(activity, (newActivity) => {
 watch(activity, (newActivity) => {
   if (newActivity) {
     useSeoMeta({
-      title: `${newActivity.title || newActivity.name} - Serendipity Yoga`, // Use template literals
-      description: 'Discover the details of our activities, including the teachers, schedule, and more.',
+      title: t('seoTitle').replace('{name}', newActivity.title || newActivity.name),
+      description: t('seoDescription'),
+    });
+  }
+});
+
+// Watch for language changes to reload activity data
+watch(selectedLang, () => {
+  if (activityId.value) {
+    isLoading.value = true;
+    error.value = null;
+    imageLoaded.value = false;
+    imageError.value = false;
+    
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
+      
+      // Update SEO if activity data is already loaded
+      if (activity.value) {
+        useSeoMeta({
+          title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
+          description: t('seoDescription'),
+        });
+      }
     });
   }
 });

@@ -7,24 +7,24 @@
         <div class="md:col-span-3 flex flex-col items-center">
           <img src="/images/logo.svg" alt="Serendipity yoga" class="h-24 mb-2" />
           <p class="text-xs text-gray-400 text-center whitespace-nowrap text-[9px] md:text-[10px]">
-            TRANSFORMING LIVES THROUGH THE PRACTICE OF YOGA AND MEDITATION.
+            {{ t('tagline') }}
           </p>
         </div>
         
         <!-- Quick Links -->
         <div class="md:col-span-2 md:col-start-5 flex flex-col items-center">
-          <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+          <h3 class="text-xl font-bold text-white mb-4">{{ t('quickLinks') }}</h3>
           <ul class="space-y-2 text-center">
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Highlights</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Activities</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Teachers</a></li>
+            <li><router-link to="/center" class="text-gray-400 hover:text-white transition-colors">{{ t('aboutUs') }}</router-link></li>
+            <li><a @click.prevent="goToHighlights" class="text-gray-400 hover:text-white transition-colors cursor-pointer">{{ t('highlights') }}</a></li>
+            <li><router-link to="/activities" class="text-gray-400 hover:text-white transition-colors">{{ t('activities') }}</router-link></li>
+            <li><router-link to="/teachers" class="text-gray-400 hover:text-white transition-colors">{{ t('teachers') }}</router-link></li>
           </ul>
         </div>
         
         <!-- Contact Information -->
         <div class="md:col-span-2 md:col-start-8 flex flex-col items-center">
-          <h3 class="text-xl font-bold text-white mb-4">Contact Us</h3>
+          <h3 class="text-xl font-bold text-white mb-4">{{ t('contactUs') }}</h3>
           <ul class="space-y-2 text-center">
             <li class="flex items-start justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-0.5 mr-2 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@
         
         <!-- Follow Us -->
         <div class="md:col-span-2 md:col-start-11 flex flex-col items-center">
-          <h3 class="text-xl font-bold text-white mb-4">Follow Us</h3>
+          <h3 class="text-xl font-bold text-white mb-4">{{ t('followUs') }}</h3>
           <div class="flex space-x-4">
             <a href="#" class="text-gray-400 hover:text-white transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@
     
     <!-- Copyright -->
     <div class="container mx-auto px-6 md:px-16 lg:px-24 xl:px-32 py-4 text-center">
-      <p class="text-sm">© 2025 Serendipity Yoga. All rights reserved.</p>
+      <p class="text-sm">{{ t('copyright') }}</p>
     </div>
     
     <!-- Bottom Dark Bar -->
@@ -86,8 +86,138 @@
 </template>
 
 <script>
+import { selectedLang } from './NavBar.vue'
+
+// Traduzioni per il footer
+const translations = {
+  en: {
+    tagline: 'TRANSFORMING LIVES THROUGH THE PRACTICE OF YOGA AND MEDITATION.',
+    quickLinks: 'Quick Links',
+    aboutUs: 'About Us',
+    highlights: 'Highlights',
+    activities: 'Activities',
+    teachers: 'Teachers',
+    contactUs: 'Contact Us',
+    followUs: 'Follow Us',
+    copyright: '© 2025 Serendipity Yoga. All rights reserved.'
+  },
+  it: {
+    tagline: 'TRASFORMARE VITE ATTRAVERSO LA PRATICA DELLO YOGA E DELLA MEDITAZIONE.',
+    quickLinks: 'Link Utili',
+    aboutUs: 'Chi Siamo',
+    highlights: 'In Evidenza',
+    activities: 'Attività',
+    teachers: 'Insegnanti',
+    contactUs: 'Contattaci',
+    followUs: 'Seguici',
+    copyright: '© 2025 Serendipity Yoga. Tutti i diritti riservati.'
+  },
+  fr: {
+    tagline: 'TRANSFORMER DES VIES PAR LA PRATIQUE DU YOGA ET DE LA MÉDITATION.',
+    quickLinks: 'Liens Rapides',
+    aboutUs: 'À Propos',
+    highlights: 'À la Une',
+    activities: 'Activités',
+    teachers: 'Professeurs',
+    contactUs: 'Contactez-nous',
+    followUs: 'Suivez-nous',
+    copyright: '© 2025 Serendipity Yoga. Tous droits réservés.'
+  },
+  de: {
+    tagline: 'LEBEN DURCH DIE PRAXIS VON YOGA UND MEDITATION VERÄNDERN.',
+    quickLinks: 'Schnelllinks',
+    aboutUs: 'Über Uns',
+    highlights: 'Highlights',
+    activities: 'Aktivitäten',
+    teachers: 'Lehrer',
+    contactUs: 'Kontakt',
+    followUs: 'Folgen Sie uns',
+    copyright: '© 2025 Serendipity Yoga. Alle Rechte vorbehalten.'
+  },
+  zh: {
+    tagline: '通过瑜伽和冥想实践改变生活。',
+    quickLinks: '快速链接',
+    aboutUs: '关于我们',
+    highlights: '精选',
+    activities: '活动',
+    teachers: '教师',
+    contactUs: '联系我们',
+    followUs: '关注我们',
+    copyright: '© 2025 Serendipity瑜伽。保留所有权利。'
+  }
+};
+
+// Funzione per ottenere traduzioni
+const t = (key) => {
+  return translations[selectedLang.value]?.[key] || translations.en[key];
+};
+
 export default {
   // Component logic if needed
+  data() {
+    return {
+      selectedLang
+    }
+  },
+  methods: {
+    t,
+    goToHighlights() {
+      // Navigate to home page if not already there
+      if (this.$route.path !== '/') {
+        // We want to scroll to the highlighted activities section
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('scrollToHighlights', 'true');
+        }
+        this.$router.push('/');
+      } else {
+        this.scrollToHighlights();
+      }
+    },
+    scrollToHighlights() {
+      // Find the Highlighted Activities section
+      this.$nextTick(() => {
+        // Metodo 1: HighlightedActivities è la seconda section all'interno di main
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+          const sections = mainElement.querySelectorAll(':scope > section');
+          if (sections.length >= 2) {
+            const highlightsSection = sections[1]; // HighlightedActivities è la seconda sezione
+            if (highlightsSection) {
+              // Calculate position to center the element in viewport
+              const elementRect = highlightsSection.getBoundingClientRect();
+              const absoluteElementTop = elementRect.top + window.pageYOffset;
+              const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+              
+              // Smooth scroll with animation
+              window.scrollTo({
+                top: middle,
+                behavior: 'smooth'
+              });
+              return; // Termina qui se abbiamo trovato e scrollato
+            }
+          }
+        }
+        
+        // Metodo 2: Fallback - cerca una sezione con il componente HighlightedActivities
+        // che di solito ha classi specifiche
+        const highlightsSection = document.querySelector('section.py-16.bg-white') ||
+                                 document.querySelector('section.py-16.dark\\:bg-gray-800');
+                                 
+        if (highlightsSection) {
+          // Calculate position to center the element in viewport
+          const elementRect = highlightsSection.getBoundingClientRect();
+          const absoluteElementTop = elementRect.top + window.pageYOffset;
+          const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+          
+          // Smooth scroll with animation
+          window.scrollTo({
+            top: middle,
+            behavior: 'smooth'
+          });
+        }
+      });
+    }
+  }
 }
 </script>
 
