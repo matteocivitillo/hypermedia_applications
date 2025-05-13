@@ -1,18 +1,18 @@
 <template>
   <div class="flex flex-col min-h-screen dark:bg-gray-800">
     <NavBar />
-    <BreadCrumbs :breadcrumbs="[{ text: 'Home', url: '/' }, { text: 'Teachers', url: '/teachers' }]" />
+    <BreadCrumbs :breadcrumbs="[{ text: t('home'), url: '/' }, { text: t('teachers'), url: '/teachers' }]" />
     <main class="flex-grow">
       <!-- Teachers Section -->
       <section class="bg-white dark:bg-gray-800 py-14 px-20">
         <div class="container mx-auto">
           <!-- Section Header -->
           <div class="flex flex-col items-center gap-5 mb-12">
-            <h1 v-if="isLoading" class="loading-title animate-fade-in">Loading title...</h1>
-            <h1 v-else class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center animate-fade-in">Our Teachers</h1>
-            <p v-if="isLoading" class="loading-description animate-fade-in">Loading description...</p>
+            <h1 v-if="isLoading" class="loading-title animate-fade-in">{{ t('loadingTitle') }}</h1>
+            <h1 v-else class="text-3xl font-bold text-primary dark:text-[#9ACBD0] text-center animate-fade-in">{{ t('ourTeachers') }}</h1>
+            <p v-if="isLoading" class="loading-description animate-fade-in">{{ t('loadingDescription') }}</p>
             <p v-else class="text-xl text-gray-600 dark:text-gray-300 text-center max-w-3xl animate-fade-in">
-              At Serendipity Yoga, we pride ourselves on having a team of passionate and experienced instructors who bring their diverse skills and expertise to every class.<br/><br/> Below, you'll meet the wonderful individuals who lead our various activities and help guide you on your journey to wellness.<br />
+              {{ t('teachersDescription') }}<br/><br/> {{ t('teachersSubDescription') }}<br />
             </p>
           </div>
 
@@ -20,7 +20,7 @@
           <div v-if="isLoading" class="flex justify-center items-center h-56">
             <div class="loading-spinner">
               <div class="spinner"></div>
-              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">Loading teachers...</p>
+              <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">{{ t('loadingTeachers') }}</p>
             </div>
           </div>
           
@@ -49,7 +49,7 @@
                   @error="teacher.imageError = true"
                 />
                 <div v-if="!teacher.imageLoaded && !teacher.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
-                  <p class="text-gray-600 dark:text-gray-300">Loading image...</p>
+                  <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                 </div>
               </div>
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -97,35 +97,115 @@ import BreadCrumbs from '~/components/home/BreadCrumbs.vue'
 import SiteFooter from '~/components/home/SiteFooter.vue'
 import { API_URL } from '../utils/api'
 
-// Define languages locally
-const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' }
-];
+// Translations
+const translations = {
+  en: {
+    home: 'Home',
+    teachers: 'Teachers',
+    loadingTitle: 'Loading title...',
+    ourTeachers: 'Our Teachers',
+    loadingDescription: 'Loading description...',
+    teachersDescription: 'At Serendipity Yoga, we pride ourselves on having a team of passionate and experienced instructors who bring their diverse skills and expertise to every class.',
+    teachersSubDescription: 'Below, you\'ll meet the wonderful individuals who lead our various activities and help guide you on your journey to wellness.',
+    loadingTeachers: 'Loading teachers...',
+    loadingImage: 'Loading image...',
+    seoTitle: 'Our Teachers - Serendipity Yoga',
+    seoDescription: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
+    noTeachersFound: 'No teachers found',
+    failedToLoad: 'Failed to load teachers'
+  },
+  it: {
+    home: 'Home',
+    teachers: 'Insegnanti',
+    loadingTitle: 'Caricamento titolo...',
+    ourTeachers: 'I Nostri Insegnanti',
+    loadingDescription: 'Caricamento descrizione...',
+    teachersDescription: 'A Serendipity Yoga, siamo orgogliosi di avere un team di istruttori appassionati ed esperti che portano le loro diverse competenze in ogni lezione.',
+    teachersSubDescription: 'Di seguito, conoscerai le meravigliose persone che guidano le nostre varie attività e ti aiutano nel tuo percorso verso il benessere.',
+    loadingTeachers: 'Caricamento insegnanti...',
+    loadingImage: 'Caricamento immagine...',
+    seoTitle: 'I Nostri Insegnanti - Serendipity Yoga',
+    seoDescription: 'Conosci i nostri insegnanti dedicati e scopri di più sulla loro esperienza e stile di insegnamento.',
+    noTeachersFound: 'Nessun insegnante trovato',
+    failedToLoad: 'Impossibile caricare gli insegnanti'
+  },
+  fr: {
+    home: 'Accueil',
+    teachers: 'Professeurs',
+    loadingTitle: 'Chargement du titre...',
+    ourTeachers: 'Nos Professeurs',
+    loadingDescription: 'Chargement de la description...',
+    teachersDescription: 'À Serendipity Yoga, nous sommes fiers d\'avoir une équipe d\'instructeurs passionnés et expérimentés qui apportent leurs diverses compétences et expertises à chaque cours.',
+    teachersSubDescription: 'Ci-dessous, vous rencontrerez les personnes merveilleuses qui dirigent nos diverses activités et vous aident à vous guider dans votre parcours vers le bien-être.',
+    loadingTeachers: 'Chargement des professeurs...',
+    loadingImage: 'Chargement de l\'image...',
+    seoTitle: 'Nos Professeurs - Serendipity Yoga',
+    seoDescription: 'Rencontrez nos professeurs dévoués et apprenez-en davantage sur leur expertise et leur style d\'enseignement.',
+    noTeachersFound: 'Aucun professeur trouvé',
+    failedToLoad: 'Échec du chargement des professeurs'
+  },
+  de: {
+    home: 'Startseite',
+    teachers: 'Lehrer',
+    loadingTitle: 'Titel wird geladen...',
+    ourTeachers: 'Unsere Lehrer',
+    loadingDescription: 'Beschreibung wird geladen...',
+    teachersDescription: 'Bei Serendipity Yoga sind wir stolz darauf, ein Team von leidenschaftlichen und erfahrenen Lehrern zu haben, die ihre vielfältigen Fähigkeiten und ihr Fachwissen in jede Klasse einbringen.',
+    teachersSubDescription: 'Unten treffen Sie die wunderbaren Personen, die unsere verschiedenen Aktivitäten leiten und Ihnen auf Ihrem Weg zum Wohlbefinden helfen.',
+    loadingTeachers: 'Lehrer werden geladen...',
+    loadingImage: 'Bild wird geladen...',
+    seoTitle: 'Unsere Lehrer - Serendipity Yoga',
+    seoDescription: 'Lernen Sie unsere engagierten Lehrer kennen und erfahren Sie mehr über ihr Fachwissen und ihren Unterrichtsstil.',
+    noTeachersFound: 'Keine Lehrer gefunden',
+    failedToLoad: 'Lehrer konnten nicht geladen werden'
+  },
+  zh: {
+    home: '首页',
+    teachers: '教师',
+    loadingTitle: '正在加载标题...',
+    ourTeachers: '我们的教师',
+    loadingDescription: '正在加载描述...',
+    teachersDescription: '在Serendipity瑜伽，我们自豪地拥有一支充满激情和经验的教师团队，他们将多样化的技能和专业知识带到每堂课程中。',
+    teachersSubDescription: '在下面，您将遇见那些带领我们各种活动并帮助指导您走向健康之旅的精彩人物。',
+    loadingTeachers: '正在加载教师信息...',
+    loadingImage: '正在加载图片...',
+    seoTitle: '我们的教师 - Serendipity瑜伽',
+    seoDescription: '认识我们敬业的教师，了解更多关于他们的专业知识和教学风格。',
+    noTeachersFound: '未找到教师',
+    failedToLoad: '加载教师失败'
+  }
+};
+
+// Function to get translations
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
 
 const teachers = ref([])
-const isLoadingTeachers = ref(true)
-const errorTeachers = ref(null)
+const isLoading = ref(true)
+const error = ref(null)
 
 const fetchTeachers = async () => {
-  isLoadingTeachers.value = true
-  errorTeachers.value = null
+  isLoading.value = true
+  error.value = null
   try {
     const response = await fetch(`${API_URL}/teachers?lang=${selectedLang.value}`)
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
     const data = await response.json()
     if (data.teachers && data.teachers.length > 0) {
-      teachers.value = data.teachers
+      teachers.value = data.teachers.map(teacher => ({
+        ...teacher,
+        imageLoaded: false,
+        imageError: false
+      }))
     } else {
-      errorTeachers.value = 'No teachers found'
+      error.value = t('noTeachersFound')
     }
   } catch (err) {
-    errorTeachers.value = 'Failed to load teachers'
+    error.value = t('failedToLoad')
   } finally {
-    isLoadingTeachers.value = false
+    isLoading.value = false
   }
 }
 
@@ -134,9 +214,9 @@ watch(selectedLang, fetchTeachers)
 
 // SEO metadata for this page
 useSeoMeta({
-    title: 'Our Teachers - Serendipity Yoga',
-    description: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
-  })
+  title: t('seoTitle'),
+  description: t('seoDescription'),
+})
 </script>
 
 <style scoped>
