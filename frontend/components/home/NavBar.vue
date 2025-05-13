@@ -189,11 +189,11 @@ import LanguageSelector from './LanguageSelector.vue'
 import { ref, watch } from 'vue'
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' }
+  { code: 'en', name: 'English', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/gb.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9nYi5wbmciLCJpYXQiOjE3NDcxNDI5MDEsImV4cCI6MTkwNDgyMjkwMX0.gI5MGHW6Ol-B5QM_oBwC_ijHR6dLUDZZC1vXjH5pmsE' },
+  { code: 'it', name: 'Italiano', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/ita.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9pdGEucG5nIiwiaWF0IjoxNzQ3MTQyODEwLCJleHAiOjE5MDQ4MjI4MTB9.gGqlPw-_1auGlQayER_AzOjv46aMwJh3Y1myQMW_P00' },
+  { code: 'fr', name: 'Français', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/francia.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9mcmFuY2lhLnBuZyIsImlhdCI6MTc0NzE0MjkyMCwiZXhwIjoxOTA0ODIyOTIwfQ.PuOYAY3xRUPlf6BytlmM1OBQnB4nBYnnirVBAHrYOCw' },
+  { code: 'de', name: 'Deutsch', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/germania.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9nZXJtYW5pYS5wbmciLCJpYXQiOjE3NDcxNDI4ODAsImV4cCI6MTkwNDgyMjg4MH0.bz5-eZHqvrAVWLtSeMBWEPmxSoHksxQdCJ6uRBSyIH0' },
+  { code: 'zh', name: '中文', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/cina.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InN0b3JhZ2UtdXJsLXNpZ25pbmcta2V5XzI0MmJkN2U5LTVjNTQtNGViYy1iYmQwLWZhZGJjMjQ0NDMyOSJ9.eyJ1cmwiOiJmbGFncy9jaW5hLnBuZyIsImlhdCI6MTc0NzE0MjkzOCwiZXhwIjoxOTA0ODIyOTM4fQ.5D8Z3NPE1X3voQeks9DNx3t9xsUxkR-AJCmFbL8OjuI' }
 ];
 
 // Stato globale della lingua selezionata con valore di default
@@ -436,6 +436,10 @@ export default {
       const storedLang = localStorage.getItem('language');
       if (storedLang) {
         selectedLang.value = storedLang;
+      } else {
+        // Se non c'è una lingua salvata, imposta inglese come default
+        selectedLang.value = 'en';
+        localStorage.setItem('language', 'en');
       }
     }
     
