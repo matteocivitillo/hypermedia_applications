@@ -54,7 +54,7 @@
             <div>
               <NuxtLink 
                 v-if="yogaClass.teacher_id" 
-                :to="`/singleteacher?id=${yogaClass.teacher_id}`" 
+                :to="`/teacher/${yogaClass.teacher_name.toLowerCase()}`.replace(/\s+/g, '-')" 
                 class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
               >
                 {{ yogaClass.teacher_name || t('yogaTeacher') }}
@@ -64,7 +64,7 @@
           </div>
           
           <NuxtLink 
-            :to="`/singleactivity?id=${yogaClass.id}`" 
+            :to="`/activity/${yogaClass.name.toLowerCase()}`.replace(/\s+/g, '-')" 
             class="mt-6 block w-full bg-primary dark:bg-primary hover:bg-primary-light dark:hover:bg-primary-light text-white dark:text-[#9ACBD0] font-medium py-3 px-6 rounded-lg text-center transition-colors duration-300"
           >
             {{ t('viewDetails') }}

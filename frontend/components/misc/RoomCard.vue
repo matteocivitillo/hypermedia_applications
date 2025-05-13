@@ -35,7 +35,7 @@
           <nuxt-link 
             v-for="activity in room.activities" 
             :key="activity.id"
-            :to="`/singleactivity?id=${activity.id}`"
+            :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`"
             class="inline-flex items-center px-3 py-1 rounded-full bg-primary-light dark:bg-primary/30 text-primary dark:text-[#9ACBD0] hover:bg-primary hover:text-white dark:hover:bg-primary/70 transition-colors"
           >
             {{ activity.title }}
@@ -50,7 +50,7 @@
           <nuxt-link 
             v-for="activity in room.legacy_activities" 
             :key="activity"
-            :to="`/singleactivity?id=${activityIdsMap[activity] || ''}`"
+            :to="`/activity/${activity.toLowerCase().replace(/\s+/g, '-')}`"
             class="inline-flex items-center px-3 py-1 rounded-full bg-primary-light dark:bg-primary/30 text-primary dark:text-[#9ACBD0] hover:bg-primary hover:text-white dark:hover:bg-primary/70 transition-colors"
           >
             {{ activity }}

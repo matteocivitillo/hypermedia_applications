@@ -35,7 +35,7 @@
             <NuxtLink 
               v-for="(teacher, index) in teachers" 
               :key="teacher.id"
-              :to="`/singleteacher?id=${teacher.id}`" 
+              :to="`/teacher/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}`.replace(/\s+/g, '-')" 
               class="teacher-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
               :style="`animation-delay: ${index * 150}ms`"
             >

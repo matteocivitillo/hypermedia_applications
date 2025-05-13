@@ -23,7 +23,7 @@
               class="px-4 shrink-0"
             >
               <NuxtLink 
-                :to="`/singleactivity?id=${activity.id}`" 
+                :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`" 
                 class="block cursor-pointer h-64 relative rounded-2xl overflow-hidden group shadow-lg dark:shadow-gray-900/70 transition-shadow duration-300 hover:shadow-none"
               >
                 <div class="absolute inset-0 bg-cover bg-center z-0" :style="`background-image: url('${activity.image_url}')`"></div>

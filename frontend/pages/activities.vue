@@ -44,7 +44,7 @@
                 <NuxtLink 
                   v-for="(activity, index) in yogaClasses" 
                   :key="activity.id"
-                  :to="`/singleactivity?id=${activity.id}`" 
+                  :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`" 
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >
@@ -86,7 +86,7 @@
                 <NuxtLink 
                   v-for="(activity, index) in otherActivities" 
                   :key="activity.id"
-                  :to="`/singleactivity?id=${activity.id}`" 
+                  :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`" 
                   class="activity-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                   :style="`animation-delay: ${index * 150}ms`"
                 >

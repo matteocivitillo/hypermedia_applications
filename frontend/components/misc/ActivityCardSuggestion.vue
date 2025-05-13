@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/singleactivity?id=${activity.id}`"
+    :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`"
     class="block w-full rounded-xl shadow-md dark:shadow-gray-900/70 overflow-hidden bg-white dark:bg-gray-600 transition animate-fade-in relative group activity-card"
   >
     <div class="h-64 relative">

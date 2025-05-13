@@ -70,7 +70,7 @@
             
             <div v-if="review.activity_id" class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
               <NuxtLink
-                :to="`/singleactivity?id=${review.activity_id}`"
+                :to="review.activity_id ? `/activity/${review.activity_name.toLowerCase().replace(/\s+/g, '-')}` : ''"
                 class="bg-secondary bg-opacity-20 dark:bg-opacity-30 text-primary dark:text-[#9ACBD0] py-1 px-2 rounded-full hover:underline"
               >
                 {{ review.class_attended }}

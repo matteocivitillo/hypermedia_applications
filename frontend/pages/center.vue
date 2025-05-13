@@ -615,7 +615,7 @@ async function navigateToActivity(activityName) {
     // If we already have the ID in our mapping, use it
     if (activityIdsMap.value[activityName]) {
       const id = activityIdsMap.value[activityName];
-      window.location.href = `/singleactivity?id=${id}`;
+      window.location.href = `/activity/${activityName.toLowerCase().replace(/\s+/g, '-')}`;
       return;
     }
     
@@ -628,7 +628,7 @@ async function navigateToActivity(activityName) {
         activityIdsMap.value[activityName] = data.id;
         
         // Navigate to the activity page
-        window.location.href = `/singleactivity?id=${data.id}`;
+        window.location.href = `/activity/${activityName.toLowerCase().replace(/\s+/g, '-')}`;
       } else {
         console.error('Could not find activity ID for:', activityName);
         // Fallback to activities page
