@@ -118,7 +118,7 @@ const translations = {
   en: {
     home: 'Home',
     contact: 'Contact',
-    faq: 'FAQ',
+    faq: 'Frequently Asked Questions',
     faq1Title: 'What makes Serendipity different from other yoga studios?',
     faq1Answer: 'At Serendipity, we focus on creating a complete wellness experience. Unlike typical studios, we blend traditional yoga practices with modern techniques, offering a range of complementary activities. Our spaces are designed for tranquility with attention to every sensory detail, and our instructors are not just teachers but guides on your wellness journey.',
     faq2Title: 'Do I need to be experienced to join your classes?',
@@ -142,7 +142,7 @@ const translations = {
   it: {
     home: 'Home',
     contact: 'Contatti',
-    faq: 'FAQ',
+    faq: 'Domande Frequenti',
     faq1Title: 'Cosa rende Serendipity diverso dagli altri studi di yoga?',
     faq1Answer: 'A Serendipity, ci concentriamo sulla creazione di un\'esperienza completa di benessere. A differenza degli studi tipici, uniamo pratiche yoga tradizionali con tecniche moderne, offrendo una gamma di attività complementari. I nostri spazi sono progettati per la tranquillità con attenzione a ogni dettaglio sensoriale, e i nostri istruttori non sono solo insegnanti ma guide nel tuo percorso di benessere.',
     faq2Title: 'Devo avere esperienza per partecipare alle vostre lezioni?',
@@ -166,7 +166,7 @@ const translations = {
   fr: {
     home: 'Accueil',
     contact: 'Contact',
-    faq: 'FAQ',
+    faq: 'Questions fréquemment posées',
     faq1Title: 'Qu\'est-ce qui rend Serendipity différent des autres studios de yoga ?',
     faq1Answer: 'À Serendipity, nous nous concentrons sur la création d\'une expérience de bien-être complète. Contrairement aux studios typiques, nous mélangeons les pratiques de yoga traditionnelles avec des techniques modernes, offrant une gamme d\'activités complémentaires. Nos espaces sont conçus pour la tranquillité avec une attention à chaque détail sensoriel, et nos instructeurs ne sont pas seulement des enseignants mais des guides dans votre parcours de bien-être.',
     faq2Title: 'Dois-je avoir de l\'expérience pour rejoindre vos cours ?',
@@ -190,7 +190,7 @@ const translations = {
   de: {
     home: 'Startseite',
     contact: 'Kontakt',
-    faq: 'FAQ',
+    faq: 'Häufig gestellte Fragen',
     faq1Title: 'Was macht Serendipity anders als andere Yoga-Studios?',
     faq1Answer: 'Bei Serendipity konzentrieren wir uns darauf, ein vollständiges Wellness-Erlebnis zu schaffen. Im Gegensatz zu typischen Studios kombinieren wir traditionelle Yoga-Praktiken mit modernen Techniken und bieten eine Reihe von ergänzenden Aktivitäten an. Unsere Räume sind auf Ruhe ausgerichtet, mit Aufmerksamkeit für jedes sensorische Detail, und unsere Lehrer sind nicht nur Unterrichtende, sondern Begleiter auf Ihrer Wellness-Reise.',
     faq2Title: 'Muss ich Erfahrung haben, um an Ihren Kursen teilzunehmen?',
