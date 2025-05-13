@@ -26,7 +26,7 @@
           <router-link to="/" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/') }">
-            Home
+            {{ t('home') }}
           </router-link>
           
           <!-- The Center Dropdown -->
@@ -38,7 +38,7 @@
                 @click.prevent="goToCenter"
                 class="text-white text-base font-medium hover:text-gray-300 transition-colors flex items-center"
                 :class="{ 'border-b-2 border-white pb-1': isActive('/center') || isActive('/rooms') || isActive('/areas') }">
-                The Center
+                {{ t('theCenter') }}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -49,17 +49,17 @@
                   <a href="#" 
                      @click.prevent="goToCenter"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Our philosophy
+                    {{ t('ourPhilosophy') }}
                   </a>
                   <a href="#" 
                      @click.prevent="goToRooms"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Rooms
+                    {{ t('rooms') }}
                   </a>
                   <a href="#" 
                      @click.prevent="goToAreas"
                      class="block py-3 text-sm text-gray-700 hover:bg-gray-100 rounded px-2 -mx-2 dark:text-gray-200 dark:hover:bg-gray-700">
-                    Areas
+                    {{ t('areas') }}
                   </a>
                 </div>
               </div>
@@ -69,32 +69,32 @@
           <router-link to="/activities" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/activities') }">
-            Activities
+            {{ t('activities') }}
           </router-link>
           
           <a href="#" 
              @click.prevent="goToHighlights"
              class="text-white text-base font-medium hover:text-gray-300 transition-colors"
              :class="{ 'border-b-2 border-white pb-1': isActive('/highlights') }">
-            Highlights
+            {{ t('highlights') }}
           </a>
           
           <router-link to="/teachers" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/teachers') }">
-            Teachers
+            {{ t('teachers') }}
           </router-link>
           
           <router-link to="/prices" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/prices') }">
-            Prices
+            {{ t('prices') }}
           </router-link>
           
           <router-link to="/contact" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
             :class="{ 'border-b-2 border-white pb-1': isActive('/contact') }">
-            Contact
+            {{ t('contact') }}
           </router-link>
           
           <div class="flex items-center space-x-2">
@@ -112,7 +112,7 @@
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/') }"
           @click="mobileMenuOpen = false">
-          Home
+          {{ t('home') }}
         </router-link>
         
         <!-- Mobile Dropdown -->
@@ -120,7 +120,7 @@
           <button @click="mobileCenterOpen = !mobileCenterOpen"
                 class="w-full text-left py-3 text-white text-base font-medium hover:text-gray-300 focus:outline-none flex justify-between items-center"
                 :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/center') }">
-            <span>The Center</span>
+            <span>{{ t('theCenter') }}</span>
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -129,17 +129,17 @@
             <a href="#" 
               @click.prevent="goToCenter(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Our philosophy
+              {{ t('ourPhilosophy') }}
             </a>
             <a href="#" 
               @click.prevent="goToRooms(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Rooms
+              {{ t('rooms') }}
             </a>
             <a href="#" 
               @click.prevent="goToAreas(); mobileMenuOpen = false"
               class="block py-3 text-white text-base font-medium hover:bg-[#9ACBD0] hover:text-primary rounded-lg px-4 my-1 transition-colors">
-              Areas
+              {{ t('areas') }}
             </a>
           </div>
         </div>
@@ -148,35 +148,35 @@
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/activities') }"
           @click="mobileMenuOpen = false">
-          Activities
+          {{ t('activities') }}
         </router-link>
         
         <a href="#" 
           @click.prevent="goToHighlights(); mobileMenuOpen = false"
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/highlights') }">
-          Highlights
+          {{ t('highlights') }}
         </a>
         
         <router-link to="/teachers" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/teachers') }"
           @click="mobileMenuOpen = false">
-          Teachers
+          {{ t('teachers') }}
         </router-link>
         
         <router-link to="/prices" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/prices') }"
           @click="mobileMenuOpen = false">
-          Prices
+          {{ t('prices') }}
         </router-link>
         
         <router-link to="/contact" 
           class="block py-3 text-white text-base font-medium hover:text-gray-300"
           :class="{ 'bg-[#9ACBD0] rounded-lg px-4 text-primary': isActive('/contact') }"
           @click="mobileMenuOpen = false">
-          Contact
+          {{ t('contact') }}
         </router-link>
       </div>
     </div>
@@ -199,6 +199,76 @@ const languages = [
 // Stato globale della lingua selezionata con valore di default
 export const selectedLang = ref('en')
 
+// Traduzioni per la navbar
+const translations = {
+  en: {
+    home: 'Home',
+    theCenter: 'The Center',
+    ourPhilosophy: 'Our Philosophy',
+    rooms: 'Rooms',
+    areas: 'Areas',
+    activities: 'Activities',
+    highlights: 'Highlights',
+    teachers: 'Teachers',
+    prices: 'Prices',
+    contact: 'Contact'
+  },
+  it: {
+    home: 'Home',
+    theCenter: 'Il Centro',
+    ourPhilosophy: 'La Nostra Filosofia',
+    rooms: 'Sale',
+    areas: 'Aree',
+    activities: 'Attività',
+    highlights: 'In Evidenza',
+    teachers: 'Insegnanti',
+    prices: 'Prezzi',
+    contact: 'Contatti'
+  },
+  fr: {
+    home: 'Accueil',
+    theCenter: 'Le Centre',
+    ourPhilosophy: 'Notre Philosophie',
+    rooms: 'Salles',
+    areas: 'Espaces',
+    activities: 'Activités',
+    highlights: 'À la Une',
+    teachers: 'Professeurs',
+    prices: 'Tarifs',
+    contact: 'Contact'
+  },
+  de: {
+    home: 'Startseite',
+    theCenter: 'Das Zentrum',
+    ourPhilosophy: 'Unsere Philosophie',
+    rooms: 'Räume',
+    areas: 'Bereiche',
+    activities: 'Aktivitäten',
+    highlights: 'Highlights',
+    teachers: 'Lehrer',
+    prices: 'Preise',
+    contact: 'Kontakt'
+  },
+  zh: {
+    home: '首页',
+    theCenter: '中心',
+    ourPhilosophy: '我们的理念',
+    rooms: '房间',
+    areas: '区域',
+    activities: '活动',
+    highlights: '精选',
+    teachers: '教师',
+    prices: '价格',
+    contact: '联系我们'
+  }
+};
+
+// Funzione per ottenere traduzioni
+const t = (key) => {
+  const lang = selectedLang.value;
+  return translations[lang]?.[key] || translations.en[key];
+};
+
 // La parte di localStorage verrà gestita nel ciclo di vita del componente
 
 export default {
@@ -217,6 +287,7 @@ export default {
     }
   },
   methods: {
+    t,
     isActive(route) {
       return this.$route && this.$route.path === route;
     },
@@ -317,23 +388,33 @@ export default {
     scrollToHighlights() {
       // Find the Highlighted Activities section
       this.$nextTick(() => {
-        // Trova il componente HighlightedActivities
-        const highlightsSections = document.querySelectorAll('section');
-        let highlightsSection = null;
-        
-        // Cerca la sezione che contiene "Highlighted Activities" come testo
-        for (const section of highlightsSections) {
-          if (section.textContent.includes('Highlighted Activities')) {
-            highlightsSection = section;
-            break;
+        // Metodo 1: HighlightedActivities è la seconda section all'interno di main
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+          const sections = mainElement.querySelectorAll(':scope > section');
+          if (sections.length >= 2) {
+            const highlightsSection = sections[1]; // HighlightedActivities è la seconda sezione
+            if (highlightsSection) {
+              // Calculate position to center the element in viewport
+              const elementRect = highlightsSection.getBoundingClientRect();
+              const absoluteElementTop = elementRect.top + window.pageYOffset;
+              const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+              
+              // Smooth scroll with animation
+              window.scrollTo({
+                top: middle,
+                behavior: 'smooth'
+              });
+              return; // Termina qui se abbiamo trovato e scrollato
+            }
           }
         }
         
-        // Fallback alla prima sezione con classe bg-white se non troviamo la sezione per titolo
-        if (!highlightsSection) {
-          highlightsSection = document.querySelector('section.py-12.bg-white');
-        }
-        
+        // Metodo 2: Fallback - cerca una sezione con il componente HighlightedActivities
+        // che di solito ha classi specifiche
+        const highlightsSection = document.querySelector('section.py-16.bg-white') ||
+                                 document.querySelector('section.py-16.dark\\:bg-gray-800');
+                                 
         if (highlightsSection) {
           // Calculate position to center the element in viewport
           const elementRect = highlightsSection.getBoundingClientRect();
