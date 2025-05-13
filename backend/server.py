@@ -71,15 +71,63 @@ async def get_teachers(lang: str = "en"):
 
 # Get a specific teacher by ID
 @app.get("/teacher/{teacher_id}")
-async def get_teacher(teacher_id: str):
-    resp = supabase.table("teacher")\
-                   .select("*")\
-                   .eq("id", teacher_id)\
-                   .execute()
-    
-    if len(resp.data) > 0:
-        return {"teacher": resp.data[0]}
-    return {"teacher": None}
+async def get_teacher(teacher_id: str, lang: str = "en"):
+    try:
+        # First try to find the teacher directly in teacher_base
+        base_resp = supabase.table("teacher_base").select("*").eq("id", teacher_id).execute()
+        
+        # If not found in teacher_base, check if it's an ID from teacher_translations
+        if not base_resp.data or len(base_resp.data) == 0:
+            # Try to get the teacher_id from teacher_translations
+            trans_lookup = supabase.table("teacher_translations").select("teacher_id").eq("id", teacher_id).execute()
+            
+            if trans_lookup.data and len(trans_lookup.data) > 0:
+                # Get the actual teacher_id from the translation record
+                actual_teacher_id = trans_lookup.data[0]["teacher_id"]
+                # Now fetch the base teacher with this ID
+                base_resp = supabase.table("teacher_base").select("*").eq("id", actual_teacher_id).execute()
+                if not base_resp.data or len(base_resp.data) == 0:
+                    return {"teacher": None}
+            else:
+                return {"teacher": None}
+            
+        base_teacher = base_resp.data[0]
+        actual_teacher_id = base_teacher["id"]
+        
+        # Fetch translation for the requested language
+        trans_resp = supabase.table("teacher_translations")\
+            .select("*")\
+            .eq("teacher_id", actual_teacher_id)\
+            .eq("language_code", lang)\
+            .execute()
+            
+        # If translation not found in requested language, try English as fallback
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            if lang != "en":
+                trans_resp = supabase.table("teacher_translations")\
+                    .select("*")\
+                    .eq("teacher_id", actual_teacher_id)\
+                    .eq("language_code", "en")\
+                    .execute()
+        
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            # If still no translation, return just the base data
+            return {"teacher": base_teacher}
+            
+        # Merge base and translation data
+        trans_data = trans_resp.data[0]
+        teacher = {**base_teacher, **trans_data}
+        
+        # Remove duplicate fields
+        if "teacher_id" in teacher:
+            del teacher["teacher_id"]
+        if "language_code" in teacher:
+            del teacher["language_code"]
+            
+        return {"teacher": teacher}
+    except Exception as e:
+        print(f"Error fetching teacher {teacher_id}: {str(e)}")
+        return {"teacher": None, "error": str(e)}
 
 # Get teacher name and surname by activity ID. It runs a function in the database. Multiple values can be returned!
 @app.get("/teacher/activity/{activity_id}")
@@ -93,23 +141,42 @@ async def get_teacher_by_activityid(activity_id: str):
 # Get all activities for a specific teacher (many-to-many via teaches)
 @app.get("/teacher/{teacher_id}/activities")
 async def get_teacher_activities(teacher_id: str):
-    # Prendi tutti gli idactivity dalla tabella teaches per questo teacher
-    teaches_resp = supabase.table("teaches") \
-        .select("idactivity") \
-        .eq("idteacher", teacher_id) \
-        .execute()
+    try:
+        # First check if this is a teacher_base ID
+        actual_teacher_id = teacher_id
+        
+        # If not found in teacher_base, check if it's from teacher_translations
+        base_check = supabase.table("teacher_base").select("id").eq("id", teacher_id).execute()
+        if not base_check.data or len(base_check.data) == 0:
+            # Try to get the teacher_id from teacher_translations
+            trans_lookup = supabase.table("teacher_translations").select("teacher_id").eq("id", teacher_id).execute()
+            
+            if trans_lookup.data and len(trans_lookup.data) > 0:
+                # Get the actual teacher_id from the translation record
+                actual_teacher_id = trans_lookup.data[0]["teacher_id"]
+            else:
+                return {"activities": []}
     
-    activity_ids = [row["idactivity"] for row in teaches_resp.data] if teaches_resp.data else []
-    if not activity_ids:
-        return {"activities": []}
-    
-    # Prendi tutte le attività corrispondenti
-    activities_resp = supabase.table("activity") \
-        .select("*") \
-        .in_("id", activity_ids) \
-        .execute()
-    
-    return {"activities": activities_resp.data}
+        # Prendi tutti gli idactivity dalla tabella teaches per questo teacher
+        teaches_resp = supabase.table("teaches") \
+            .select("idactivity") \
+            .eq("idteacher", actual_teacher_id) \
+            .execute()
+        
+        activity_ids = [row["idactivity"] for row in teaches_resp.data] if teaches_resp.data else []
+        if not activity_ids:
+            return {"activities": []}
+        
+        # Prendi tutte le attività corrispondenti
+        activities_resp = supabase.table("activity") \
+            .select("*") \
+            .in_("id", activity_ids) \
+            .execute()
+        
+        return {"activities": activities_resp.data}
+    except Exception as e:
+        print(f"Error fetching activities for teacher {teacher_id}: {str(e)}")
+        return {"activities": [], "error": str(e)}
 
 # ------------------- ACTIVITIES ------------------- #
 
@@ -166,18 +233,31 @@ async def get_activities(lang: str = "en"):
 @app.get("/activity/{activity_id}")
 async def get_activity(activity_id: str, lang: str = "en"):
     try:
-        # Fetch base activity data
+        # First try to find the activity directly in activity_base
         base_resp = supabase.table("activity_base").select("*").eq("id", activity_id).execute()
         
+        # If not found in activity_base, check if it's an ID from activity_translations
         if not base_resp.data or len(base_resp.data) == 0:
-            return {"activity": None}
+            # Try to get the activity_id from activity_translations
+            trans_lookup = supabase.table("activity_translations").select("activity_id").eq("id", activity_id).execute()
+            
+            if trans_lookup.data and len(trans_lookup.data) > 0:
+                # Get the actual activity_id from the translation record
+                actual_activity_id = trans_lookup.data[0]["activity_id"]
+                # Now fetch the base activity with this ID
+                base_resp = supabase.table("activity_base").select("*").eq("id", actual_activity_id).execute()
+                if not base_resp.data or len(base_resp.data) == 0:
+                    return {"activity": None}
+            else:
+                return {"activity": None}
             
         base_activity = base_resp.data[0]
+        actual_activity_id = base_activity["id"]
         
         # Fetch translation for the requested language
         trans_resp = supabase.table("activity_translations")\
             .select("*")\
-            .eq("activity_id", activity_id)\
+            .eq("activity_id", actual_activity_id)\
             .eq("language_code", lang)\
             .execute()
             
@@ -186,7 +266,7 @@ async def get_activity(activity_id: str, lang: str = "en"):
             if lang != "en":
                 trans_resp = supabase.table("activity_translations")\
                     .select("*")\
-                    .eq("activity_id", activity_id)\
+                    .eq("activity_id", actual_activity_id)\
                     .eq("language_code", "en")\
                     .execute()
         
@@ -314,20 +394,89 @@ async def get_rooms(lang: str = "en"):
         rooms = []
         missing_translations = []
         for base in base_rooms:
+            room_id = base["id"]
+            
             trans_resp = supabase.table("room_translations")\
                 .select("*")\
-                .eq("room_id", base["id"])\
+                .eq("room_id", room_id)\
                 .eq("language_code", lang)\
                 .execute()
             trans_data = trans_resp.data[0] if trans_resp.data else None
             if not trans_data:
-                missing_translations.append(base["id"])
+                missing_translations.append(room_id)
                 continue
             room = {**base, **trans_data}
             if "room_id" in room:
                 del room["room_id"]
             if "language_code" in room:
                 del room["language_code"]
+                
+            # Process features - ensure it's a list
+            features = room.get("features", "")
+            features_list = []
+            
+            if isinstance(features, str):
+                # Pulisce la stringa da eventuali spazi iniziali o finali
+                features = features.strip()
+                
+                # Se la stringa contiene un trattino, la dividiamo per trattino
+                if "-" in features:
+                    # Dividi per trattino e rimuovi spazi bianchi extra
+                    features_list = [f.strip() for f in features.split("-") if f.strip()]
+                # Altrimenti, se contiene una virgola, la dividiamo per virgola
+                elif "," in features:
+                    features_list = [f.strip() for f in features.split(",") if f.strip()]
+                # Se è una stringa singola non vuota e non contiene né trattini né virgole
+                elif features:
+                    features_list = [features]
+            elif isinstance(features, list):
+                # Se è già una lista, la usiamo direttamente
+                features_list = features
+                
+            # Aggiorna le features nel room
+            room["features"] = features_list
+            
+            # Recupera le attività associate a questa stanza
+            activities_resp = supabase.table("activity_base")\
+                                     .select("id, type")\
+                                     .eq("roomid", room_id)\
+                                     .execute()
+            
+            room_activities = []
+            
+            # Se ci sono attività associate a questa stanza
+            if activities_resp.data and len(activities_resp.data) > 0:
+                for activity_base in activities_resp.data:
+                    activity_id = activity_base["id"]
+                    
+                    # Recupera i dettagli tradotti dell'attività
+                    trans_resp = supabase.table("activity_translations")\
+                                        .select("title, short_description")\
+                                        .eq("activity_id", activity_id)\
+                                        .eq("language_code", lang)\
+                                        .execute()
+                    
+                    # Se non trova la traduzione nella lingua richiesta, prova con l'inglese
+                    if not trans_resp.data or len(trans_resp.data) == 0:
+                        if lang != "en":
+                            trans_resp = supabase.table("activity_translations")\
+                                              .select("title, short_description")\
+                                              .eq("activity_id", activity_id)\
+                                              .eq("language_code", "en")\
+                                              .execute()
+                    
+                    if trans_resp.data and len(trans_resp.data) > 0:
+                        activity_info = {
+                            "id": activity_id,
+                            "title": trans_resp.data[0].get("title", ""),
+                            "type": activity_base.get("type", ""),
+                            "description": trans_resp.data[0].get("short_description", "")
+                        }
+                        room_activities.append(activity_info)
+            
+            # Aggiungi le attività alla stanza
+            room["activities"] = room_activities
+            
             rooms.append(room)
         if missing_translations:
             return {"error": f"Missing translations for rooms: {missing_translations}", "rooms": []}
@@ -338,69 +487,122 @@ async def get_rooms(lang: str = "en"):
 
 # Get a specific room by ID
 @app.get("/room/{room_id}")
-async def get_room(room_id: str):
-    resp = supabase.table("room")\
-                   .select("*")\
-                   .eq("id", room_id)\
-                   .execute()
-    
-    if len(resp.data) > 0:
-        room = resp.data[0]
+async def get_room(room_id: str, lang: str = "en"):
+    try:
+        resp = supabase.table("room")\
+                      .select("*")\
+                      .eq("id", room_id)\
+                      .execute()
         
-        # Process features - ensure it's a list
-        features = room.get("features", "")
-        if isinstance(features, str):
-            # Split by hyphens if they exist
-            if "-" in features:
-                features_list = [f.strip() for f in features.split("-") if f.strip()]
-            # Otherwise split by commas if they exist
-            elif "," in features:
-                features_list = [f.strip() for f in features.split(",") if f.strip()]
-            else:
-                # Single feature or empty
-                features_list = [features] if features else []
-        else:
-            features_list = features if isinstance(features, list) else []
-        
-        # Process activities - combine activity1 and activity2
-        activities = []
-        activity1 = room.get("activity1")
-        activity2 = room.get("activity2")
-        
-        if activity1:
-            activities.append(activity1)
-        if activity2:
-            activities.append(activity2)
+        if len(resp.data) > 0:
+            room = resp.data[0]
             
-        # If no activities were found in activity1/2, check activities field
-        if not activities and room.get("activities"):
-            activities_text = room.get("activities")
-            if isinstance(activities_text, str):
-                # Split by hyphens if they exist
-                if "-" in activities_text:
-                    activities = [a.strip() for a in activities_text.split("-") if a.strip()]
-                # Otherwise split by commas if they exist
-                elif "," in activities_text:
-                    activities = [a.strip() for a in activities_text.split(",") if a.strip()]
-                else:
-                    # Single activity
-                    activities = [activities_text]
-            elif isinstance(activities_text, list):
-                activities = activities_text
-        
-        # Format the processed room data
-        processed_room = {
-            "id": room.get("id"),
-            "title": room.get("title", ""),
-            "description": room.get("description", ""),
-            "features": features_list,
-            "activities": activities,
-            "image": room.get("image", ""),
-            "quote": room.get("quote", "Experience the transformative power of our specially designed spaces.")
-        }
-        
-        return {"room": processed_room}
-    return {"room": None}
+            # Process features - ensure it's a list
+            features = room.get("features", "")
+            features_list = []
+            
+            if isinstance(features, str):
+                # Pulisce la stringa da eventuali spazi iniziali o finali
+                features = features.strip()
+                
+                # Se la stringa contiene un trattino, la dividiamo per trattino
+                if "-" in features:
+                    # Dividi per trattino e rimuovi spazi bianchi extra
+                    features_list = [f.strip() for f in features.split("-") if f.strip()]
+                # Altrimenti, se contiene una virgola, la dividiamo per virgola
+                elif "," in features:
+                    features_list = [f.strip() for f in features.split(",") if f.strip()]
+                # Se è una stringa singola non vuota e non contiene né trattini né virgole
+                elif features:
+                    features_list = [features]
+            elif isinstance(features, list):
+                # Se è già una lista, la usiamo direttamente
+                features_list = features
+            
+            print(f"Features processate: {features_list}")
+            
+            # Recupera le attività associate a questa stanza
+            # Cerca le attività che hanno roomid uguale all'id della stanza
+            activities_resp = supabase.table("activity_base")\
+                                      .select("id, type")\
+                                      .eq("roomid", room_id)\
+                                      .execute()
+                
+            room_activities = []
+            
+            # Se ci sono attività associate a questa stanza
+            if activities_resp.data and len(activities_resp.data) > 0:
+                for activity_base in activities_resp.data:
+                    activity_id = activity_base["id"]
+                    
+                    # Recupera i dettagli tradotti dell'attività
+                    trans_resp = supabase.table("activity_translations")\
+                                         .select("title, short_description")\
+                                         .eq("activity_id", activity_id)\
+                                         .eq("language_code", lang)\
+                                         .execute()
+                    
+                    # Se non trova la traduzione nella lingua richiesta, prova con l'inglese
+                    if not trans_resp.data or len(trans_resp.data) == 0:
+                        if lang != "en":
+                            trans_resp = supabase.table("activity_translations")\
+                                               .select("title, short_description")\
+                                               .eq("activity_id", activity_id)\
+                                               .eq("language_code", "en")\
+                                               .execute()
+                    
+                    if trans_resp.data and len(trans_resp.data) > 0:
+                        activity_info = {
+                            "id": activity_id,
+                            "title": trans_resp.data[0].get("title", ""),
+                            "type": activity_base.get("type", ""),
+                            "description": trans_resp.data[0].get("short_description", "")
+                        }
+                        room_activities.append(activity_info)
+            
+            # Process activities - combine activity1 and activity2 (legacy method)
+            legacy_activities = []
+            activity1 = room.get("activity1")
+            activity2 = room.get("activity2")
+            
+            if activity1:
+                legacy_activities.append(activity1)
+            if activity2:
+                legacy_activities.append(activity2)
+                
+            # If no activities were found in activity1/2, check activities field
+            if not legacy_activities and room.get("activities"):
+                activities_text = room.get("activities")
+                if isinstance(activities_text, str):
+                    # Split by hyphens if they exist
+                    if "-" in activities_text:
+                        legacy_activities = [a.strip() for a in activities_text.split("-") if a.strip()]
+                    # Otherwise split by commas if they exist
+                    elif "," in activities_text:
+                        legacy_activities = [a.strip() for a in activities_text.split(",") if a.strip()]
+                    else:
+                        # Single activity
+                        legacy_activities = [activities_text]
+                elif isinstance(activities_text, list):
+                    legacy_activities = activities_text
+            
+            # Format the processed room data
+            processed_room = {
+                "id": room.get("id"),
+                "title": room.get("title", ""),
+                "description": room.get("description", ""),
+                "features": features_list,
+                "activities": room_activities,
+                "legacy_activities": legacy_activities,
+                "image": room.get("image", ""),
+                "quote": room.get("quote", "Experience the transformative power of our specially designed spaces.")
+            }
+            
+            return {"room": processed_room}
+        return {"room": None}
+    except Exception as e:
+        print(f"Error fetching room {room_id}: {str(e)}")
+        return {"room": None, "error": str(e)}
 
 # ------------------- AREAS ------------------- #
 

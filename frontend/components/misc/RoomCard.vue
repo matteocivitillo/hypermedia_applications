@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="w-full md:w-1/2 flex flex-col justify-center">
-      <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-4">{{ room.name }}</h3>
+      <h3 class="text-2xl font-bold text-primary dark:text-[#9ACBD0] mb-4">{{ room.name || room.title }}</h3>
       
       <!-- Description Paragraph -->
       <div class="prose prose-lg dark:prose-invert mb-6">
@@ -34,6 +34,21 @@
         <div class="flex flex-wrap gap-2">
           <nuxt-link 
             v-for="activity in room.activities" 
+            :key="activity.id"
+            :to="`/singleactivity?id=${activity.id}`"
+            class="inline-flex items-center px-3 py-1 rounded-full bg-primary-light dark:bg-primary/30 text-primary dark:text-[#9ACBD0] hover:bg-primary hover:text-white dark:hover:bg-primary/70 transition-colors"
+          >
+            {{ activity.title }}
+          </nuxt-link>
+        </div>
+      </div>
+      
+      <!-- Legacy Activities (if no DB activities were found) -->
+      <div v-else-if="room.legacy_activities && room.legacy_activities.length > 0" class="mb-6">
+        <h4 class="text-lg font-semibold text-primary dark:text-[#9ACBD0] mb-2">Activities:</h4>
+        <div class="flex flex-wrap gap-2">
+          <nuxt-link 
+            v-for="activity in room.legacy_activities" 
             :key="activity"
             :to="`/singleactivity?id=${activityIdsMap[activity] || ''}`"
             class="inline-flex items-center px-3 py-1 rounded-full bg-primary-light dark:bg-primary/30 text-primary dark:text-[#9ACBD0] hover:bg-primary hover:text-white dark:hover:bg-primary/70 transition-colors"

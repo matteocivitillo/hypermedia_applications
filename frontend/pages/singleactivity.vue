@@ -289,7 +289,7 @@ const fetchRoom = async (roomId) => {
   
   try {
     isLoadingRoom.value = true
-    const response = await fetch(`${API_URL}/room/${roomId}`)
+    const response = await fetch(`${API_URL}/room/${roomId}?lang=${selectedLang.value}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -297,12 +297,18 @@ const fetchRoom = async (roomId) => {
     
     const data = await response.json()
     if (data.room) {
+      // Creare struttura dati che mantiene sia le attività dal database che quelle legacy
+      const roomActivities = data.room.activities || [];
+      const legacyActivities = data.room.legacy_activities || [];
+      
       room.value = {
         id: data.room.id,
         name: data.room.title || 'Yoga Room',
         image: data.room.image || `/images/default-room.jpg`,
         description: data.room.description || 'Experience the tranquility of our specially designed yoga spaces.',
         features: data.room.features || [],
+        activities: roomActivities,
+        legacy_activities: legacyActivities,
         quote: data.room.quote || 'Experience the transformative power of our specially designed spaces.'
       }
     }
