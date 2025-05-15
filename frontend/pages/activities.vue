@@ -58,7 +58,7 @@
                     <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
                   </div>
                 </div>
-                <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-40 transition-all duration-300"></div>
+                <div class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all duration-300"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-6">
                   <div class="flex flex-wrap gap-2 items-center mb-2">
                     <span class="bg-primary bg-opacity-80 text-white px-3 py-1 rounded-full text-sm group-hover:bg-opacity-100 transition-all duration-300 group-hover:translate-y-[-2px]">
