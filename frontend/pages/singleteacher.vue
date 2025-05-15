@@ -11,7 +11,7 @@ import { API_URL } from '~/utils/api'
 // Query parameters to get teacher ID
 const route = useRoute()
 const teacherId = ref(route.query.id)
-const isLoading = ref(true)
+//const isLoading = ref(true) non lo usiamo
 
 // Function to redirect to the new URL format
 const redirectToNewFormat = async () => {
