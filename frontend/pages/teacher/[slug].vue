@@ -326,7 +326,7 @@
   const fetchActivities = async () => {
     isLoadingActivities.value = true;
     try {
-      const response = await fetch(`${API_URL}/teacher/${teacherId.value}/activities`);
+      const response = await fetch(`${API_URL}/teacher/${teacherId.value}/activities?lang=${selectedLang.value}`);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

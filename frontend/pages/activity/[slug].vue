@@ -406,6 +406,16 @@ const findActivityIdBySlug = async () => {
     const data = await response.json();
     
     if (data.activities && data.activities.length > 0) {
+      console.log("Current slug:", slug.value);
+      
+      // Log all activities and their generated slugs for debugging
+      console.log("Available activities and their slugs:");
+      data.activities.forEach(a => {
+        const activityName = a.title || a.name;
+        const activitySlug = activityName.toLowerCase().replace(/\s+/g, '-');
+        console.log(`- ID: ${a.id}, Name: ${activityName}, Slug: ${activitySlug}`);
+      });
+      
       // Find the activity with the matching slug
       const foundActivity = data.activities.find(a => {
         const activityName = a.title || a.name;
@@ -414,9 +424,11 @@ const findActivityIdBySlug = async () => {
       });
       
       if (foundActivity) {
+        console.log("Found matching activity:", foundActivity);
         activityId.value = foundActivity.id;
         return foundActivity.id;
       } else {
+        console.error("No activity matches the slug:", slug.value);
         error.value = 'Activity not found';
         isLoading.value = false;
         return null;
@@ -505,7 +517,34 @@ const fetchActivity = async () => {
     const data = await response.json();
     
     if (data.activity) {
-      activity.value = data.activity;
+      // Check if the activity ID matches what we requested
+      if (data.activity.id !== activityId.value) {
+        console.error(`API returned wrong activity. Requested ID ${activityId.value} but got ID ${data.activity.id}`);
+        
+        // Attempt to find the correct activity by iterating through all activities
+        const allActivitiesResponse = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
+        if (allActivitiesResponse.ok) {
+          const allActivitiesData = await allActivitiesResponse.json();
+          const requestedActivity = allActivitiesData.activities.find(a => a.id === activityId.value);
+          
+          if (requestedActivity) {
+            // We have the original activity data, so use it
+            activity.value = requestedActivity;
+            console.log("Using activity data from the list instead of the API response");
+          } else {
+            // Fall back to the API response
+            activity.value = data.activity;
+            console.log("Couldn't find the correct activity in the list, using API response");
+          }
+        } else {
+          // Fall back to the API response
+          activity.value = data.activity;
+        }
+      } else {
+        // Normal case - ID matches
+        activity.value = data.activity;
+      }
+      
       console.log("Loaded activity:", activity.value);
       
       // If the activity has a teacher_id, fetch the teacher
@@ -585,11 +624,29 @@ const fetchSimilarActivities = async () => {
       // poiché i livelli potrebbero essere tradotti/diversi in lingue diverse
       const filtered = data.activities.filter(a => a.id !== activity.value.id);
       
+      // Ensure all activities have both title and name fields populated for URL consistency
+      filtered.forEach(act => {
+        if (!act.title && act.name) act.title = act.name;
+        if (!act.name && act.title) act.name = act.title;
+        
+        // Log the URL that would be generated for this activity
+        const activitySlug = (act.title || act.name).toLowerCase().replace(/\s+/g, '-');
+        console.log(`Similar activity slug: ${activitySlug} for activity ID: ${act.id}`);
+      });
+      
       // Shuffle the array
       const shuffled = [...filtered].sort(() => Math.random() - 0.5);
       
       // Take only 3 activities
       similarActivities.value = shuffled.slice(0, 3);
+      console.log("Similar activities prepared:", 
+        similarActivities.value.map(a => ({
+          id: a.id,
+          title: a.title,
+          name: a.name,
+          slug: (a.title || a.name).toLowerCase().replace(/\s+/g, '-')
+        }))
+      );
     }
   } catch (err) {
     console.error('Error fetching similar activities:', err);

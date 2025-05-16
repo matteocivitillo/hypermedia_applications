@@ -6,6 +6,16 @@
 
 <script setup>
 import { selectedLang } from '~/components/home/NavBar.vue'
+
+// Add meta tags for the PWA
+useHead({
+  link: [
+    { rel: 'manifest', href: '/manifest.json' }
+  ],
+  meta: [
+    { name: 'theme-color', content: '#006A71' }
+  ]
+})
 </script>
 
 <style>

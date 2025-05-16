@@ -41,7 +41,7 @@
               <NuxtLink 
                 v-for="(activity, index) in activities" 
                 :key="activity.id"
-                :to="`/activity/${activity.title.toLowerCase().replace(/\s+/g, '-')}`" 
+                :to="`/activity/${(activity.title || activity.name).toLowerCase().replace(/\s+/g, '-')}`" 
                 class="activity-card relative rounded-xl overflow-hidden shadow-lg dark:shadow-gray-900/70 h-80 group cursor-pointer transition-all duration-300 hover:shadow-2xl animate-fade-in"
                 :style="`animation-delay: ${index * 150}ms`"
               >
@@ -65,7 +65,7 @@
                       {{ activity.level }}
                     </span>
                   </div>
-                  <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title }}</h3>
+                  <h3 class="text-2xl font-bold text-white group-hover:translate-y-[-2px] transition-all duration-300">{{ activity.title || activity.name }}</h3>
                   <div class="flex flex-wrap gap-2 mt-2">
                     <span class="text-white py-1 text-sm transition-all duration-300 group-hover:translate-y-[-2px]">
                       {{ activity.short_description }}

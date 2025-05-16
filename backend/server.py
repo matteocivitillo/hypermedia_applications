@@ -140,7 +140,7 @@ async def get_teacher_by_activityid(activity_id: str):
 
 # Get all activities for a specific teacher (many-to-many via teaches)
 @app.get("/teacher/{teacher_id}/activities")
-async def get_teacher_activities(teacher_id: str):
+async def get_teacher_activities(teacher_id: str, lang: str = "en"):
     try:
         # First check if this is a teacher_base ID
         actual_teacher_id = teacher_id
@@ -157,7 +157,7 @@ async def get_teacher_activities(teacher_id: str):
             else:
                 return {"activities": []}
     
-        # Prendi tutti gli idactivity dalla tabella teaches per questo teacher
+        # Get all activity IDs from the teaches table for this teacher
         teaches_resp = supabase.table("teaches") \
             .select("idactivity") \
             .eq("idteacher", actual_teacher_id) \
@@ -167,13 +167,55 @@ async def get_teacher_activities(teacher_id: str):
         if not activity_ids:
             return {"activities": []}
         
-        # Prendi tutte le attività corrispondenti
-        activities_resp = supabase.table("activity") \
-            .select("*") \
-            .in_("id", activity_ids) \
-            .execute()
+        # Get all activities with translations
+        activities = []
+        for base_activity_id in activity_ids:
+            # Get base data from activity_base
+            base_resp = supabase.table("activity_base") \
+                .select("*") \
+                .eq("id", base_activity_id) \
+                .execute()
+                
+            if not base_resp.data or len(base_resp.data) == 0:
+                print(f"Warning: Activity base record not found for ID {base_activity_id}")
+                continue
+                
+            base_activity = base_resp.data[0]
+            
+            # Get translation for the requested language
+            trans_resp = supabase.table("activity_translations") \
+                .select("*") \
+                .eq("activity_id", base_activity_id) \
+                .eq("language_code", lang) \
+                .execute()
+                
+            # If translation doesn't exist in requested language, fallback to English
+            if not trans_resp.data or len(trans_resp.data) == 0:
+                if lang != "en":
+                    trans_resp = supabase.table("activity_translations") \
+                        .select("*") \
+                        .eq("activity_id", base_activity_id) \
+                        .eq("language_code", "en") \
+                        .execute()
+            
+            # Merge base data with translations if available
+            if trans_resp.data and len(trans_resp.data) > 0:
+                trans_data = trans_resp.data[0]
+                # Create a merged activity object
+                activity = {**base_activity, **trans_data}
+                
+                # Remove duplicate keys from translation table
+                if "activity_id" in activity:
+                    del activity["activity_id"]
+                if "language_code" in activity:
+                    del activity["language_code"]
+                
+                activities.append(activity)
+            else:
+                # No translation found, use base data only
+                activities.append(base_activity)
         
-        return {"activities": activities_resp.data}
+        return {"activities": activities}
     except Exception as e:
         print(f"Error fetching activities for teacher {teacher_id}: {str(e)}")
         return {"activities": [], "error": str(e)}
