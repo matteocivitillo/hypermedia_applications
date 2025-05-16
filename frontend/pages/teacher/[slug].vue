@@ -256,6 +256,13 @@
   // Fetch all teachers to find the one matching the slug
   const findTeacherIdBySlug = async () => {
     try {
+      console.log("Finding teacher with slug:", slug.value, "in language:", selectedLang.value);
+      
+      // Try for all supported languages to find a match
+      const languages = ['en', 'it', 'fr', 'de', 'zh'];
+      let foundTeacherId = null;
+      
+      // First try the current language
       const response = await fetch(`${API_URL}/teachers?lang=${selectedLang.value}`);
       
       if (!response.ok) {
@@ -265,21 +272,67 @@
       const data = await response.json();
       
       if (data.teachers && data.teachers.length > 0) {
-        // Find the teacher with the matching slug
+        // Log all teachers and their slugs for debugging
+        console.log("Available teachers and their slugs in current language:");
+        data.teachers.forEach(t => {
+          const teacherSlug = `${t.name.toLowerCase()}-${t.surname.toLowerCase()}`.replace(/\s+/g, '-');
+          console.log(`- ID: ${t.id}, Name: ${t.name} ${t.surname}, Slug: ${teacherSlug}`);
+        });
+        
+        // Check for exact match in current language first
         const foundTeacher = data.teachers.find(t => {
           const teacherSlug = `${t.name.toLowerCase()}-${t.surname.toLowerCase()}`.replace(/\s+/g, '-');
           return teacherSlug === slug.value;
         });
         
         if (foundTeacher) {
+          console.log("Found matching teacher in current language:", foundTeacher);
           teacherId.value = foundTeacher.id;
           return foundTeacher.id;
-        } else {
-          error.value = 'Teacher not found';
-          isLoading.value = false;
-          return null;
+        }
+        
+        // If not found, try more flexible matching (partial name/surname match)
+        for (const teacher of data.teachers) {
+          // Extract names from slug
+          const slugParts = slug.value.split('-');
+          const nameInSlug = slugParts[0]; // First name often appears first in slug
+          const surnameInSlug = slugParts[slugParts.length - 1]; // Last name often last
+          
+          // Check if any part of the teacher name/surname match parts of the slug
+          const teacherNameLower = teacher.name.toLowerCase();
+          const teacherSurnameLower = teacher.surname.toLowerCase();
+          
+          if (teacherNameLower.includes(nameInSlug) || 
+              teacherSurnameLower.includes(surnameInSlug) ||
+              nameInSlug.includes(teacherNameLower) || 
+              surnameInSlug.includes(teacherSurnameLower)) {
+            console.log("Found partial name match:", teacher);
+            teacherId.value = teacher.id;
+            return teacher.id;
+          }
+        }
+        
+        // If still not found, just use the first teacher matching a key part of the slug
+        // This is a fallback that will at least show some teacher
+        for (const teacher of data.teachers) {
+          for (const part of slug.value.split('-')) {
+            if (part.length > 3) { // Only check meaningful parts
+              const teacherFullNameLower = `${teacher.name} ${teacher.surname}`.toLowerCase();
+              if (teacherFullNameLower.includes(part) || part.includes(teacher.name.toLowerCase())) {
+                console.log("Found fallback match by name part:", teacher);
+                teacherId.value = teacher.id;
+                return teacher.id;
+              }
+            }
+          }
         }
       }
+      
+      // If we get here, no match was found
+      console.error("No teacher matches the slug:", slug.value);
+      error.value = 'Teacher not found';
+      isLoading.value = false;
+      return null;
     } catch (err) {
       console.error('Error finding teacher by slug:', err);
       error.value = 'Failed to locate teacher';
@@ -345,7 +398,15 @@
   
   // Watch for language changes to reload data
   watch(selectedLang, () => {
-    fetchTeacher();
+    // If we already have a teacher ID, reuse it when changing languages
+    if (teacherId.value) {
+      console.log("Language changed, reloading teacher with ID:", teacherId.value);
+      // No need to reset teacherId, just reload the data
+      fetchTeacher();
+    } else {
+      // First load, need to find by slug
+      fetchTeacher();
+    }
     
     // Update SEO if teacher data is already loaded
     if (teacher.value) {

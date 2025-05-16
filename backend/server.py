@@ -47,6 +47,7 @@ async def get_teachers(lang: str = "en"):
         teachers = []
         missing_translations = []
         for base in base_teachers:
+            base_id = base["id"]  # Store the base ID
             trans_resp = supabase.table("teacher_translations")\
                 .select("*")\
                 .eq("teacher_id", base["id"])\
@@ -56,7 +57,10 @@ async def get_teachers(lang: str = "en"):
             if not trans_data:
                 missing_translations.append(base["id"])
                 continue
+            # Use the BASE ID, not the translation ID
             teacher = {**base, **trans_data}
+            # Ensure we use the base ID
+            teacher["id"] = base_id
             if "teacher_id" in teacher:
                 del teacher["teacher_id"]
             if "language_code" in teacher:

@@ -397,6 +397,12 @@ const handleImageError = () => {
 // Find the activity ID from the slug
 const findActivityIdBySlug = async () => {
   try {
+    // If we already loaded an activity before language change, use that ID
+    if (activityId.value) {
+      console.log("Using existing activity ID after language change:", activityId.value);
+      return activityId.value;
+    }
+    
     const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
     
     if (!response.ok) {
@@ -724,19 +730,39 @@ watch(activity, (newActivity) => {
 
 // Watch for language changes to reload activity data
 watch(selectedLang, () => {
-  activityId.value = null;
-  fetchActivity().then(() => {
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
-    
-    // Update SEO if activity data is already loaded
-    if (activity.value) {
-      useSeoMeta({
-        title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
-        description: t('seoDescription'),
-      });
-    }
-  });
+  // We already have the activity ID, no need to find by slug again
+  // Just reload the data with the new language
+  if (activityId.value) {
+    console.log("Language changed, reloading activity with ID:", activityId.value);
+    // Don't reset the activity ID as we want to keep it
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
+      
+      // Update SEO if activity data is already loaded
+      if (activity.value) {
+        useSeoMeta({
+          title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
+          description: t('seoDescription'),
+        });
+      }
+    });
+  } else {
+    // First load, need to find by slug
+    activityId.value = null;
+    fetchActivity().then(() => {
+      fetchTeacherByActivity();
+      fetchSimilarActivities();
+      
+      // Update SEO if activity data is already loaded
+      if (activity.value) {
+        useSeoMeta({
+          title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
+          description: t('seoDescription'),
+        });
+      }
+    });
+  }
 });
 </script>
 
