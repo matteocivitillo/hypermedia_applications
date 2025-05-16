@@ -49,7 +49,7 @@ async def get_teachers(lang: str = "en"):
         for base in base_teachers:
             trans_resp = supabase.table("teacher_translations")\
                 .select("*")\
-                .eq("teacher_id", base["id"])\
+                .eq("id", base["id"])\
                 .eq("language_code", lang)\
                 .execute()
             trans_data = trans_resp.data[0] if trans_resp.data else None
@@ -79,11 +79,11 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
         # If not found in teacher_base, check if it's an ID from teacher_translations
         if not base_resp.data or len(base_resp.data) == 0:
             # Try to get the teacher_id from teacher_translations
-            trans_lookup = supabase.table("teacher_translations").select("teacher_id").eq("id", teacher_id).execute()
+            trans_lookup = supabase.table("teacher_translations").select("id").eq("id", teacher_id).execute()
             
             if trans_lookup.data and len(trans_lookup.data) > 0:
                 # Get the actual teacher_id from the translation record
-                actual_teacher_id = trans_lookup.data[0]["teacher_id"]
+                actual_teacher_id = trans_lookup.data[0]["id"]
                 # Now fetch the base teacher with this ID
                 base_resp = supabase.table("teacher_base").select("*").eq("id", actual_teacher_id).execute()
                 if not base_resp.data or len(base_resp.data) == 0:
@@ -97,7 +97,7 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
         # Fetch translation for the requested language
         trans_resp = supabase.table("teacher_translations")\
             .select("*")\
-            .eq("teacher_id", actual_teacher_id)\
+            .eq("id", actual_teacher_id)\
             .eq("language_code", lang)\
             .execute()
             
@@ -106,7 +106,7 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
             if lang != "en":
                 trans_resp = supabase.table("teacher_translations")\
                     .select("*")\
-                    .eq("teacher_id", actual_teacher_id)\
+                    .eq("id", actual_teacher_id)\
                     .eq("language_code", "en")\
                     .execute()
         
