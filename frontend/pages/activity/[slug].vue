@@ -442,7 +442,7 @@ const findActivityIdBySlug = async () => {
   }
 };
 
-// Fetch teacher data
+// Fetch teacher data by ID
 const fetchTeacher = async (teacherId) => {
   if (!teacherId) return null;
   
@@ -459,6 +459,70 @@ const fetchTeacher = async (teacherId) => {
   } catch (err) {
     console.error('Error fetching teacher:', err);
     return null;
+  }
+};
+
+// Fetch teacher data when the activity is loaded
+const fetchTeacherByActivity = async () => {
+  if (!activityId.value) {
+    console.log("No activity ID available to fetch teacher");
+    return;
+  }
+
+  try {
+    console.log(`Fetching teacher for activity ID: ${activityId.value}`);
+    // Per debug: stampa anche l'URL completo
+    const url = `${API_URL}/teacher/activity/${activityId.value}`;
+    console.log(`Fetching teacher URL: ${url}`);
+    
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Stampa il response text prima di parsarlo come JSON per vedere i dati grezzi
+    const responseText = await response.text();
+    console.log("Raw teacher API response text:", responseText);
+    
+    // Parsa nuovamente come JSON
+    const data = JSON.parse(responseText);
+    console.log("Raw teacher API response data:", data);
+
+    if (data && data.teacher) {
+      console.log("Teacher data exists:", data.teacher);
+      // Make sure teacher data is properly formatted
+      if (Array.isArray(data.teacher)) {
+        // It's already an array
+        teacher.value = data.teacher;
+        console.log("Teacher is an array:", teacher.value);
+      } else {
+        // It's an object, put it in an array
+        teacher.value = [data.teacher];
+        console.log("Teacher converted to array:", teacher.value);
+      }
+      
+      // Check if we have name/surname fields
+      teacher.value.forEach((t, idx) => {
+        console.log(`Teacher ${idx} data:`, t);
+        // If name/surname are missing, try to set defaults
+        if (!t.name && !t.surname) {
+          console.log("Teacher missing name/surname, setting defaults");
+          t.name = "Yoga";
+          t.surname = "Teacher";
+        }
+      });
+      
+      console.log("Final teacher data:", teacher.value);
+    } else {
+      // No teacher assigned to this activity (not an error)
+      console.log("No teacher data in response:", data);
+      teacher.value = null;
+    }
+  } catch (err) {
+    console.error('Error fetching teacher:', err);
+    // Don't set error.value here as it affects the whole page
+    teacher.value = null;
   }
 };
 
@@ -518,6 +582,21 @@ const fetchActivity = async () => {
     
     if (data.activity) {
       // Check if the activity ID matches what we requested
+      console.log("Activity data received:", data.activity);
+      console.log("Requested ID:", activityId.value);
+      console.log("Received activity ID (id):", data.activity.id);
+      console.log("Activity might also have activity_id:", data.activity.activity_id);
+        
+      // Salviamo il vero activity_base.id se ce l'abbiamo
+      if (data.activity.activity_id) {
+        console.log("Using activity.activity_id for future calls:", data.activity.activity_id);
+        // Se abbiamo activity_id, quello è il vero ID di activity_base
+        const realActivityId = data.activity.activity_id;
+        // Usiamo questo ID per il teacher
+        activityId.value = realActivityId;
+      }
+      
+      // Check if the activity ID matches what we requested
       if (data.activity.id !== activityId.value) {
         console.error(`API returned wrong activity. Requested ID ${activityId.value} but got ID ${data.activity.id}`);
         
@@ -546,10 +625,7 @@ const fetchActivity = async () => {
       }
       
       console.log("Loaded activity:", activity.value);
-      
-      // Non carichiamo più l'insegnante qui, lo facciamo solo in fetchTeacherByActivity
-      // per evitare conflitti tra i due metodi
-
+        
       // If the activity has a roomid, fetch the room
       if (activity.value.roomid) {
         await fetchRoom(activity.value.roomid);
@@ -565,43 +641,6 @@ const fetchActivity = async () => {
   }
   
   return Promise.resolve(); // Always return a resolved promise
-};
-
-// Fetch teacher data when the activity is loaded
-const fetchTeacherByActivity = async () => {
-  if (!activityId.value) {
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/teacher/activity/${activityId.value}`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.teacher) {
-      // Make sure teacher data is properly formatted
-      if (Array.isArray(data.teacher)) {
-        // It's already an array
-        teacher.value = data.teacher;
-      } else {
-        // It's an object, put it in an array
-        teacher.value = [data.teacher];
-      }
-      console.log("Teacher data loaded:", teacher.value);
-    } else {
-      // No teacher assigned to this activity (not an error)
-      console.log("No teacher assigned to this activity");
-      teacher.value = null;
-    }
-  } catch (err) {
-    console.error('Error fetching teacher:', err);
-    // Don't set error.value here as it affects the whole page
-    teacher.value = null;
-  }
 };
 
 // Fetch similar activities
@@ -694,6 +733,23 @@ watch(() => route.params.slug, (newSlug) => {
   }
 }, { immediate: false });
 
+// Watch for language changes to reload activity data
+watch(selectedLang, () => {
+  activityId.value = null;
+  fetchActivity().then(() => {
+    fetchTeacherByActivity();
+    fetchSimilarActivities();
+    
+    // Update SEO if activity data is already loaded
+    if (activity.value) {
+      useSeoMeta({
+        title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
+        description: t('seoDescription'),
+      });
+    }
+  });
+});
+
 // Add a watcher for isLoading to scroll when content is loaded
 watch(isLoading, (newValue) => {
   if (!newValue) { // When loading is complete
@@ -718,23 +774,6 @@ watch(activity, (newActivity) => {
       description: t('seoDescription'),
     });
   }
-});
-
-// Watch for language changes to reload activity data
-watch(selectedLang, () => {
-  activityId.value = null;
-  fetchActivity().then(() => {
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
-    
-    // Update SEO if activity data is already loaded
-    if (activity.value) {
-      useSeoMeta({
-        title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
-        description: t('seoDescription'),
-      });
-    }
-  });
 });
 </script>
 

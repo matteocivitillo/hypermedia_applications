@@ -54,7 +54,7 @@
             <div>
               <NuxtLink 
                 v-if="yogaClass.teacher_id" 
-                :to="`/teacher/${yogaClass.teacher_name.toLowerCase()}`.replace(/\s+/g, '-')" 
+                :to="`/singleteacher?id=${yogaClass.teacher_id}`" 
                 class="text-gray-800 dark:text-gray-200 font-medium hover:text-primary dark:hover:text-[#9ACBD0] transition-colors"
               >
                 {{ yogaClass.teacher_name || t('yogaTeacher') }}
@@ -210,20 +210,42 @@ const fetchYogaClasses = async () => {
       // Filter per trovare queste specifiche classi di yoga
       let selectedYogaClasses = [];
       
+      console.log("Available activities:", data.activities);
+      
       // Prima proviamo a trovare attività che hanno specificamente questi nomi
       targetYogaTypes.forEach(yogaType => {
-        const matchingActivity = data.activities.find(activity => 
-          (activity.name?.toLowerCase().includes(yogaType) || 
-           activity.title?.toLowerCase().includes(yogaType))
-        );
+        console.log(`Looking for yoga type: ${yogaType}`);
+        
+        const matchingActivity = data.activities.find(activity => {
+          const name = activity.name?.toLowerCase() || '';
+          const title = activity.title?.toLowerCase() || '';
+          const type = activity.type?.toLowerCase() || '';
+          
+          console.log(`Checking activity: name=${name}, title=${title}, type=${type}`);
+          return name.includes(yogaType) || title.includes(yogaType) || type.includes(yogaType);
+        });
         
         if (matchingActivity) {
+          console.log(`Found matching activity for ${yogaType}:`, matchingActivity);
           selectedYogaClasses.push(matchingActivity);
+        } else {
+          console.log(`No matching activity found for ${yogaType}, using default`);
+          // Se non troviamo attività con questo nome, creiamo un'attività predefinita
+          const defaultActivity = {
+            id: `default-${yogaType}`,
+            name: `${yogaType.charAt(0).toUpperCase() + yogaType.slice(1)} Yoga`,
+            title: `${yogaType.charAt(0).toUpperCase() + yogaType.slice(1)} Yoga`,
+            type: yogaType,
+            difficulty: getDifficultyFromType(`${yogaType} yoga`),
+            short_description: getDefaultDescription(`${yogaType} yoga`)
+          };
+          selectedYogaClasses.push(defaultActivity);
         }
       });
       
-      // Se non abbiamo trovato nessuna classe, segnaliamo un errore
+      // Dovremmo sempre avere almeno le attività predefinite
       if (selectedYogaClasses.length === 0) {
+        console.error("No yoga classes were found or created");
         hasError.value = true;
         return;
       }

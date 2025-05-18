@@ -47,6 +47,14 @@ async def get_teachers(lang: str = "en"):
         teachers = []
         missing_translations = []
         for base in base_teachers:
+            # Fix column names - convert "Name" and "Surname" to lowercase for frontend consistency
+            if "Name" in base:
+                base["name"] = base["Name"]
+                del base["Name"]
+            if "Surname" in base:
+                base["surname"] = base["Surname"]
+                del base["Surname"]
+                
             trans_resp = supabase.table("teacher_translations")\
                 .select("*")\
                 .eq("id", base["id"])\
@@ -61,6 +69,8 @@ async def get_teachers(lang: str = "en"):
                 del teacher["teacher_id"]
             if "language_code" in teacher:
                 del teacher["language_code"]
+            if "NON_USARE" in teacher:
+                del teacher["NON_USARE"]
             teachers.append(teacher)
         if missing_translations:
             return {"error": f"Missing translations for teachers: {missing_translations}", "teachers": []}
@@ -94,6 +104,14 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
         base_teacher = base_resp.data[0]
         actual_teacher_id = base_teacher["id"]
         
+        # Fix column names - convert "Name" and "Surname" to lowercase for frontend consistency
+        if "Name" in base_teacher:
+            base_teacher["name"] = base_teacher["Name"]
+            del base_teacher["Name"]
+        if "Surname" in base_teacher:
+            base_teacher["surname"] = base_teacher["Surname"]
+            del base_teacher["Surname"]
+        
         # Fetch translation for the requested language
         trans_resp = supabase.table("teacher_translations")\
             .select("*")\
@@ -123,6 +141,8 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
             del teacher["teacher_id"]
         if "language_code" in teacher:
             del teacher["language_code"]
+        if "NON_USARE" in teacher:
+            del teacher["NON_USARE"]
             
         return {"teacher": teacher}
     except Exception as e:
@@ -131,12 +151,112 @@ async def get_teacher(teacher_id: str, lang: str = "en"):
 
 # Get teacher name and surname by activity ID. It runs a function in the database. Multiple values can be returned!
 @app.get("/teacher/activity/{activity_id}")
-async def get_teacher_by_activityid(activity_id: str):
-    resp = supabase.rpc("get_teacher_by_activityid", params={"activity_id": activity_id}).execute()
-    
-    if resp.data:
-        return {"teacher": resp.data}
-    return {"teacher": None}
+async def get_teacher_by_activityid(activity_id: str, lang: str = "en"):
+    try:
+        print(f"DEBUG: get_teacher_by_activityid called with activity_id={activity_id}, lang={lang}")
+        
+        # First get the teacher_id from activity_base
+        activity_resp = supabase.table("activity_base")\
+            .select("teacher_id")\
+            .eq("id", activity_id)\
+            .execute()
+            
+        print(f"DEBUG: activity_base query response: {activity_resp.data}")
+        
+        # Se non troviamo l'attività in activity_base, potrebbe essere che abbiamo ricevuto un activity_translations.id
+        # Proviamo a cercare il vero activity_base.id dalla tabella activity_translations
+        if not activity_resp.data or len(activity_resp.data) == 0:
+            print(f"Activity with ID {activity_id} not found in activity_base, trying to find in activity_translations")
+            
+            # Cerchiamo activity_translations.id = activity_id per ottenere activity_translations.activity_id
+            translations_resp = supabase.table("activity_translations")\
+                .select("activity_id")\
+                .eq("id", activity_id)\
+                .execute()
+                
+            print(f"DEBUG: activity_translations query response: {translations_resp.data}")
+                
+            if translations_resp.data and len(translations_resp.data) > 0:
+                # Abbiamo trovato l'ID giusto, ora proviamo di nuovo con activity_base
+                corrected_activity_id = translations_resp.data[0]["activity_id"]
+                print(f"DEBUG: Found corrected activity_id={corrected_activity_id} for translations.id={activity_id}")
+                
+                activity_resp = supabase.table("activity_base")\
+                    .select("teacher_id")\
+                    .eq("id", corrected_activity_id)\
+                    .execute()
+                    
+                print(f"DEBUG: activity_base query response with corrected ID: {activity_resp.data}")
+        
+        if not activity_resp.data or len(activity_resp.data) == 0:
+            print(f"Activity not found for ID {activity_id} (after correction attempt)")
+            return {"teacher": None}
+            
+        teacher_id = activity_resp.data[0]["teacher_id"]
+        print(f"DEBUG: Found teacher_id={teacher_id} for activity_id={activity_id}")
+        
+        # Get the teacher base data
+        teacher_resp = supabase.table("teacher_base")\
+            .select("*")\
+            .eq("id", teacher_id)\
+            .execute()
+            
+        print(f"DEBUG: teacher_base query response: {teacher_resp.data}")
+            
+        if not teacher_resp.data or len(teacher_resp.data) == 0:
+            print(f"Teacher with ID {teacher_id} not found")
+            return {"teacher": None}
+            
+        teacher_base = teacher_resp.data[0]
+        print(f"DEBUG: Raw teacher base data: {teacher_base}")
+        
+        # Fix column names - convert "Name" and "Surname" to lowercase for frontend consistency
+        if "Name" in teacher_base:
+            teacher_base["name"] = teacher_base["Name"]
+            del teacher_base["Name"]
+        if "Surname" in teacher_base:
+            teacher_base["surname"] = teacher_base["Surname"]
+            del teacher_base["Surname"]
+        
+        print(f"DEBUG: After name/surname fix: {teacher_base}")
+        
+        # Get teacher translations
+        trans_resp = supabase.table("teacher_translations")\
+            .select("*")\
+            .eq("id", teacher_id)\
+            .eq("language_code", lang)\
+            .execute()
+            
+        print(f"DEBUG: teacher_translations query response: {trans_resp.data}")
+            
+        # If translation not found in the requested language, try English
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            if lang != "en":
+                trans_resp = supabase.table("teacher_translations")\
+                    .select("*")\
+                    .eq("id", teacher_id)\
+                    .eq("language_code", "en")\
+                    .execute()
+                print(f"DEBUG: fallback to EN - teacher_translations query response: {trans_resp.data}")
+        
+        # Merge teacher data
+        teacher = {**teacher_base}
+        if trans_resp.data and len(trans_resp.data) > 0:
+            teacher.update(trans_resp.data[0])
+            
+        # Clean up redundant fields
+        if "language_code" in teacher:
+            del teacher["language_code"]
+        if "NON_USARE" in teacher:
+            del teacher["NON_USARE"]
+            
+        print(f"DEBUG: Final teacher data to return: {teacher}")
+        return {"teacher": teacher}
+    except Exception as e:
+        print(f"Error fetching teacher for activity {activity_id}: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return {"teacher": None}
 
 # Get all activities for a specific teacher (many-to-many via teaches)
 @app.get("/teacher/{teacher_id}/activities")
