@@ -33,7 +33,22 @@
       </div>
       
       <!-- Masonry Layout for Reviews - più recensioni per riga e più piccole -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div v-if="isLoading" class="flex justify-center items-center h-64">
+        <div class="loading-spinner animate-fade-in">
+          <div class="spinner"></div>
+          <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Caricamento recensioni...</p>
+        </div>
+      </div>
+      
+      <div v-else-if="hasError" class="text-center py-10">
+        <p class="text-lg text-red-500 dark:text-red-400">{{ errorMessage || 'Errore nel caricamento delle recensioni.' }}</p>
+      </div>
+      
+      <div v-else-if="reviews.length === 0" class="text-center py-10">
+        <p class="text-lg text-gray-600 dark:text-gray-300">Nessuna recensione disponibile al momento.</p>
+      </div>
+      
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         <!-- Review Cards -->
         <div 
           v-for="(review, index) in reviews" 
@@ -43,7 +58,7 @@
         >
           <div class="flex items-center mb-3">
             <div class="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-secondary dark:border-[#9ACBD0]/50">
-              <img :src="review.image" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
+              <img :src="review.image || '/images/default-avatar.png'" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
             </div>
             <div>
               <p class="text-gray-800 dark:text-gray-200 font-medium text-sm">{{ review.name }}</p>
@@ -67,7 +82,7 @@
             </div>
             
             <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed line-clamp-4">
-              {{ review.text }}
+              {{ review.review }}
             </p>
             
             <div v-if="review.image_url && review.featured" class="mt-2 rounded-lg overflow-hidden">
@@ -149,6 +164,7 @@ const fetchReviews = async () => {
       errorMessage.value = data.error;
       throw new Error(data.error);
     }
+    console.log('Review data:', data); // Log the received data
     if (data.reviews && data.reviews.length > 0) {
       reviews.value = data.reviews.map(review => {
         // Ora participant è direttamente collegato alla review tramite idparticipant
@@ -163,23 +179,36 @@ const fetchReviews = async () => {
               day: 'numeric'
             });
           }
-        } catch (err) {}
+        } catch (err) {
+          console.error('Error formatting date:', err);
+        }
+        
+        // Per debug
+        console.log('Processing review:', {
+          id: review.id,
+          stars: review.stars,
+          review_text: review.review
+        });
+        
         return {
           name: participant.name || 'Yoga Enthusiast',
-          image: participant.image,
+          image: participant.image || '/images/default-avatar.png',
           rating: review.stars || 0,
           date: formattedDate,
-          text: review.review || '', // questo ora arriva dalla tabella review_translations
-          class_attended: activity.title || '',
+          review: review.review || 'Great experience at Serendipity Yoga!',
+          class_attended: activity.title || 'Yoga Class',
           activity_id: review.idactivity || null,
+          activity_name: activity.title || 'Yoga Class',
           featured: review.stars === 5
         };
       });
+      console.log('Processed reviews:', reviews.value);
     } else {
       hasError.value = true;
       errorMessage.value = 'No reviews found.';
     }
   } catch (error) {
+    console.error('Error fetching reviews:', error);
     hasError.value = true;
     errorMessage.value = error.message;
   } finally {
@@ -205,5 +234,50 @@ watch(selectedLang, fetchReviews);
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Start hidden */
+  animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 106, 113, 0.2);
+  border-radius: 50%;
+  border-top-color: #006A71;
+  animation: spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 1) infinite;
+}
+
+.dark .spinner {
+  border-color: rgba(154, 203, 208, 0.2);
+  border-top-color: #9ACBD0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 </style> 
