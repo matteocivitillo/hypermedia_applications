@@ -531,117 +531,136 @@ async def get_rooms(lang: str = "en"):
 @app.get("/room/{room_id}")
 async def get_room(room_id: str, lang: str = "en"):
     try:
-        resp = supabase.table("room")\
-                      .select("*")\
-                      .eq("id", room_id)\
-                      .execute()
+        # Otteniamo prima i dati di base della stanza
+        base_resp = supabase.table("room_base").select("*").eq("id", room_id).execute()
         
-        if len(resp.data) > 0:
-            room = resp.data[0]
+        if not base_resp.data or len(base_resp.data) == 0:
+            return {"room": None, "error": f"Room with ID {room_id} not found"}
             
-            # Process features - ensure it's a list
-            features = room.get("features", "")
-            features_list = []
+        base_room = base_resp.data[0]
+        
+        # Otteniamo la traduzione nella lingua richiesta
+        trans_resp = supabase.table("room_translations")\
+            .select("*")\
+            .eq("room_id", room_id)\
+            .eq("language_code", lang)\
+            .execute()
             
-            if isinstance(features, str):
-                # Pulisce la stringa da eventuali spazi iniziali o finali
-                features = features.strip()
-                
-                # Se la stringa contiene un trattino, la dividiamo per trattino
-                if "-" in features:
-                    # Dividi per trattino e rimuovi spazi bianchi extra
-                    features_list = [f.strip() for f in features.split("-") if f.strip()]
-                # Altrimenti, se contiene una virgola, la dividiamo per virgola
-                elif "," in features:
-                    features_list = [f.strip() for f in features.split(",") if f.strip()]
-                # Se è una stringa singola non vuota e non contiene né trattini né virgole
-                elif features:
-                    features_list = [features]
-            elif isinstance(features, list):
-                # Se è già una lista, la usiamo direttamente
-                features_list = features
-            
-            print(f"Features processate: {features_list}")
-            
-            # Recupera le attività associate a questa stanza
-            # Cerca le attività che hanno roomid uguale all'id della stanza
-            activities_resp = supabase.table("activity_base")\
-                                      .select("id, type")\
-                                      .eq("roomid", room_id)\
-                                      .execute()
-                
-            room_activities = []
-            
-            # Se ci sono attività associate a questa stanza
-            if activities_resp.data and len(activities_resp.data) > 0:
-                for activity_base in activities_resp.data:
-                    activity_id = activity_base["id"]
+        # Se non troviamo la traduzione nella lingua richiesta, proviamo con l'inglese
+        if not trans_resp.data or len(trans_resp.data) == 0:
+            if lang != "en":
+                trans_resp = supabase.table("room_translations")\
+                    .select("*")\
+                    .eq("room_id", room_id)\
+                    .eq("language_code", "en")\
+                    .execute()
                     
-                    # Recupera i dettagli tradotti dell'attività
-                    trans_resp = supabase.table("activity_translations")\
-                                         .select("title, short_description")\
-                                         .eq("activity_id", activity_id)\
-                                         .eq("language_code", lang)\
-                                         .execute()
-                    
-                    # Se non trova la traduzione nella lingua richiesta, prova con l'inglese
-                    if not trans_resp.data or len(trans_resp.data) == 0:
-                        if lang != "en":
-                            trans_resp = supabase.table("activity_translations")\
-                                               .select("title, short_description")\
-                                               .eq("activity_id", activity_id)\
-                                               .eq("language_code", "en")\
-                                               .execute()
-                    
-                    if trans_resp.data and len(trans_resp.data) > 0:
-                        activity_info = {
-                            "id": activity_id,
-                            "title": trans_resp.data[0].get("title", ""),
-                            "type": activity_base.get("type", ""),
-                            "description": trans_resp.data[0].get("short_description", "")
-                        }
-                        room_activities.append(activity_info)
+        # Se ancora non troviamo traduzione, usiamo solo i dati di base
+        room_data = {**base_room}
+        if trans_resp.data and len(trans_resp.data) > 0:
+            room_data.update(trans_resp.data[0])
+            # Rimuoviamo i campi duplicati
+            if "room_id" in room_data:
+                del room_data["room_id"]
+            if "language_code" in room_data:
+                del room_data["language_code"]
+        
+        # Process features - ensure it's a list
+        features = room_data.get("features", "")
+        features_list = []
+        
+        if isinstance(features, str):
+            # Pulisce la stringa da eventuali spazi iniziali o finali
+            features = features.strip()
             
-            # Process activities - combine activity1 and activity2 (legacy method)
-            legacy_activities = []
-            activity1 = room.get("activity1")
-            activity2 = room.get("activity2")
+            # Se la stringa contiene un trattino, la dividiamo per trattino
+            if "-" in features:
+                # Dividi per trattino e rimuovi spazi bianchi extra
+                features_list = [f.strip() for f in features.split("-") if f.strip()]
+            # Altrimenti, se contiene una virgola, la dividiamo per virgola
+            elif "," in features:
+                features_list = [f.strip() for f in features.split(",") if f.strip()]
+            # Se è una stringa singola non vuota e non contiene né trattini né virgole
+            elif features:
+                features_list = [features]
+        elif isinstance(features, list):
+            # Se è già una lista, la usiamo direttamente
+            features_list = features
+        
+        # Recupera le attività associate a questa stanza
+        activities_resp = supabase.table("activity_base")\
+                                .select("id, type")\
+                                .eq("roomid", room_id)\
+                                .execute()
             
-            if activity1:
-                legacy_activities.append(activity1)
-            if activity2:
-                legacy_activities.append(activity2)
+        room_activities = []
+        
+        # Se ci sono attività associate a questa stanza
+        if activities_resp.data and len(activities_resp.data) > 0:
+            for activity_base in activities_resp.data:
+                activity_id = activity_base["id"]
                 
-            # If no activities were found in activity1/2, check activities field
-            if not legacy_activities and room.get("activities"):
-                activities_text = room.get("activities")
-                if isinstance(activities_text, str):
-                    # Split by hyphens if they exist
-                    if "-" in activities_text:
-                        legacy_activities = [a.strip() for a in activities_text.split("-") if a.strip()]
-                    # Otherwise split by commas if they exist
-                    elif "," in activities_text:
-                        legacy_activities = [a.strip() for a in activities_text.split(",") if a.strip()]
-                    else:
-                        # Single activity
-                        legacy_activities = [activities_text]
-                elif isinstance(activities_text, list):
-                    legacy_activities = activities_text
-            
-            # Format the processed room data
-            processed_room = {
-                "id": room.get("id"),
-                "title": room.get("title", ""),
-                "description": room.get("description", ""),
-                "features": features_list,
-                "activities": room_activities,
-                "legacy_activities": legacy_activities,
-                "image": room.get("image", ""),
-                "quote": room.get("quote", "Experience the transformative power of our specially designed spaces.")
-            }
-            
-            return {"room": processed_room}
-        return {"room": None}
+                # Recupera i dettagli tradotti dell'attività nella stessa lingua
+                trans_resp = supabase.table("activity_translations")\
+                                    .select("title, short_description")\
+                                    .eq("activity_id", activity_id)\
+                                    .eq("language_code", lang)\
+                                    .execute()
+                
+                # Se non trova la traduzione nella lingua richiesta, prova con l'inglese
+                if not trans_resp.data or len(trans_resp.data) == 0:
+                    if lang != "en":
+                        trans_resp = supabase.table("activity_translations")\
+                                        .select("title, short_description")\
+                                        .eq("activity_id", activity_id)\
+                                        .eq("language_code", "en")\
+                                        .execute()
+                
+                if trans_resp.data and len(trans_resp.data) > 0:
+                    activity_info = {
+                        "id": activity_id,
+                        "title": trans_resp.data[0].get("title", ""),
+                        "type": activity_base.get("type", ""),
+                        "description": trans_resp.data[0].get("short_description", "")
+                    }
+                    room_activities.append(activity_info)
+        
+        # Legacy activities (retrocompatibilità)
+        legacy_activities = []
+        if room_data.get("activity1"):
+            legacy_activities.append(room_data.get("activity1"))
+        if room_data.get("activity2"):
+            legacy_activities.append(room_data.get("activity2"))
+        
+        # If no activities were found in activity1/2, check activities field
+        if not legacy_activities and room_data.get("activities"):
+            activities_text = room_data.get("activities")
+            if isinstance(activities_text, str):
+                # Split by hyphens if they exist
+                if "-" in activities_text:
+                    legacy_activities = [a.strip() for a in activities_text.split("-") if a.strip()]
+                # Otherwise split by commas if they exist
+                elif "," in activities_text:
+                    legacy_activities = [a.strip() for a in activities_text.split(",") if a.strip()]
+                else:
+                    # Single activity
+                    legacy_activities = [activities_text]
+            elif isinstance(activities_text, list):
+                legacy_activities = activities_text
+        
+        # Format the processed room data
+        processed_room = {
+            "id": room_data.get("id"),
+            "title": room_data.get("title", ""),
+            "description": room_data.get("description", ""),
+            "features": features_list,
+            "activities": room_activities,
+            "legacy_activities": legacy_activities,
+            "image": room_data.get("image", ""),
+            "quote": room_data.get("quote", "Experience the transformative power of our specially designed spaces.")
+        }
+        
+        return {"room": processed_room}
     except Exception as e:
         print(f"Error fetching room {room_id}: {str(e)}")
         return {"room": None, "error": str(e)}

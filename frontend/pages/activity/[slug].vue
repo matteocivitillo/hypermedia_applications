@@ -547,10 +547,8 @@ const fetchActivity = async () => {
       
       console.log("Loaded activity:", activity.value);
       
-      // If the activity has a teacher_id, fetch the teacher
-      if (activity.value.teacher_id) {
-        teacher.value = await fetchTeacher(activity.value.teacher_id);
-      }
+      // Non carichiamo più l'insegnante qui, lo facciamo solo in fetchTeacherByActivity
+      // per evitare conflitti tra i due metodi
 
       // If the activity has a roomid, fetch the room
       if (activity.value.roomid) {
