@@ -40,6 +40,7 @@
 <script setup>
 import { ref, computed, onBeforeUnmount } from 'vue';
 import { selectedLang } from '../home/NavBar.vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   modelValue: { type: String, required: true },
@@ -49,6 +50,8 @@ const emit = defineEmits(['update:modelValue']);
 
 const isOpen = ref(false);
 const current = computed(() => props.languages.find(l => l.code === props.modelValue) || props.languages[0]);
+
+const router = useRouter();
 
 // Translations
 const translations = {
@@ -93,6 +96,8 @@ function t(key, params = {}) {
 function select(code) {
   emit('update:modelValue', code);
   isOpen.value = false;
+  
+  router.push('/');
 }
 
 function getCountryCode(code) {
@@ -101,7 +106,7 @@ function getCountryCode(code) {
   return code.toUpperCase();
 }
 
-// Chiudi il menu se clicchi fuori
+// Close the menu if clicked outside
 function handleClickOutside(event) {
   if (isOpen.value && !event.target.closest('.relative')) {
     isOpen.value = false;
