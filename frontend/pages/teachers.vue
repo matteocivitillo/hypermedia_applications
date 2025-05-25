@@ -41,15 +41,23 @@
             >
               <div class="h-96 relative">
                 <img 
-                  :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
-                  alt="" 
+                  :src="teacher.image || `https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/public/yoga/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
+                  :alt="`${teacher.name} ${teacher.surname}`"
                   class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
-                  :class="{ 'opacity-0': !teacher.imageLoaded }" 
-                  @load="teacher.imageLoaded = true" 
-                  @error="teacher.imageError = true"
+                  :class="{ 'opacity-0': !teacher.imageLoaded && !teacher.imageError, 'hidden': teacher.imageError }" 
+                  @load="handleImageLoad(teacher)"
+                  @error="handleImageError(teacher)"
                 />
                 <div v-if="!teacher.imageLoaded && !teacher.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
                   <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
+                </div>
+                <div v-if="teacher.imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                  <div class="flex flex-col items-center space-y-2">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('imageError') }}</p>
+                  </div>
                 </div>
               </div>
               <div class="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
@@ -112,7 +120,8 @@ const translations = {
     seoTitle: 'Our Teachers - Serendipity Yoga',
     seoDescription: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
     noTeachersFound: 'No teachers found',
-    failedToLoad: 'Failed to load teachers'
+    failedToLoad: 'Failed to load teachers',
+    imageError: 'Failed to load image'
   },
   it: {
     home: 'Home',
@@ -127,7 +136,8 @@ const translations = {
     seoTitle: 'I Nostri Insegnanti - Serendipity Yoga',
     seoDescription: 'Conosci i nostri insegnanti dedicati e scopri di più sulla loro esperienza e stile di insegnamento.',
     noTeachersFound: 'Nessun insegnante trovato',
-    failedToLoad: 'Impossibile caricare gli insegnanti'
+    failedToLoad: 'Impossibile caricare gli insegnanti',
+    imageError: 'Impossibile caricare l\'immagine'
   },
   fr: {
     home: 'Accueil',
@@ -142,7 +152,8 @@ const translations = {
     seoTitle: 'Nos Professeurs - Serendipity Yoga',
     seoDescription: 'Rencontrez nos professeurs dévoués et apprenez-en davantage sur leur expertise et leur style d\'enseignement.',
     noTeachersFound: 'Aucun professeur trouvé',
-    failedToLoad: 'Échec du chargement des professeurs'
+    failedToLoad: 'Échec du chargement des professeurs',
+    imageError: 'Impossible de charger l\'image'
   },
   de: {
     home: 'Startseite',
@@ -157,7 +168,8 @@ const translations = {
     seoTitle: 'Unsere Lehrer - Serendipity Yoga',
     seoDescription: 'Lernen Sie unsere engagierten Lehrer kennen und erfahren Sie mehr über ihr Fachwissen und ihren Unterrichtsstil.',
     noTeachersFound: 'Keine Lehrer gefunden',
-    failedToLoad: 'Lehrer konnten nicht geladen werden'
+    failedToLoad: 'Lehrer konnten nicht geladen werden',
+    imageError: 'Bild konnte nicht geladen werden'
   },
   zh: {
     home: '首页',
@@ -172,7 +184,8 @@ const translations = {
     seoTitle: '我们的教师 - Serendipity瑜伽',
     seoDescription: '认识我们敬业的教师，了解更多关于他们的专业知识和教学风格。',
     noTeachersFound: '未找到教师',
-    failedToLoad: '加载教师失败'
+    failedToLoad: '加载教师失败',
+    imageError: '无法加载图片'
   }
 };
 
@@ -210,7 +223,16 @@ const fetchTeachers = async () => {
 }
 
 onMounted(fetchTeachers)
-watch(selectedLang, fetchTeachers)
+
+const handleImageLoad = (teacher) => {
+  teacher.imageLoaded = true
+  teacher.imageError = false
+}
+
+const handleImageError = (teacher) => {
+  teacher.imageError = true
+  teacher.imageLoaded = false
+}
 
 // SEO metadata for this page
 useSeoMeta({

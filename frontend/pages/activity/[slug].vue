@@ -733,22 +733,6 @@ watch(() => route.params.slug, (newSlug) => {
   }
 }, { immediate: false });
 
-// Watch for language changes to reload activity data
-watch(selectedLang, () => {
-  activityId.value = null;
-  fetchActivity().then(() => {
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
-    
-    // Update SEO if activity data is already loaded
-    if (activity.value) {
-      useSeoMeta({
-        title: t('seoTitle').replace('{name}', activity.value.title || activity.value.name),
-        description: t('seoDescription'),
-      });
-    }
-  });
-});
 
 // Add a watcher for isLoading to scroll when content is loaded
 watch(isLoading, (newValue) => {

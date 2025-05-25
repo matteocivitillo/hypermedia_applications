@@ -32,15 +32,23 @@
                   <div class="rounded-xl shadow-md overflow-hidden bg-white dark:bg-gray-700">
                     <div class="h-96 relative">
                       <img 
-                        :src="`/images/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
-                        alt="" 
+                        :src="teacher.image || `https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/public/yoga/teachers/${teacher.name.toLowerCase()}-${teacher.surname.toLowerCase()}.jpg`" 
+                        :alt="`${teacher.name} ${teacher.surname}`"
                         class="w-full h-full object-cover rounded-t-xl animate-fade-in" 
-                        :class="{ 'opacity-0': !imageLoaded }" 
-                        @load="imageLoaded = true" 
+                        :class="{ 'opacity-0': !imageLoaded && !imageError, 'hidden': imageError }" 
+                        @load="handleImageLoad"
                         @error="handleImageError"
                       />
                       <div v-if="!imageLoaded && !imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
                         <p class="text-gray-600 dark:text-gray-300">{{ t('loadingImage') }}</p>
+                      </div>
+                      <div v-if="imageError" class="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                        <div class="flex flex-col items-center space-y-2">
+                          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('imageError') }}</p>
+                        </div>
                       </div>
                       <div class="absolute inset-x-0 bottom-0 p-6">
                         <div class="flex flex-wrap gap-2 items-center mb-2">
@@ -165,7 +173,8 @@
       loadingActivities: 'Loading activities...',
       noActivities: 'No activities found for this teacher.',
       seoTitle: '{name} {surname} - Serendipity Yoga',
-      seoDescription: 'Meet our dedicated teachers and learn more about their expertise and teaching style.'
+      seoDescription: 'Meet our dedicated teachers and learn more about their expertise and teaching style.',
+      imageError: 'Failed to load image'
     },
     it: {
       home: 'Home',
@@ -179,7 +188,8 @@
       loadingActivities: 'Caricamento attività...',
       noActivities: 'Nessuna attività trovata per questo insegnante.',
       seoTitle: '{name} {surname} - Serendipity Yoga',
-      seoDescription: 'Incontra i nostri dedicati insegnanti e scopri di più sulla loro specialità e il loro stile di insegnamento.'
+      seoDescription: 'Incontra i nostri dedicati insegnanti e scopri di più sulla loro specialità e il loro stile di insegnamento.',
+      imageError: 'Impossibile caricare l\'immagine'
     },
     fr: {
       home: 'Accueil',
@@ -193,7 +203,8 @@
       loadingActivities: 'Chargement des activités...',
       noActivities: 'Aucune activité trouvée pour ce professeur.',
       seoTitle: '{name} {surname} - Serendipity Yoga',
-      seoDescription: 'Rencontrez nos professeurs dévoués et découvrez leur expertise et leur style d\'enseignement.'
+      seoDescription: 'Rencontrez nos professeurs dévoués et découvrez leur expertise et leur style d\'enseignement.',
+      imageError: 'Impossible de charger l\'image'
     },
     de: {
       home: 'Startseite',
@@ -207,7 +218,8 @@
       loadingActivities: 'Aktivitäten werden geladen...',
       noActivities: 'Keine Aktivitäten für diesen Lehrer gefunden.',
       seoTitle: '{name} {surname} - Serendipity Yoga',
-      seoDescription: 'Lernen Sie unsere engagierten Lehrer kennen und erfahren Sie mehr über ihre Expertise und ihren Unterrichtsstil.'
+      seoDescription: 'Lernen Sie unsere engagierten Lehrer kennen und erfahren Sie mehr über ihre Expertise und ihren Unterrichtsstil.',
+      imageError: 'Bild konnte nicht geladen werden'
     },
     zh: {
       home: '首页',
@@ -221,7 +233,8 @@
       loadingActivities: '正在加载活动...',
       noActivities: '未找到此教师的活动。',
       seoTitle: '{name} {surname} - Serendipity瑜伽',
-      seoDescription: '认识我们敬业的教师，了解更多关于他们的专长和教学风格。'
+      seoDescription: '认识我们敬业的教师，了解更多关于他们的专长和教学风格。',
+      imageError: '无法加载图片'
     }
   };
   
@@ -246,7 +259,7 @@
   // Handle image loading error
   const handleImageError = () => {
     imageError.value = true;
-    imageLoaded.value = true;  // Consider the image "loaded" even if it's an error
+    imageLoaded.value = false;  // Consider the image "loaded" even if it's an error
   };
   
   // Activities managed by the teacher
@@ -396,29 +409,6 @@
   // Fetch data when component mounts
   onMounted(() => fetchTeacher());
   
-  // Watch for language changes to reload data
-  watch(selectedLang, () => {
-    // If we already have a teacher ID, reuse it when changing languages
-    if (teacherId.value) {
-      console.log("Language changed, reloading teacher with ID:", teacherId.value);
-      // No need to reset teacherId, just reload the data
-      fetchTeacher();
-    } else {
-      // First load, need to find by slug
-      fetchTeacher();
-    }
-    
-    // Update SEO if teacher data is already loaded
-    if (teacher.value) {
-      useSeoMeta({
-        title: t('seoTitle')
-          .replace('{name}', teacher.value.name)
-          .replace('{surname}', teacher.value.surname),
-        description: t('seoDescription'),
-      });
-    }
-  });
-  
   // SEO metadata for this page (on initial load)
   watch(teacher, (newTeacher) => {
     if (newTeacher) {
@@ -430,6 +420,18 @@
       });
     }
   });
+
+  // Update image handling functions
+  const handleImageLoad = () => {
+    imageLoaded.value = true
+    imageError.value = false
+  }
+
+  // Reset image states when teacher changes
+  watch(teacher, () => {
+    imageLoaded.value = false
+    imageError.value = false
+  })
   </script>
   
   <style scoped>
