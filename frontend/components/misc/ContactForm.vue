@@ -10,7 +10,7 @@
             type="text" 
             id="name" 
             v-model="formData.name"
-            class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
             :placeholder="placeholders.name" 
           />
         </div>
@@ -21,7 +21,7 @@
             type="email" 
             id="email" 
             v-model="formData.email"
-            class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition" 
             :placeholder="placeholders.email" 
           />
         </div>
@@ -33,7 +33,7 @@
           id="message" 
           rows="4" 
           v-model="formData.message"
-          class="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition resize-none" 
+          class="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white dark:border-gray-500 dark:bg-gray-500 dark:text-white focus:border-primary dark:focus:border-[#9ACBD0] focus:ring-2 focus:ring-primary/20 dark:focus:ring-[#9ACBD0]/20 outline-none transition resize-none" 
           :placeholder="placeholders.messageHelp"
         ></textarea>
       </div>
