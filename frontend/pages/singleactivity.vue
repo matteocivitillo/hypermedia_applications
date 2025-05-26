@@ -21,8 +21,8 @@ const redirectToNewFormat = async () => {
   }
   
   try {
-    // Fetch the activity data to get the name
-    const response = await fetch(`${API_URL}/activity/${activityId.value}`)
+    // Fetch all activities instead of a single one
+    const response = await fetch(`${API_URL}/activities`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
@@ -30,13 +30,22 @@ const redirectToNewFormat = async () => {
     
     const data = await response.json()
     
-    if (data.activity) {
-      const activityName = data.activity.title || data.activity.name
-      // Create the slug and redirect
-      const slug = activityName.toLowerCase().replace(/\s+/g, '-')
-      navigateTo(`/activity/${slug}`, { redirectCode: 301 })
+    if (data.activities && data.activities.length > 0) {
+      // Find the activity with matching ID
+      const foundActivity = data.activities.find(a => 
+        a.id === activityId.value || a.activity_id === activityId.value
+      )
+      
+      if (foundActivity) {
+        const activityName = foundActivity.title || foundActivity.name
+        // Create the slug and redirect
+        const slug = activityName.toLowerCase().replace(/\s+/g, '-')
+        navigateTo(`/activity/${slug}`, { redirectCode: 301 })
+      } else {
+        // If activity not found, redirect to activities list
+        navigateTo('/activities')
+      }
     } else {
-      // If activity not found, redirect to activities list
       navigateTo('/activities')
     }
   } catch (err) {

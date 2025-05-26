@@ -394,7 +394,7 @@ const handleImageError = () => {
   imageLoaded.value = true; // Consider the image "loaded" even if it's an error
 };
 
-// Find the activity ID from the slug
+// Find the activity ID and data from the slug
 const findActivityIdBySlug = async () => {
   try {
     const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
@@ -425,8 +425,10 @@ const findActivityIdBySlug = async () => {
       
       if (foundActivity) {
         console.log("Found matching activity:", foundActivity);
-        activityId.value = foundActivity.id;
-        return foundActivity.id;
+        activityId.value = foundActivity.activity_id || foundActivity.id;
+        // Set the activity data directly since we already have it
+        activity.value = foundActivity;
+        return foundActivity;
       } else {
         console.error("No activity matches the slug:", slug.value);
         error.value = 'Activity not found';
@@ -563,84 +565,28 @@ const fetchRoom = async (roomId) => {
   }
 };
 
-// Fetch activity data from the API
+// Fetch activity data from the API - now only handles additional data fetching
 const fetchActivity = async () => {
-  if (!activityId.value) {
-    const id = await findActivityIdBySlug();
-    if (!id) return Promise.resolve();
-  }
-  
   try {
-    console.log("Fetching activity with ID:", activityId.value);
-    const response = await fetch(`${API_URL}/activity/${activityId.value}?lang=${selectedLang.value}`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    const foundActivity = await findActivityIdBySlug();
+    if (!foundActivity) return;
+
+    // If the activity has a roomid, fetch the room
+    if (foundActivity.roomid) {
+      fetchRoom(foundActivity.roomid);
     }
-    
-    const data = await response.json();
-    
-    if (data.activity) {
-      // Check if the activity ID matches what we requested
-      console.log("Activity data received:", data.activity);
-      console.log("Requested ID:", activityId.value);
-      console.log("Received activity ID (id):", data.activity.id);
-      console.log("Activity might also have activity_id:", data.activity.activity_id);
-        
-      // Salviamo il vero activity_base.id se ce l'abbiamo
-      if (data.activity.activity_id) {
-        console.log("Using activity.activity_id for future calls:", data.activity.activity_id);
-        // Se abbiamo activity_id, quello è il vero ID di activity_base
-        const realActivityId = data.activity.activity_id;
-        // Usiamo questo ID per il teacher
-        activityId.value = realActivityId;
-      }
-      
-      // Check if the activity ID matches what we requested
-      if (data.activity.id !== activityId.value) {
-        console.error(`API returned wrong activity. Requested ID ${activityId.value} but got ID ${data.activity.id}`);
-        
-        // Attempt to find the correct activity by iterating through all activities
-        const allActivitiesResponse = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
-        if (allActivitiesResponse.ok) {
-          const allActivitiesData = await allActivitiesResponse.json();
-          const requestedActivity = allActivitiesData.activities.find(a => a.id === activityId.value);
-          
-          if (requestedActivity) {
-            // We have the original activity data, so use it
-            activity.value = requestedActivity;
-            console.log("Using activity data from the list instead of the API response");
-          } else {
-            // Fall back to the API response
-            activity.value = data.activity;
-            console.log("Couldn't find the correct activity in the list, using API response");
-          }
-        } else {
-          // Fall back to the API response
-          activity.value = data.activity;
-        }
-      } else {
-        // Normal case - ID matches
-        activity.value = data.activity;
-      }
-      
-      console.log("Loaded activity:", activity.value);
-        
-      // If the activity has a roomid, fetch the room
-      if (activity.value.roomid) {
-        await fetchRoom(activity.value.roomid);
-      }
-    } else {
-      error.value = 'Activity not found';
-    }
+
+    // Fetch teacher and similar activities in parallel
+    Promise.all([
+      fetchTeacherByActivity(),
+      fetchSimilarActivities()
+    ]);
   } catch (err) {
-    console.error('Error fetching activity:', err);
+    console.error('Error in fetchActivity:', err);
     error.value = 'Failed to load activity data';
   } finally {
     isLoading.value = false;
   }
-  
-  return Promise.resolve(); // Always return a resolved promise
 };
 
 // Fetch similar activities
@@ -695,10 +641,7 @@ const fetchSimilarActivities = async () => {
 
 // Fetch data when component mounts
 onMounted(() => {
-  fetchActivity().then(() => {
-    fetchTeacherByActivity();
-    fetchSimilarActivities();
-  });
+  fetchActivity();
 });
 
 // Scroll to top function with safety check
@@ -720,11 +663,8 @@ watch(() => route.params.slug, (newSlug) => {
     room.value = null;
     similarActivities.value = [];
     
-    // Make sure fetchActivity completes first, then call the others
-    fetchActivity().then(() => {
-      fetchTeacherByActivity();
-      fetchSimilarActivities();
-    });
+    // Only call fetchActivity, which will handle all other fetches
+    fetchActivity();
     
     // Scroll to top after content is loaded with safety check
     setTimeout(() => {
@@ -733,8 +673,7 @@ watch(() => route.params.slug, (newSlug) => {
   }
 }, { immediate: false });
 
-
-// Add a watcher for isLoading to scroll when content is loaded
+// Remove redundant watchers that cause duplicate fetches
 watch(isLoading, (newValue) => {
   if (!newValue) { // When loading is complete
     setTimeout(() => {
@@ -743,14 +682,7 @@ watch(isLoading, (newValue) => {
   }
 });
 
-// Watch for activity changes to fetch similar activities
-watch(activity, (newActivity) => {
-  if (newActivity) {
-    fetchSimilarActivities();
-  }
-});
-
-// SEO metadata for this page
+// Only keep the SEO watcher
 watch(activity, (newActivity) => {
   if (newActivity) {
     useSeoMeta({
