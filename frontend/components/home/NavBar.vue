@@ -4,9 +4,9 @@
       <div class="flex items-center justify-between h-20">
         <!-- Logo Left, always same size -->
         <div class="flex items-center -ml-12">
-          <a href="#" class="flex items-center">
+          <router-link to="/" class="flex items-center">
             <img src="/images/logo-small.svg" alt="Serendipity yoga" style="height: 48px; width: auto;" class="flex-shrink-0" />  <!-- The word "logo" is usually not an important part of the image's content or function.-->
-          </a>
+          </router-link>
         </div>
 
         <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
