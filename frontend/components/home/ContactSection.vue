@@ -23,22 +23,18 @@
       <!-- Map + Orari nella prima riga -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
         <!-- Interactive Map -->
-        <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full min-h-[400px] flex">
+        <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full flex">
           <div class="w-full h-full rounded-lg overflow-hidden flex-1">
-            <!-- Google Maps Static Image - No JavaScript Errors -->
-            <div class="relative w-full h-full rounded-lg overflow-hidden" style="min-height:340px;">
-              <img 
-                src="https://maps.googleapis.com/maps/api/staticmap?center=45.47972887910111,9.215345715774256&zoom=15&size=600x400&maptype=roadmap&markers=color:red%7C45.47972887910111,9.215345715774256&key=AIzaSyCQXJKnqpGY-8X8uEgqXYrJZz6cGiEqcnA"
-                alt="Serendipity Yoga Location Map - Via Stefano Canzio, 2, 20131 Milano MI"
-                class="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                style="min-height:340px;"
-                onclick="window.open('https://www.google.com/maps/search/?api=1&query=45.47972887910111,9.215345715774256', '_blank')"
-              />
-              <!-- Overlay with click instruction -->
-              <div class="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded-lg text-sm">
-                📍 Click to open in Google Maps
-              </div>
-            </div>
+            <!-- Google Maps Embedded -->
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2797.8929508304364!2d9.212862715528456!3d45.47972887910111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4786c40b6fe5c5e1%3A0x8f7f8f8f8f8f8f8f!2sVia%20Stefano%20Canzio%2C%202%2C%2020131%20Milano%20MI%2C%20Italy!5e0!3m2!1sen!2sus!4v1692000000000!5m2!1sen!2sus"
+              width="100%"
+              style="border:0; border-radius: 8px; height: 100%;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Serendipity Yoga Location Map - Via Stefano Canzio, 2, 20131 Milano MI">
+            </iframe>
           </div>
         </div>
         
