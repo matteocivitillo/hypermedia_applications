@@ -1,4 +1,4 @@
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, getCurrentInstance } from 'vue'
 
 /**
  * Composable per la gestione del tema (chiaro/scuro)
@@ -63,10 +63,16 @@ export function useTheme() {
     })
   }
   
-  // Inizializza il tema al mount del componente
-  onMounted(() => {
+  // Inizializza il tema al mount del componente (solo se nel contesto di un componente)
+  const instance = getCurrentInstance()
+  if (instance) {
+    onMounted(() => {
+      initTheme()
+    })
+  } else if (typeof window !== 'undefined') {
+    // Se non siamo in un componente, inizializza direttamente
     initTheme()
-  })
+  }
   
   // Osserva i cambiamenti dello stato e applica il tema
   watch(isDark, () => {
