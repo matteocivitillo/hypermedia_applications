@@ -14,7 +14,7 @@
         <div class="overflow-hidden w-full">
           <div 
             class="flex transition-transform duration-500 ease-in-out"
-            :style="{ width: `calc(100% * ${activities.length / 3})`, transform: `translateX(-${currentIndex * (100 / activities.length)}%)` }"
+            :style="{ width: `calc(100% * ${activities.length / cardsPerPage})`, transform: `translateX(-${currentIndex * (100 / activities.length)}%)` }"
           >
             <div 
               v-for="activity in activities" 
@@ -61,12 +61,12 @@
           </svg>
         </button>
         
-        <!-- Dots Navigation: 3 dots for 5 cards, each dot for a window of 3 cards -->
+        <!-- Dots Navigation -->
         <div class="flex justify-center mt-8 space-x-2">
           <button 
             id="activityDot"
             title="Highlighted activity"
-            v-for="i in 3" 
+            v-for="i in totalDots" 
             :key="i"
             @click="goToSlide(i-1)"
             class="w-3 h-3 rounded-full transition-all duration-300 focus:outline-none"
@@ -83,13 +83,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 import { API_URL } from '../../utils/api';
 import { selectedLang } from '../home/NavBar.vue';
 
 const activities = ref([]);
 const currentIndex = ref(0);
 const isLoading = ref(true);
+const cardsPerPage = ref(3); // Default to 3 for desktop
 
 // List of activities we want to display with variations in different languages
 const highlightedActivityNames = [
@@ -164,19 +165,29 @@ const t = (key) => {
   return translations[lang]?.[key] || translations.en[key];
 };
 
-const visibleSlides = 3;
-const totalDots = 3; // For 5 cards, always 3 dots
+const totalDots = computed(() => Math.ceil(activities.value.length / cardsPerPage.value));
+
+// Function to update cardsPerPage based on screen width
+const updateCardsPerPage = () => {
+  if (window.innerWidth < 768) { // Tailwind's 'md' breakpoint is 768px
+    cardsPerPage.value = 1;
+  } else {
+    cardsPerPage.value = 3;
+  }
+  // Reset currentIndex to avoid being out of bounds if cardsPerPage changes
+  currentIndex.value = 0;
+};
 
 function prevSlide() {
   if (currentIndex.value > 0) {
     currentIndex.value--;
   } else {
-    currentIndex.value = totalDots - 1;
+    currentIndex.value = totalDots.value - 1;
   }
 }
 
 function nextSlide() {
-  if (currentIndex.value < totalDots - 1) {
+  if (currentIndex.value < totalDots.value - 1) {
     currentIndex.value++;
   } else {
     currentIndex.value = 0;
@@ -333,7 +344,8 @@ const fetchActivities = async () => {
 
 onMounted(() => {
   fetchActivities();
-  // Auto slide every 5 seconds
+  updateCardsPerPage(); // Set initial value
+  window.addEventListener('resize', updateCardsPerPage);
   autoSlideInterval = setInterval(nextSlide, 5000);
 });
 
@@ -348,6 +360,18 @@ let autoSlideInterval;
 // Clean up interval when component is unmounted
 onUnmounted(() => {
   clearInterval(autoSlideInterval);
+  window.removeEventListener('resize', updateCardsPerPage);
+});
+
+// Watch for changes in cardsPerPage to adjust currentIndex if necessary
+watch(cardsPerPage, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    // Ensure currentIndex is within valid range for new cardsPerPage
+    const maxIndex = Math.max(0, totalDots.value - 1);
+    if (currentIndex.value > maxIndex) {
+      currentIndex.value = maxIndex;
+    }
+  }
 });
 </script>
 
@@ -379,4 +403,4 @@ onUnmounted(() => {
 .dark .shadow-custom {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
 }
-</style> 
+</style>
