@@ -3,7 +3,7 @@
     <div class="w-full h-screen relative overflow-hidden">
       <!-- Background Image with Overlay -->
       <div class="absolute inset-0 bg-black bg-opacity-40 dark:bg-opacity-50">
-        <img src="/images/hero-background.jpg" alt="" class="w-full h-full object-cover" />  <!-- Alt text is empty because it's decorative only -->
+        <img src="https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/backgrounds/hero-background.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jZGRmOGJkZC0zNDlkLTQyODItOWNkZi05YjVmOWI5NWUyOWYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJiYWNrZ3JvdW5kcy9oZXJvLWJhY2tncm91bmQuanBnIiwiaWF0IjoxNzUxOTA1NzQ0LCJleHAiOjE3ODM0NDE3NDR9.lBw4wQOdAaPznPC1cih7svx_AVmjq0FHxT77mLYXQdk" alt="" class="w-full h-full object-cover" />
       </div>
       
       <div class="container mx-auto px-8 sm:px-12 md:px-16 lg:px-24 xl:px-32 h-full flex flex-col justify-center relative z-10">
