@@ -84,7 +84,7 @@ const formData = ref({
 
 const handleSubmit = () => {
   // Here you would typically send the form data to a server
-  // For now, we'll just log it to the console
+  // For now, we'll just log it to the console of the browser
   console.log('Form submitted:', formData.value)
   
   // Reset form after submission
@@ -94,7 +94,6 @@ const handleSubmit = () => {
     message: ''
   }
   
-  // You could also show a success message to the user
   alert(props.labels.successMessage || 'Message sent successfully!')
 }
 </script>

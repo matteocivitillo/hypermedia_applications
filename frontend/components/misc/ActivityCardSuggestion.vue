@@ -42,11 +42,10 @@ defineProps({
   background-color: #006A71;
 }
 
-/* Activity Card Styles - With hover effect */
 .activity-card {
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
-    will-change: transform; /* Performance optimization for animations */
-    backface-visibility: hidden; /* Prevents flickering in some browsers */
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; 
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .activity-card:hover {
@@ -59,9 +58,8 @@ defineProps({
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
   }
 
-  /* Refined animations for labels within cards */
   .activity-card .group-hover\:translate-y-\[-2px\] {
-    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
 
   .activity-card:hover .group-hover\:translate-y-\[-2px\] {

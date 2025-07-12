@@ -20,7 +20,7 @@
         </a>
       </div>
       
-      <!-- Map + Orari nella prima riga -->
+      <!-- Map + Hours in the first row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
         <!-- Interactive Map -->
         <div class="bg-gray-50 dark:bg-gray-600 rounded-xl shadow-custom dark:shadow-gray-900/70 p-8 h-full flex">

@@ -135,7 +135,7 @@ const highlightedActivityNames = [
   'Dance Fitness'
 ];
 
-// Traduzioni
+// Translations
 const translations = {
   en: {
     highlightedActivities: 'Highlighted Activities',
@@ -159,7 +159,7 @@ const translations = {
   }
 };
 
-// Funzione per ottenere traduzioni
+// Function to get translations 
 const t = (key) => {
   const lang = selectedLang.value;
   return translations[lang]?.[key] || translations.en[key];
@@ -205,7 +205,6 @@ function isHighlightedActivity(title) {
   // Normalize activity names for comparison
   const normalizedTitle = title.toLowerCase().trim();
   
-  // Log per debug
   console.log(`Checking activity: "${normalizedTitle}"`);
   
   // Check direct matches and known variations
@@ -270,7 +269,7 @@ function isHighlightedActivity(title) {
 // Fetch activities function
 const fetchActivities = async () => {
   isLoading.value = true;
-  activities.value = []; // Resetta le attività
+  activities.value = [];
   
   try {
     const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
@@ -282,7 +281,7 @@ const fetchActivities = async () => {
     console.log(`Fetched ${data.activities?.length || 0} activities in language: ${selectedLang.value}`);
     
     if (data.activities && data.activities.length > 0) {
-      // Mostra le prime 5 attività per debug
+      // check the first 5 activities for debug
       const sampleActivities = data.activities.slice(0, 5);
       console.log("Sample activities:", sampleActivities.map(a => ({
         id: a.id,
@@ -297,32 +296,32 @@ const fetchActivities = async () => {
       
       console.log(`Found ${filteredActivities.length} activities matching our highlighted list`);
       
-      // Se non abbiamo abbastanza attività filtrate, mostriamo alcune attività casuali
+      // if we don't have enough highlighted activities, add some random activities
       if (filteredActivities.length < 3) {
         console.log("Not enough highlighted activities, adding some random activities");
         
-        // Seleziona attività casuali che non sono già nella lista filtrata
+        // select random activities that are not already in the filtered list
         const remainingActivities = data.activities.filter(a => 
           !filteredActivities.some(fa => fa.id === a.id)
         );
         
-        // Prendi attività casuali fino a raggiungere almeno 3 attività totali
+        // takes random activities until we have 3 activities
         const randomActivities = remainingActivities
           .sort(() => Math.random() - 0.5)
           .slice(0, Math.max(3 - filteredActivities.length, 0));
         
-        // Unisci le attività filtrate con quelle casuali
+        // merge the filtered activities with the random activities
         const combinedActivities = [...filteredActivities, ...randomActivities];
         console.log(`Total activities after adding random: ${combinedActivities.length}`);
         
-        // Aggiorna la lista di attività
+        // update the activities list
         activities.value = combinedActivities.map(activity => ({
           ...activity,
           name: activity.title || activity.name,
           image_url: activity.image || `/images/activities/${activity.id}.jpg`
         }));
       } else {
-        // Se abbiamo abbastanza attività filtrate, le usiamo direttamente
+        // if we have enough highlighted activities, use them directly
         activities.value = filteredActivities.map(activity => ({
           ...activity,
           name: activity.title || activity.name,
@@ -330,7 +329,6 @@ const fetchActivities = async () => {
         }));
       }
       
-      // Log final activities
       console.log(`Final activities to display: ${activities.value.length}`);
     } else {
       console.error("No activities found in response");
@@ -344,12 +342,12 @@ const fetchActivities = async () => {
 
 onMounted(() => {
   fetchActivities();
-  updateCardsPerPage(); // Set initial value
+  updateCardsPerPage(); 
   window.addEventListener('resize', updateCardsPerPage);
   autoSlideInterval = setInterval(nextSlide, 5000);
 });
 
-// Quando cambia la lingua, aggiorna le attività
+// when the language changes, update the activities
 watch(selectedLang, () => {
   fetchActivities();
 });

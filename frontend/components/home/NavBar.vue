@@ -9,7 +9,7 @@
           </router-link>
         </div>
 
-        <!-- Hamburger Menu Button (visibile quando lo spazio non è sufficiente) -->
+        <!-- Hamburger Menu Button (visible when space is not enough) -->
         <div class="lg:hidden flex items-center">
           <ThemeToggle class="mr-2" />
           <LanguageSelector v-model="selectedLang" :languages="languages" />
@@ -24,7 +24,7 @@
           </button>
         </div>
 
-        <!-- Navigation Items Desktop - nascosti quando lo spazio non è sufficiente -->
+        <!-- Navigation Items Desktop - hidden when space is not enough -->
         <div class="hidden lg:flex items-center space-x-8 xl:space-x-10">
           <router-link to="/" 
             class="text-white text-base font-medium hover:text-gray-300 transition-colors"
@@ -114,7 +114,7 @@
       </div>
     </div>
 
-    <!-- Mobile Menu (visibile quando aperto) -->
+    <!-- Mobile Menu (visible when open) -->
     <div v-show="mobileMenuOpen" 
          class="lg:hidden bg-primary border-t border-gray-200 dark:border-gray-700"
          role="menu"
@@ -217,10 +217,10 @@ const languages = [
   { code: 'zh', name: '中文', flag: 'https://dcrgvkmnavjahkprnkem.supabase.co/storage/v1/object/sign/flags/cina.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9jZGRmOGJkZC0zNDlkLTQyODItOWNkZi05YjVmOWI5NWUyOWYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJmbGFncy9jaW5hLnBuZyIsImlhdCI6MTc1MTkwNjA1MSwiZXhwIjoxNzgzNDQyMDUxfQ.AsgtSQ6k3Q-GusrB4MBCA0_eWi6lU-xyhHdQz25yd8I' }
 ];
 
-// Stato globale della lingua selezionata con valore di default
+// global state of the selected language with default value
 export const selectedLang = ref('en')
 
-// Traduzioni per la navbar
+// translations for the navbar
 const translations = {
   en: {
     home: 'Home',
@@ -294,13 +294,13 @@ const translations = {
   }
 };
 
-// Funzione per ottenere traduzioni
+// function to get translations
 const t = (key) => {
   const lang = selectedLang.value;
   return translations[lang]?.[key] || translations.en[key];
 };
 
-// La parte di localStorage verrà gestita nel ciclo di vita del componente
+// the part of localStorage will be handled in the component life cycle
 
 export default {
   components: {
@@ -436,7 +436,7 @@ export default {
                 top: middle,
                 behavior: 'smooth'
               });
-              return; // Termina qui se abbiamo trovato e scrollato
+              return; // end here if we found and scrolled to the highlights section
             }
           }
         }
@@ -462,7 +462,7 @@ export default {
     }
   },
   mounted() {
-    // Inizializza selectedLang con il valore da localStorage, se disponibile
+    // initialize selectedLang with the value from localStorage, if available
     if (typeof localStorage !== 'undefined') {
       const storedLang = localStorage.getItem('language');
       if (storedLang) {
@@ -561,12 +561,10 @@ export default {
   bottom: -20px;
 }
 
-/* Stili moderni per il menu mobile */
 .lg\:hidden.bg-primary {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Rimuovo hover dal pulsante hamburger ma mantengo negli altri elementi */
 .hamburger-btn {
   transition: none !important;
   background-color: transparent !important;
@@ -578,7 +576,6 @@ export default {
   padding: 0.25rem !important; /* p-1 */
 }
 
-/* Mantengo lo stile di hover per gli altri elementi del menu mobile */
 .lg\:hidden a, 
 .lg\:hidden button:not(.hamburger-btn) {
   margin: 4px 0;
@@ -593,7 +590,6 @@ export default {
   padding-left: 16px;
 }
 
-/* Navbar transition */
 .navbar {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
