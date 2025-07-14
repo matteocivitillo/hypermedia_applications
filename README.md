@@ -1,10 +1,10 @@
 # Serendipity Yoga Center - Hypermedia Applications Project – 2024-2025
 
-**Course**: Hypermedia Applications – Web & Multimedia  
-**Professors**: Franca Garzotto, Giovanni Caleffi, and Matteo Secco
-**Team**: Civitillo, Gandini, Vicenzotto, Ye
-**Website**: [https://hypermedia-applications-rho.vercel.app/](https://hypermedia-applications-rho.vercel.app/)  
-**Repository**: [GitHub](https://github.com/yexin01/hypermedia_applications)
+**Course**: Hypermedia Applications – Web & Multimedia <br>
+**Professors**: Franca Garzotto, Giovanni Caleffi, and Matteo Secco <br>
+**Team**: Civitillo, Gandini, Vicenzotto, Ye <br>
+**Website**: [https://hypermedia-applications-rho.vercel.app/](https://hypermedia-applications-rho.vercel.app/) <br>
+**Repository**: [GitHub](https://github.com/yexin01/hypermedia_applications) <br>
 
 ---
 
