@@ -1,10 +1,10 @@
 # Serendipity Yoga Center - Hypermedia Applications Project – 2024-2025
 
-**Course**: Hypermedia Applications – Web & Multimedia  
-**Professors**: Franca Garzotto, Giovanni Caleffi, and Matteo Secco
-**Team**: Civitillo, Gandini, Vicenzotto, Ye
-**Website**: [https://hypermedia-applications-rho.vercel.app/](https://hypermedia-applications-rho.vercel.app/)  
-**Repository**: [GitHub](https://github.com/yexin01/hypermedia_applications)
+**Course**: Hypermedia Applications – Web & Multimedia <br>
+**Professors**: Franca Garzotto, Giovanni Caleffi, and Matteo Secco <br>
+**Team**: Civitillo, Gandini, Vicenzotto, Ye <br>
+**Website**: [https://hypermedia-applications-rho.vercel.app/](https://hypermedia-applications-rho.vercel.app/) <br>
+**Repository**: [GitHub](https://github.com/yexin01/hypermedia_applications) <br>
 
 ---
 
@@ -18,17 +18,25 @@ Find out more in the deliverables folder.
 
 ## Getting Started Locally
 
-To run the project on your local machine:
+To run the project on your local machine, follow these steps:
 
-1. Clone the repository:
-git clone https://github.com/yexin01/hypermedia_applications
-cd hypermedia_applications
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/yexin01/hypermedia_applications
+    cd hypermedia_applications
+    ```
 
-2.⁠ ⁠Install dependencies:
-Make sure you have Node.js v18+ and npm installed.
-npm install
+2.  **Install dependencies:**
+    Make sure you have Node.js v18+ and npm installed.
+    ```bash
+    npm install
+    ```
 
-3.⁠ ⁠Run the development server:
+3.  **Run the development server:**
+```bash
 npm run dev
-Visit http://localhost:3000 to view the app in your browser.
-The page will auto-update as you edit files in the src directory.
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+The page auto-updates as you edit files in the `src` directory.
