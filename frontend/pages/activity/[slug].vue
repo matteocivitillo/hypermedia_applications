@@ -391,7 +391,7 @@ const isLoadingSimilar = ref(false);
 // Handle image loading error
 const handleImageError = () => {
   imageError.value = true;
-  imageLoaded.value = true; // Consider the image "loaded" even if it's an error
+  imageLoaded.value = true;
 };
 
 // Find the activity ID and data from the slug
@@ -406,14 +406,10 @@ const findActivityIdBySlug = async () => {
     const data = await response.json();
     
     if (data.activities && data.activities.length > 0) {
-      console.log("Current slug:", slug.value);
       
-      // Log all activities and their generated slugs for debugging
-      console.log("Available activities and their slugs:");
       data.activities.forEach(a => {
         const activityName = a.title || a.name;
         const activitySlug = activityName.toLowerCase().replace(/\s+/g, '-');
-        console.log(`- ID: ${a.id}, Name: ${activityName}, Slug: ${activitySlug}`);
       });
       
       // Find the activity with the matching slug
@@ -424,7 +420,6 @@ const findActivityIdBySlug = async () => {
       });
       
       if (foundActivity) {
-        console.log("Found matching activity:", foundActivity);
         activityId.value = foundActivity.activity_id || foundActivity.id;
         // Set the activity data directly since we already have it
         activity.value = foundActivity;
@@ -456,7 +451,6 @@ const fetchTeacher = async (teacherId) => {
     }
     
     const data = await response.json();
-    console.log("Loaded teacher:", data.teacher);
     return data.teacher;
   } catch (err) {
     console.error('Error fetching teacher:', err);
@@ -467,15 +461,11 @@ const fetchTeacher = async (teacherId) => {
 // Fetch teacher data when the activity is loaded
 const fetchTeacherByActivity = async () => {
   if (!activityId.value) {
-    console.log("No activity ID available to fetch teacher");
     return;
   }
 
   try {
-    console.log(`Fetching teacher for activity ID: ${activityId.value}`);
-    // Per debug: stampa anche l'URL completo
     const url = `${API_URL}/teacher/activity/${activityId.value}`;
-    console.log(`Fetching teacher URL: ${url}`);
     
     const response = await fetch(url);
 
@@ -483,47 +473,36 @@ const fetchTeacherByActivity = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Stampa il response text prima di parsarlo come JSON per vedere i dati grezzi
     const responseText = await response.text();
-    console.log("Raw teacher API response text:", responseText);
     
     // Parsa nuovamente come JSON
     const data = JSON.parse(responseText);
-    console.log("Raw teacher API response data:", data);
 
     if (data && data.teacher) {
-      console.log("Teacher data exists:", data.teacher);
       // Make sure teacher data is properly formatted
       if (Array.isArray(data.teacher)) {
         // It's already an array
         teacher.value = data.teacher;
-        console.log("Teacher is an array:", teacher.value);
       } else {
         // It's an object, put it in an array
         teacher.value = [data.teacher];
-        console.log("Teacher converted to array:", teacher.value);
       }
       
       // Check if we have name/surname fields
       teacher.value.forEach((t, idx) => {
-        console.log(`Teacher ${idx} data:`, t);
         // If name/surname are missing, try to set defaults
         if (!t.name && !t.surname) {
-          console.log("Teacher missing name/surname, setting defaults");
           t.name = "Yoga";
           t.surname = "Teacher";
         }
       });
       
-      console.log("Final teacher data:", teacher.value);
     } else {
-      // No teacher assigned to this activity (not an error)
-      console.log("No teacher data in response:", data);
+      // No teacher assigned to this activity
       teacher.value = null;
     }
   } catch (err) {
     console.error('Error fetching teacher:', err);
-    // Don't set error.value here as it affects the whole page
     teacher.value = null;
   }
 };
@@ -542,7 +521,6 @@ const fetchRoom = async (roomId) => {
     
     const data = await response.json();
     if (data.room) {
-      // Creare struttura dati che mantiene sia le attività dal database che quelle legacy
       const roomActivities = data.room.activities || [];
       const legacyActivities = data.room.legacy_activities || [];
       
@@ -565,7 +543,7 @@ const fetchRoom = async (roomId) => {
   }
 };
 
-// Fetch activity data from the API - now only handles additional data fetching
+// Fetch activity data from the API
 const fetchActivity = async () => {
   try {
     const foundActivity = await findActivityIdBySlug();
@@ -595,7 +573,6 @@ const fetchSimilarActivities = async () => {
   
   isLoadingSimilar.value = true;
   try {
-    // Recuperiamo tutte le attività (le API restituiscono già i dati nella lingua corretta)
     const response = await fetch(`${API_URL}/activities?lang=${selectedLang.value}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -603,8 +580,6 @@ const fetchSimilarActivities = async () => {
     
     const data = await response.json();
     if (data.activities) {
-      // Filtriamo escludendo solo l'attività corrente, senza filtrare per level
-      // poiché i livelli potrebbero essere tradotti/diversi in lingue diverse
       const filtered = data.activities.filter(a => a.id !== activity.value.id);
       
       // Ensure all activities have both title and name fields populated for URL consistency
@@ -612,9 +587,7 @@ const fetchSimilarActivities = async () => {
         if (!act.title && act.name) act.title = act.name;
         if (!act.name && act.title) act.name = act.title;
         
-        // Log the URL that would be generated for this activity
         const activitySlug = (act.title || act.name).toLowerCase().replace(/\s+/g, '-');
-        console.log(`Similar activity slug: ${activitySlug} for activity ID: ${act.id}`);
       });
       
       // Shuffle the array
@@ -622,14 +595,6 @@ const fetchSimilarActivities = async () => {
       
       // Take only 3 activities
       similarActivities.value = shuffled.slice(0, 3);
-      console.log("Similar activities prepared:", 
-        similarActivities.value.map(a => ({
-          id: a.id,
-          title: a.title,
-          name: a.name,
-          slug: (a.title || a.name).toLowerCase().replace(/\s+/g, '-')
-        }))
-      );
     }
   } catch (err) {
     console.error('Error fetching similar activities:', err);
@@ -644,14 +609,13 @@ onMounted(() => {
   fetchActivity();
 });
 
-// Scroll to top function with safety check
 const scrollToTop = () => {
   if (typeof window !== 'undefined') {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 };
 
-// Watch for route changes (for example when clicking on a similar activity)
+// Watch for route changes
 watch(() => route.params.slug, (newSlug) => {
   if (newSlug) {
     slug.value = newSlug;
@@ -675,7 +639,7 @@ watch(() => route.params.slug, (newSlug) => {
 
 // Remove redundant watchers that cause duplicate fetches
 watch(isLoading, (newValue) => {
-  if (!newValue) { // When loading is complete
+  if (!newValue) {
     setTimeout(() => {
       scrollToTop();
     }, 100);

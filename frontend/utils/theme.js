@@ -1,9 +1,5 @@
 import { ref, watch, onMounted, getCurrentInstance } from 'vue'
 
-/**
- * Composable per la gestione del tema (chiaro/scuro)
- * Centralizza la logica di gestione del tema per l'intera applicazione
- */
 export function useTheme() {
   // Stato del tema
   const isDark = ref(false)
@@ -55,15 +51,13 @@ export function useTheme() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       // Aggiorna solo se l'utente non ha impostato una preferenza specifica
       if (!localStorage.getItem('theme')) {
-        // Non seguiamo più le preferenze del sistema, manteniamo sempre light come default
-        // isDark.value = e.matches 
         isDark.value = false
         applyTheme()
       }
     })
   }
   
-  // Inizializza il tema al mount del componente (solo se nel contesto di un componente)
+  // Inizializza il tema al mount del componente
   const instance = getCurrentInstance()
   if (instance) {
     onMounted(() => {
@@ -79,7 +73,6 @@ export function useTheme() {
     applyTheme()
   })
   
-  // Restituisci i metodi e le proprietà da utilizzare nei componenti
   return {
     isDark,
     isThemeDark,

@@ -259,7 +259,7 @@
   // Handle image loading error
   const handleImageError = () => {
     imageError.value = true;
-    imageLoaded.value = false;  // Consider the image "loaded" even if it's an error
+    imageLoaded.value = false;
   };
   
   // Activities managed by the teacher
@@ -269,7 +269,6 @@
   // Fetch all teachers to find the one matching the slug
   const findTeacherIdBySlug = async () => {
     try {
-      console.log("Finding teacher with slug:", slug.value, "in language:", selectedLang.value);
       
       // Try for all supported languages to find a match
       const languages = ['en', 'it', 'fr', 'de', 'zh'];
@@ -285,11 +284,8 @@
       const data = await response.json();
       
       if (data.teachers && data.teachers.length > 0) {
-        // Log all teachers and their slugs for debugging
-        console.log("Available teachers and their slugs in current language:");
         data.teachers.forEach(t => {
           const teacherSlug = `${t.name.toLowerCase()}-${t.surname.toLowerCase()}`.replace(/\s+/g, '-');
-          console.log(`- ID: ${t.id}, Name: ${t.name} ${t.surname}, Slug: ${teacherSlug}`);
         });
         
         // Check for exact match in current language first
@@ -299,12 +295,10 @@
         });
         
         if (foundTeacher) {
-          console.log("Found matching teacher in current language:", foundTeacher);
           teacherId.value = foundTeacher.id;
           return foundTeacher.id;
         }
         
-        // If not found, try more flexible matching (partial name/surname match)
         for (const teacher of data.teachers) {
           // Extract names from slug
           const slugParts = slug.value.split('-');
@@ -319,20 +313,16 @@
               teacherSurnameLower.includes(surnameInSlug) ||
               nameInSlug.includes(teacherNameLower) || 
               surnameInSlug.includes(teacherSurnameLower)) {
-            console.log("Found partial name match:", teacher);
             teacherId.value = teacher.id;
             return teacher.id;
           }
         }
         
-        // If still not found, just use the first teacher matching a key part of the slug
-        // This is a fallback that will at least show some teacher
         for (const teacher of data.teachers) {
           for (const part of slug.value.split('-')) {
             if (part.length > 3) { // Only check meaningful parts
               const teacherFullNameLower = `${teacher.name} ${teacher.surname}`.toLowerCase();
               if (teacherFullNameLower.includes(part) || part.includes(teacher.name.toLowerCase())) {
-                console.log("Found fallback match by name part:", teacher);
                 teacherId.value = teacher.id;
                 return teacher.id;
               }
@@ -443,7 +433,6 @@
     color: #9ACBD0;
   }
 
-  /* Teacher Card Styles - Rimuovo effetto hover e applico lo stile di ombra delle card in prices */
   .teacher-card {
     transition: none;
   }
@@ -456,11 +445,10 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 
-  /* Activity Card Styles - With hover effect */
   .activity-card {
-    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
-    will-change: transform; /* Performance optimization for animations */
-    backface-visibility: hidden; /* Prevents flickering in some browsers */
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .activity-card:hover {
@@ -473,9 +461,8 @@
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
   }
 
-  /* Refined animations for labels within cards */
   .activity-card .group-hover\:translate-y-\[-2px\] {
-    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+    transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
 
   .activity-card:hover .group-hover\:translate-y-\[-2px\] {
@@ -486,14 +473,13 @@
     transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
   }
 
-  /* Loading spinner */
   .loading-spinner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* Start hidden */
-    animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
+    opacity: 0;
+    animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   }
 
   .spinner {
@@ -521,14 +507,13 @@
       transform: scale(1);
     }
     50% {
-      transform: scale(1.1); /* Slightly scale up */
+      transform: scale(1.1);
     }
     100% {
       transform: scale(1);
     }
   }
 
-  /* Animations */
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -544,7 +529,6 @@
     animation: fadeIn 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
   }
 
-  /* Dark mode transition */
   .dark-transition {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }

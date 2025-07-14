@@ -159,7 +159,6 @@ const t = (key) => {
 };
 
 export default {
-  // Component logic if needed
   data() {
     return {
       selectedLang

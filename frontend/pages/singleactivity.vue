@@ -11,9 +11,7 @@ import { API_URL } from '~/utils/api'
 // Query parameters to get activity ID
 const route = useRoute()
 const activityId = ref(route.query.id)
-//const isLoading = ref(true) non lo usiamo
 
-// Function to redirect to the new URL format
 const redirectToNewFormat = async () => {
   if (!activityId.value) {
     navigateTo('/activities')
@@ -21,7 +19,7 @@ const redirectToNewFormat = async () => {
   }
   
   try {
-    // Fetch all activities instead of a single one
+    // Fetch all activities
     const response = await fetch(`${API_URL}/activities`)
     
     if (!response.ok) {
@@ -54,6 +52,5 @@ const redirectToNewFormat = async () => {
   }
 }
 
-// Redirect when component mounts
 onMounted(redirectToNewFormat)
 </script> 

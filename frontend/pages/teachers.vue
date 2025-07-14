@@ -207,13 +207,12 @@ useSeoMeta({
   color: #9ACBD0;
 }
 
-/* Card Animation Styles - Unified across site */
 .teacher-card {
   animation: fadeInUp 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   opacity: 0;
-  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slower, more fluid cubic-bezier easing */
-  will-change: transform; /* Performance optimization for animations */
-  backface-visibility: hidden; /* Prevents flickering in some browsers */
+  transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .teacher-card:hover {
@@ -226,9 +225,9 @@ useSeoMeta({
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Refined animations for labels within cards */
+
 .teacher-card .group-hover\:translate-y-\[-2px\] {
-  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important; /* Slightly delayed, more fluid motion */
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
 
 .teacher-card:hover .group-hover\:translate-y-\[-2px\] {
@@ -239,14 +238,13 @@ useSeoMeta({
   transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
 
-/* Loading spinner */
 .loading-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  opacity: 0; /* Start hidden */
-  animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; /* Slower, more fluid animation */
+  opacity: 0;
+  animation: fadeIn 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .spinner {
@@ -263,7 +261,6 @@ useSeoMeta({
   border-top-color: #9ACBD0;
 }
 
-/* Animations */
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -275,7 +272,7 @@ useSeoMeta({
     transform: scale(1);
   }
   50% {
-    transform: scale(1.1); /* Slightly scale up */
+    transform: scale(1.1);
   }
   100% {
     transform: scale(1);
@@ -315,7 +312,6 @@ useSeoMeta({
   flex-direction: column;
 }
 
-/* Dark mode transition */
 .dark-transition {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

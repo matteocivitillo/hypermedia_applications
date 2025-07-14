@@ -164,7 +164,6 @@ const fetchReviews = async () => {
       errorMessage.value = data.error;
       throw new Error(data.error);
     }
-    console.log('Review data:', data); // Log the received data
     if (data.reviews && data.reviews.length > 0) {
       reviews.value = data.reviews.map(review => {
         // Ora participant è direttamente collegato alla review tramite idparticipant
@@ -183,12 +182,6 @@ const fetchReviews = async () => {
           console.error('Error formatting date:', err);
         }
         
-        // Per debug
-        console.log('Processing review:', {
-          id: review.id,
-          stars: review.stars,
-          review_text: review.review
-        });
         
         return {
           name: participant.name || 'Yoga Enthusiast',
@@ -202,7 +195,6 @@ const fetchReviews = async () => {
           featured: review.stars === 5
         };
       });
-      console.log('Processed reviews:', reviews.value);
     } else {
       hasError.value = true;
       errorMessage.value = 'No reviews found.';

@@ -83,10 +83,6 @@ const formData = ref({
 })
 
 const handleSubmit = () => {
-  // Here you would typically send the form data to a server
-  // For now, we'll just log it to the console of the browser
-  console.log('Form submitted:', formData.value)
-  
   // Reset form after submission
   formData.value = {
     name: '',

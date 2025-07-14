@@ -161,7 +161,7 @@ const error = ref(null)
 const imageLoaded = ref(false)
 const imageError = ref(false)
 
-// Fetch activities from API con lingua
+// Fetch activities from API
 const fetchActivities = async () => {
   isLoading.value = true
   error.value = null
@@ -208,7 +208,6 @@ useSeoMeta({
   color: #9ACBD0;
 }
 
-/* Activity card animation */
 .activity-card {
   animation: fadeInUp 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
   opacity: 0;
@@ -227,7 +226,6 @@ useSeoMeta({
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Refined animations for labels within cards */
 .activity-card .group-hover\:translate-y-\[-2px\] {
   transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
@@ -240,7 +238,6 @@ useSeoMeta({
   transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
 }
 
-/* Loading spinner */
 .loading-spinner {
   display: flex;
   flex-direction: column;
@@ -316,7 +313,6 @@ useSeoMeta({
   flex-direction: column;
 }
 
-/* Dark mode transition */
 .dark-transition {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

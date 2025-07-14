@@ -205,31 +205,24 @@ const fetchYogaClasses = async () => {
     const data = await response.json();
     
     if (data.activities && data.activities.length > 0) {
-      // Cerchiamo specificamente Hatha, Kundalini e Ashtanga Yoga
       
       // Filter per trovare queste specifiche classi di yoga
       let selectedYogaClasses = [];
-      
-      console.log("Available activities:", data.activities);
-      
+            
       // Prima proviamo a trovare attività che hanno specificamente questi nomi
       targetYogaTypes.forEach(yogaType => {
-        console.log(`Looking for yoga type: ${yogaType}`);
         
         const matchingActivity = data.activities.find(activity => {
           const name = activity.name?.toLowerCase() || '';
           const title = activity.title?.toLowerCase() || '';
           const type = activity.type?.toLowerCase() || '';
           
-          console.log(`Checking activity: name=${name}, title=${title}, type=${type}`);
           return name.includes(yogaType) || title.includes(yogaType) || type.includes(yogaType);
         });
         
         if (matchingActivity) {
-          console.log(`Found matching activity for ${yogaType}:`, matchingActivity);
           selectedYogaClasses.push(matchingActivity);
         } else {
-          console.log(`No matching activity found for ${yogaType}, using default`);
           // Se non troviamo attività con questo nome, creiamo un'attività predefinita
           const defaultActivity = {
             id: `default-${yogaType}`,

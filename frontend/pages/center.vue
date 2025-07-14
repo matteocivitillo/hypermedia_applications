@@ -382,13 +382,11 @@ const fetchReviews = async () => {
 
 // Funzione per aggiornare l'altezza massima delle card delle stanze
 const updateMaxRoomCardHeight = async () => {
-  // Attendiamo che il DOM si aggiorni dopo il cambio di room
   await nextTick();
   
   // Troviamo tutte le room cards
   const roomCards = document.querySelectorAll('.room-card');
   
-  // Se non ci sono cards, non c'è nulla da fare
   if (roomCards.length === 0) return;
   
   // Troviamo l'altezza massima tra tutte le cards
@@ -401,7 +399,7 @@ const updateMaxRoomCardHeight = async () => {
   });
   
   // Impostiamo l'altezza massima nel ref
-  maxHeight += 40; // Aggiungiamo un po' di spazio per sicurezza
+  maxHeight += 40;
   maxRoomCardHeight.value = maxHeight;
 };
 
@@ -423,17 +421,14 @@ const fetchRooms = async () => {
     }
     else if (data.rooms && data.rooms.length > 0) {
       rooms.value = data.rooms.map(room => {
-        // Process room data if needed
         return {
           ...room,
-          // Any additional transformations
         };
       });
       
       // Reset current index to 0 when rooms are fetched
       currentRoomIndex.value = 0;
     } else {
-      console.log('No rooms found');
       rooms.value = [];
       errorRooms.value = 'No rooms found';
     }
@@ -448,12 +443,10 @@ const fetchRooms = async () => {
   }
 };
 
-// Aggiorna l'altezza anche quando cambi stanza
 watch(currentRoomIndex, () => {
   updateMaxRoomCardHeight();
 });
 
-// Usa selectedLang globale per fetchRooms e fetchReviews
 watch(selectedLang, fetchRooms);
 watch(selectedLang, fetchReviews);
 
@@ -526,7 +519,6 @@ function getDefaultAreas() {
   ];
 }
 
-// Oriental Room image for main section
 const orientalRoomImage = computed(() => {
   if (rooms.value.length === 0) {
     return '/images/meditation.jpg'; // Fallback image if no rooms are available
@@ -671,7 +663,7 @@ async function navigateToActivity(activityName) {
 }
 
 .dark .bg-beige {
-  background-color: #374151; /* gray-700 */
+  background-color: #374151;
 }
 
 .bg-secondary {
@@ -683,7 +675,6 @@ async function navigateToActivity(activityName) {
   margin-bottom: 1.5rem;
 }
 
-/* Dark mode transition */
 .dark-transition {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

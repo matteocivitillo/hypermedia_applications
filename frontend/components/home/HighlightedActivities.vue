@@ -126,7 +126,7 @@ const highlightedActivityNames = [
   'Sonnenuntergang-Yoga',
   'Tanz-Fitness',
   
-  // Chinese (using pinyin for simplicity)
+  // Chinese
   'Zumba',
   'Meditation', 'Mindfulness',
   'Ceramics', 'Pottery',
@@ -169,7 +169,7 @@ const totalDots = computed(() => Math.ceil(activities.value.length / cardsPerPag
 
 // Function to update cardsPerPage based on screen width
 const updateCardsPerPage = () => {
-  if (window.innerWidth < 768) { // Tailwind's 'md' breakpoint is 768px
+  if (window.innerWidth < 768) {
     cardsPerPage.value = 1;
   } else {
     cardsPerPage.value = 3;
@@ -205,21 +205,17 @@ function isHighlightedActivity(title) {
   // Normalize activity names for comparison
   const normalizedTitle = title.toLowerCase().trim();
   
-  console.log(`Checking activity: "${normalizedTitle}"`);
-  
   // Check direct matches and known variations
   for (const name of highlightedActivityNames) {
     const normalizedName = name.toLowerCase().trim();
     
     // Direct match
     if (normalizedTitle === normalizedName) {
-      console.log(`Found direct match: ${normalizedTitle} = ${normalizedName}`);
       return true;
     }
     
-    // Check if the title contains the name (more lenient matching)
+    // Check if the title contains the name
     if (normalizedTitle.includes(normalizedName)) {
-      console.log(`Found partial match: ${normalizedTitle} contains ${normalizedName}`);
       return true;
     }
     
@@ -227,7 +223,6 @@ function isHighlightedActivity(title) {
     if (normalizedName === 'meditation' && 
         (normalizedTitle.includes('meditation') || 
          normalizedTitle.includes('mindfulness'))) {
-      console.log(`Found meditation match: ${normalizedTitle}`);
       return true;
     }
     
@@ -235,14 +230,12 @@ function isHighlightedActivity(title) {
     if (normalizedName === 'ceramics' && 
         (normalizedTitle.includes('pottery') || 
          normalizedTitle.includes('ceramic'))) {
-      console.log(`Found ceramics match: ${normalizedTitle}`);
       return true;
     }
     
     // Check for variations of yoga
     if ((normalizedName === 'water yoga' || normalizedName === 'sunset yoga') && 
         normalizedTitle.includes('yoga')) {
-      console.log(`Found yoga match: ${normalizedTitle} for ${normalizedName}`);
       return true;
     }
     
@@ -251,14 +244,12 @@ function isHighlightedActivity(title) {
         (normalizedTitle.includes('dance') || 
          normalizedTitle.includes('fitness') || 
          normalizedTitle.includes('zumba'))) {
-      console.log(`Found dance match: ${normalizedTitle}`);
       return true;
     }
     
     // Check for Zumba specifically
     if (normalizedName === 'zumba' && 
         normalizedTitle.includes('zumba')) {
-      console.log(`Found zumba match: ${normalizedTitle}`);
       return true;
     }
   }
@@ -278,27 +269,19 @@ const fetchActivities = async () => {
     }
     
     const data = await response.json();
-    console.log(`Fetched ${data.activities?.length || 0} activities in language: ${selectedLang.value}`);
     
     if (data.activities && data.activities.length > 0) {
       // check the first 5 activities for debug
       const sampleActivities = data.activities.slice(0, 5);
-      console.log("Sample activities:", sampleActivities.map(a => ({
-        id: a.id,
-        title: a.title || a.name,
-        type: a.type
-      })));
       
       // Filter activities to include only those from our highlighted list
       const filteredActivities = data.activities.filter(activity => 
         isHighlightedActivity(activity.title || activity.name)
       );
       
-      console.log(`Found ${filteredActivities.length} activities matching our highlighted list`);
       
       // if we don't have enough highlighted activities, add some random activities
       if (filteredActivities.length < 3) {
-        console.log("Not enough highlighted activities, adding some random activities");
         
         // select random activities that are not already in the filtered list
         const remainingActivities = data.activities.filter(a => 
@@ -312,7 +295,6 @@ const fetchActivities = async () => {
         
         // merge the filtered activities with the random activities
         const combinedActivities = [...filteredActivities, ...randomActivities];
-        console.log(`Total activities after adding random: ${combinedActivities.length}`);
         
         // update the activities list
         activities.value = combinedActivities.map(activity => ({
@@ -329,9 +311,6 @@ const fetchActivities = async () => {
         }));
       }
       
-      console.log(`Final activities to display: ${activities.value.length}`);
-    } else {
-      console.error("No activities found in response");
     }
   } catch (error) {
     console.error('Failed to fetch activities:', error);
