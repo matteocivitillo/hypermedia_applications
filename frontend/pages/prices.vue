@@ -65,7 +65,7 @@
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
                 <div class="overflow-x-auto w-full sm:overflow-x-visible">
-                  <table class="w-full text-left">
+                  <table class="w-full text-left text-sm sm:text-base">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -164,7 +164,7 @@
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
                 <div class="overflow-x-auto w-full sm:overflow-x-visible">
-                  <table class="w-full text-left">
+                  <table class="w-full text-left text-sm sm:text-base">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -267,7 +267,7 @@
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
                 <div class="overflow-x-auto w-full sm:overflow-x-visible">
-                  <table class="w-full text-left">
+                  <table class="w-full text-left text-sm sm:text-base">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -322,8 +322,8 @@
           </p>
           
           <!-- Responsive Table Wrapper -->
-          <div class="max-w-5xl mx-auto overflow-x-auto w-full sm:overflow-x-visible border border-gray-200 dark:border-gray-500 rounded-xl shadow-xl dark:shadow-gray-900/70">
-            <table class="w-full min-w-[600px] text-left">
+          <div class="max-w-5xl mx-auto overflow-x-auto w-full sm:overflow-x-visible border border-gray-200 dark:border-gray-500 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden">
+            <table class="w-full min-w-[600px] text-left text-sm sm:text-base rounded-xl">
               <thead>
                 <tr class="bg-primary text-white">
                   <th class="px-6 py-4 font-semibold">{{ t('features') }}</th>
