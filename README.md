@@ -18,17 +18,25 @@ Find out more in the deliverables folder.
 
 ## Getting Started Locally
 
-To run the project on your local machine:
+To run the project on your local machine, follow these steps:
 
-1. Clone the repository:
-git clone https://github.com/yexin01/hypermedia_applications
-cd hypermedia_applications
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/yexin01/hypermedia_applications
+    cd hypermedia_applications
+    ```
 
-2.⁠ ⁠Install dependencies:
-Make sure you have Node.js v18+ and npm installed.
-npm install
+2.  **Install dependencies:**
+    Make sure you have Node.js v18+ and npm installed.
+    ```bash
+    npm install
+    ```
 
-3.⁠ ⁠Run the development server:
+3.  **Run the development server:**
+```bash
 npm run dev
-Visit http://localhost:3000 to view the app in your browser.
-The page will auto-update as you edit files in the src directory.
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+The page auto-updates as you edit files in the `src` directory.
