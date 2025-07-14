@@ -64,7 +64,8 @@
             <!-- Pricing Comparison -->
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
-                <table class="w-full text-left">
+                <div class="overflow-x-auto w-full sm:overflow-x-visible">
+                  <table class="w-full text-left">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -98,6 +99,7 @@
                     </tr>
                   </tbody>
                 </table>
+                </div>
                 <div class="p-3 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-gray-500 dark:to-gray-600 border-t dark:border-gray-500">
                   <p class="italic text-gray-700 dark:text-gray-200 text-center text-sm">{{ t('unlockYoga') }}</p>
                 </div>
@@ -161,7 +163,8 @@
             <!-- Pricing Comparison -->
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
-                <table class="w-full text-left">
+                <div class="overflow-x-auto w-full sm:overflow-x-visible">
+                  <table class="w-full text-left">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -195,6 +198,7 @@
                     </tr>
                   </tbody>
                 </table>
+                </div>
                 <div class="p-3 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-gray-500 dark:to-gray-600 border-t dark:border-gray-500">
                   <p class="italic text-gray-700 dark:text-gray-200 text-center text-sm">{{ t('elevateAccess') }}</p>
                 </div>
@@ -262,7 +266,8 @@
             <!-- Pricing Comparison -->
             <div class="w-full lg:w-3/5 max-w-xl animate-fade-in mt-6 lg:mt-0">
               <div class="bg-white dark:bg-gray-600 rounded-xl shadow-xl dark:shadow-gray-900/70 overflow-hidden border border-gray-200 dark:border-gray-500">
-                <table class="w-full text-left">
+                <div class="overflow-x-auto w-full sm:overflow-x-visible">
+                  <table class="w-full text-left">
                   <thead>
                     <tr class="border-b-2 dark:border-gray-500">
                       <th class="px-4 py-3 font-bold text-white bg-primary">{{ t('planDuration') }}</th>
@@ -296,6 +301,7 @@
                     </tr>
                   </tbody>
                 </table>
+                </div>
                 <div class="p-3 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-gray-500 dark:to-gray-600 border-t dark:border-gray-500">
                   <p class="italic text-gray-700 dark:text-gray-200 text-center text-sm">{{ t('ultimateWellness') }}</p>
                 </div>
@@ -316,11 +322,11 @@
           </p>
           
           <!-- Responsive Table Wrapper -->
-          <div class="max-w-5xl mx-auto overflow-x-auto border border-gray-200 dark:border-gray-500 rounded-xl shadow-xl dark:shadow-gray-900/70">
+          <div class="max-w-5xl mx-auto overflow-x-auto w-full sm:overflow-x-visible border border-gray-200 dark:border-gray-500 rounded-xl shadow-xl dark:shadow-gray-900/70">
             <table class="w-full min-w-[600px] text-left">
               <thead>
                 <tr class="bg-primary text-white">
-                  <th class="px-6 py-4 font-semibold sticky left-0 bg-primary z-10">{{ t('features') }}</th>
+                  <th class="px-6 py-4 font-semibold">{{ t('features') }}</th>
                   <th class="px-6 py-4 font-semibold text-center">Yoga4You</th>
                   <th class="px-6 py-4 font-semibold text-center">Standard</th>
                   <th class="px-6 py-4 font-semibold text-center">Premium</th>
@@ -328,7 +334,7 @@
               </thead>
               <tbody class="divide-y divide-gray-300 dark:divide-gray-500">
                 <tr class="bg-white dark:bg-gray-600 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-white dark:bg-gray-600 z-10">{{ t('unlimitedAccess') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('unlimitedAccess') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-green-500" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -346,7 +352,7 @@
                   </td>
                 </tr>
                 <tr class="bg-gray-50 dark:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">{{ t('meditationRoom') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('meditationRoom') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-green-500" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -364,7 +370,7 @@
                   </td>
                 </tr>
                 <tr class="bg-white dark:bg-gray-600 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-white dark:bg-gray-600 z-10">{{ t('showers') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('showers') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-green-500" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -382,7 +388,7 @@
                   </td>
                 </tr>
                 <tr class="bg-gray-50 dark:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">{{ t('activitiesReservation') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('activitiesReservation') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -400,7 +406,7 @@
                   </td>
                 </tr>
                 <tr class="bg-white dark:bg-gray-600 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-white dark:bg-gray-600 z-10">{{ t('allAreas') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('allAreas') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -418,7 +424,7 @@
                   </td>
                 </tr>
                 <tr class="bg-gray-50 dark:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">{{ t('spaAccess') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('spaAccess') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -436,7 +442,7 @@
                   </td>
                 </tr>
                 <tr class="bg-white dark:bg-gray-600 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-white dark:bg-gray-600 z-10">{{ t('privilegedMeditation') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('privilegedMeditation') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -454,7 +460,7 @@
                   </td>
                 </tr>
                 <tr class="bg-gray-50 dark:bg-gray-700 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">{{ t('activitiesNoReservation') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('activitiesNoReservation') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -472,7 +478,7 @@
                   </td>
                 </tr>
                 <tr class="bg-white dark:bg-gray-600 transition-colors">
-                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200 sticky left-0 bg-white dark:bg-gray-600 z-10">{{ t('barDiscounts') }}</td>
+                  <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ t('barDiscounts') }}</td>
                   <td class="px-6 py-4 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
