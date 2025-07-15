@@ -94,7 +94,7 @@
 <script>
 import { selectedLang } from './NavBar.vue'
 
-// Traduzioni per il footer
+// Translations for the footer
 const translations = {
   en: {
     tagline: 'TRANSFORMING LIVES THROUGH THE PRACTICE OF YOGA AND MEDITATION.',
@@ -198,7 +198,7 @@ export default {
                 top: middle,
                 behavior: 'smooth'
               });
-              return; // Termina qui se abbiamo trovato e scrollato
+              return; // Stop here if we found and scrolled to the section
             }
           }
         }

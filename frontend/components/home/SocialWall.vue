@@ -4,7 +4,7 @@
       <h2 class="text-4xl font-bold text-primary dark:text-[#9ACBD0] text-center mb-6">{{ t('yogaStories') }}</h2>
       <p class="text-lg text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">{{ t('yogaStoriesSubtitle') }}</p>
       
-      <!-- Social Media Links - spostato sopra le recensioni -->
+      <!-- Social Media Links -->
       <div class="mb-12 text-center">
         <h3 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4">{{ t('followUs') }}</h3>
         <div class="flex justify-center space-x-6">
@@ -32,20 +32,20 @@
         </div>
       </div>
       
-      <!-- Masonry Layout for Reviews - più recensioni per riga e più piccole -->
+      <!-- Masonry Layout for Reviews -->
       <div v-if="isLoading" class="flex justify-center items-center h-64">
         <div class="loading-spinner animate-fade-in">
           <div class="spinner"></div>
-          <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Caricamento recensioni...</p>
+          <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Loading reviews...</p>
         </div>
       </div>
       
       <div v-else-if="hasError" class="text-center py-10">
-        <p class="text-lg text-red-500 dark:text-red-400">{{ errorMessage || 'Errore nel caricamento delle recensioni.' }}</p>
+        <p class="text-lg text-red-500 dark:text-red-400">{{ errorMessage || 'Error loading reviews.' }}</p>
       </div>
       
       <div v-else-if="reviews.length === 0" class="text-center py-10">
-        <p class="text-lg text-gray-600 dark:text-gray-300">Nessuna recensione disponibile al momento.</p>
+        <p class="text-lg text-gray-600 dark:text-gray-300">No reviews available at the moment.</p>
       </div>
       
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -166,7 +166,6 @@ const fetchReviews = async () => {
     }
     if (data.reviews && data.reviews.length > 0) {
       reviews.value = data.reviews.map(review => {
-        // Ora participant è direttamente collegato alla review tramite idparticipant
         const participant = review.participant || {};
         const activity = review.activity || {};
         let formattedDate = review.date;
